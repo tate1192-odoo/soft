@@ -1,0 +1,13 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+*.log
+*.bak
+*.orig
+*.rej
+.DS_Store
+.idea/
+.vscode/
