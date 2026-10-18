@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!--
+        Contents of the card; the popover service wraps it in the element that
+        carries the Bootstrap `.popover` styling and the arrow. The classes
+        `popover-header` / `popover-body` / `popover-footer` are the ones that
+        styling expects.
+    -->
+    <t t-name="soft_gantt.GanttPopover">
+        <div class="o_gantt_soft_popover">
+            <div class="popover-header d-flex justify-content-between align-items-start gap-2">
+                <span class="o_gantt_soft_popover_title" t-esc="props.title"/>
+                <button type="button" class="btn-close" t-on-click="props.close" aria-label="Close"/>
+            </div>
+            <div class="popover-body">
+                <dl class="o_gantt_soft_popover_fields mb-0" t-if="fields.length">
+                    <t t-foreach="fields" t-as="field" t-key="field_index">
+                        <dt t-esc="field.label"/>
+                        <dd t-esc="field.value"/>
+                    </t>
+                </dl>
+            </div>
+            <div class="popover-footer" t-if="props.open">
+                <button type="button" class="btn btn-primary btn-sm" t-on-click="() => this.props.open()">
+                    <i class="fa fa-external-link me-1"/>Open
+                </button>
+            </div>
+        </div>
+    </t>
+
+</templates>

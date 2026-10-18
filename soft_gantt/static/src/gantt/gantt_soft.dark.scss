@@ -1,0 +1,65 @@
+// Copyright 2026 - Today Softteknik (<https://www.softteknik.com>)
+// License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
+// = Gantt Soft View Variables
+// ============================================================================
+// Dark mode, variables overrides only.
+//
+// `web.assets_web_dark` inserts this file BEFORE `gantt_soft.scss`, so the Sass
+// variables it sets are already defined when the light file's `!default`
+// assignments run: the dark values win and the whole stylesheet (view and the
+// portal bar card alike) compiles with them. The server serves that bundle only
+// when `ir_http.color_scheme()` is dark -- the reader's colour-scheme cookie or
+// the `res.users.settings.color_scheme` field, as implemented by
+// `ica_web_responsive`; `color-scheme` itself is set there too, so nothing else
+// is needed here.
+//
+// Values are eh_board's dark block (`html[data-eh-board-theme="dark"]` in
+// `eh_account/eh_board/static/src/board.scss`); the derived values are the same
+// ones the light file marks as derived.
+//
+// This file lists ONLY that app-matching palette (surfaces, lines, text, bars,
+// popover) plus the one semantic value that genuinely differs between the two
+// schemes. The gantt-semantic tokens -- the weekend / off-hours stripe, the row
+// hover and open tints, the today line, the solid today badge and its ink --
+// are deliberately absent: `gantt_soft.scss` builds them from Odoo's own `$o-*`
+// variables (`$o-gray-200`, `rgba($o-brand-primary, .1)`, `$o-gray-100`,
+// `rgba($o-warning, ...)`, `$o-warning`), and `web.dark_mode_variables` has
+// already replaced those variables' values with their dark ones before this
+// file and the light one compile -- so the same expression is right in both
+// modes. The exception is the today day-column band (below): its alpha is a
+// readability choice, not a variable substitution, and the light value reads
+// too weak on these very dark surfaces.
+
+// Surfaces.
+$o-gantt-soft-bg: #0b0d0f !default;
+$o-gantt-soft-surface: #171a1d !default;
+
+// Lines.
+$o-gantt-soft-border: #3a4147 !default;
+$o-gantt-soft-gridline: #343a40 !default;
+$o-gantt-soft-lane-separator: #3a4147 !default;
+
+// Text.
+$o-gantt-soft-text: #f7f9fa !default;
+$o-gantt-soft-muted: #b4bdc3 !default;
+
+// eh_board's accent, kept for the palette (it is not a gantt semantic).
+$o-gantt-soft-accent: #52d6a4 !default;
+
+// The today day-column band reads weaker over these very dark surfaces than
+// over white, so it is raised one step from the light file's `.15`. The line,
+// the solid badge fill and its fixed ink all derive from `$o-warning` and are
+// already right in both schemes, so they are not repeated here.
+$o-gantt-soft-today-band: rgba($o-warning, .22) !default;
+
+// A bar and its label.
+$o-gantt-soft-bar-text: #ffffff !default;
+$o-gantt-soft-bar-bg: #714b67 !default;
+
+// The popover card, rendered in Odoo's portal outside the view root.
+$o-gantt-soft-popover-bg: #171a1d !default;
+$o-gantt-soft-popover-header-bg: #22262a !default;
+$o-gantt-soft-popover-text: #f7f9fa !default;
+$o-gantt-soft-popover-border: #3a4147 !default;
+$o-gantt-soft-popover-close-filter: invert(1) grayscale(1) !default;

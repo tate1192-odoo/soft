@@ -1,0 +1,596 @@
+// Copyright 2026 - Today Softteknik (<https://www.softteknik.com>)
+// License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl.html).
+
+// Styling of the gantt_soft view.
+//
+// Every colour the view paints comes from a `$o-gantt-soft-*` SCSS variable
+// (defined with `!default` below and used as a plain compiled literal), so no
+// surface depends on a Bootstrap / Odoo CSS variable: in this deployment
+// `--bs-*` and `--o-cc-*` are undefined, and a `var(--bs-x, <literal>)`
+// silently resolves to the literal, which is why the view used to stay light.
+// The palette is eh_board's, taken verbatim from
+// `eh_account/eh_board/static/src/board.scss`.
+//
+// This file carries the LIGHT values (its `:root` / `.eh_board_app` block). The
+// DARK values live in `gantt_soft.dark.scss`, which belongs to the
+// `web.assets_web_dark` bundle: the server serves that bundle only when
+// `ir_http.color_scheme()` is dark (the reader's colour-scheme cookie or the
+// `res.users.settings.color_scheme` field, as implemented by
+// `ica_web_responsive`), and the bundle inserts the dark file BEFORE this one so
+// its variable values win over the `!default`s here. There is no media query and
+// no theme attribute involved; a file in the dark bundle simply *is* dark mode.
+//
+// Everything is scoped under `.o_gantt_soft_*` so installing the module cannot
+// restyle another view, and the popover is scoped with a class of its own so it
+// never repaints the other popovers of the client.
+
+$o-gantt-soft-side-width: 260px;
+$o-gantt-soft-row-height: 38px;
+$o-gantt-soft-bar-height: 26px;
+// One lane inside a grouped row: a row holding a group grows by this much for
+// each record that overlaps another one in time. Kept in sync with the
+// renderer's own LANE_HEIGHT, which positions the bars.
+$o-gantt-soft-lane-height: 30px;
+
+// ---------------------------------------------------------------------------
+// Design tokens
+// ---------------------------------------------------------------------------
+// The palette is eh_board's, taken verbatim from
+// `eh_account/eh_board/static/src/board.scss`: the `!default` values below are
+// its light block (`:root` / `.eh_board_app`), and `gantt_soft.dark.scss`
+// redefines the same variables with its dark block. The dark bundle inserts
+// that file BEFORE this one (`web.assets_web_dark`, `('before', ...)`), so Sass
+// keeps the dark value and skips every `!default` here -- the house mechanism
+// ("variables overrides only"), no media query and no theme attribute.
+//
+// The surface / border / text values below are plain compiled literals: no
+// Bootstrap / Odoo variable is read (in this deployment `--bs-*` and `--o-cc-*`
+// are undefined, so a `var(--bs-x, <literal>)` silently resolves to the
+// literal and the view never turns dark). The gantt-semantic tokens further
+// down are the deliberate exception: they read Odoo's compile-time `$o-*`
+// SCSS variables (not CSS custom properties), which is what lets one and the
+// same expression be correct in both colour schemes -- see that section.
+
+// Surfaces the view paints itself.
+$o-gantt-soft-bg: #f3f5f6 !default;
+$o-gantt-soft-surface: #ffffff !default;
+
+// Lines: the lane separator and the gridline come from eh_board's border /
+// grid-line.
+$o-gantt-soft-border: #e4e8ea !default;
+$o-gantt-soft-gridline: #e6e9ea !default;
+$o-gantt-soft-lane-separator: #e4e8ea !default;
+
+// Text.
+$o-gantt-soft-text: #14181a !default;
+$o-gantt-soft-muted: #667075 !default;
+
+// eh_board's accent, kept for the palette (it is not a gantt semantic).
+$o-gantt-soft-accent: #087f5b !default;
+
+// ---------------------------------------------------------------------------
+// Gantt semantics: the shared `$o-*` values, not a hand-derived palette
+// ---------------------------------------------------------------------------
+// A weekend / off-hours stripe, a hovered row, an open row and the today
+// marker mean the same thing in every gantt, so these four follow the
+// convention the view type already has in this tree:
+// `ica_web_responsive/static/src/views/gantt/web_gantt.variables.dark.scss`
+// (LGPL-3) defines, for the real gantt view,
+//     today border  rgba($o-warning, .5)      today bg  rgba($o-warning, .15)
+//     hover row     rgba($o-brand-primary,.1) open row  $o-gray-100
+//     unavailability / off-hours bg            $o-gray-200
+// This file mirrors exactly that. The values are written as Odoo's own `$o-*`
+// variables -- not eh_board literals -- so the SAME expression is correct in
+// both bundles: `web.dark_mode_variables` swaps the *values* of exactly these
+// variables (`primary_variables.dark.scss` is inserted before
+// `primary_variables.scss`) before this file compiles in dark mode, and a
+// gantt-semantic token therefore needs no override in `gantt_soft.dark.scss`.
+$o-gantt-soft-stripe: $o-gray-200 !default;
+$o-gantt-soft-row-hover: rgba($o-brand-primary, .1) !default;
+$o-gantt-soft-row-selected: $o-gray-100 !default;
+
+// The today marker, in the warning family throughout. The two values the real
+// gantt view defines map onto it directly:
+//   * `today-band` -- the today day-column background, full height of the rows,
+//     the same low-alpha warning the reference uses for its
+//     `highlight-today-bg`;
+//   * `today`      -- the today line, its `highlight-today-border`.
+// The "Today" badge on top is this view's own marker: a SOLID warning fill with
+// a near-black ink. The ink is a fixed near-black and not `$o-main-text-color`
+// on purpose -- `$o-warning` is a light warm tone in *both* schemes, so the ink
+// that reads on it must not flip to near-white with the theme, and a
+// low-alpha fill under white text reads as a washed-out rectangle, not a badge.
+$o-gantt-soft-today: rgba($o-warning, .5) !default;
+$o-gantt-soft-today-band: rgba($o-warning, .15) !default;
+$o-gantt-soft-today-bg: $o-warning !default;
+$o-gantt-soft-today-text: #14181a !default;
+
+// A bar and its label. The label ink is not one value: a fixed palette entry
+// can be light (amber, light green) or dark, and the label therefore picks a
+// dark or a light ink from the entry's brightness (see the palette section at
+// the bottom). Both inks are absolute on purpose: a bar's colour does not
+// follow the colour scheme, so its ink must not either.
+$o-gantt-soft-bar-text: #ffffff !default;
+$o-gantt-soft-bar-text-dark: #14181a !default;
+$o-gantt-soft-bar-bg: #714b67 !default;
+
+// The popover card, rendered in the portal outside the view root.
+$o-gantt-soft-popover-bg: #ffffff !default;
+$o-gantt-soft-popover-header-bg: #f7f9fa !default;
+$o-gantt-soft-popover-text: #14181a !default;
+$o-gantt-soft-popover-border: #e4e8ea !default;
+// The close glyph is a black icon; dark inverts it (derived).
+$o-gantt-soft-popover-close-filter: none !default;
+
+// ---------------------------------------------------------------------------
+// The window label in the control panel
+// ---------------------------------------------------------------------------
+
+// The period button in the control panel carries a date ("September 2026"):
+// it must not wrap, which would make the whole control panel taller.
+.o_gantt_soft_window_label {
+    white-space: nowrap;
+}
+
+// ---------------------------------------------------------------------------
+// The view
+// ---------------------------------------------------------------------------
+
+.o_gantt_soft_view {
+    height: 100%;
+    background-color: $o-gantt-soft-bg;
+    color: $o-gantt-soft-text;
+}
+
+.o_gantt_soft_renderer {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-height: 0;
+    background-color: $o-gantt-soft-bg;
+    color: $o-gantt-soft-text;
+}
+
+.o_gantt_soft_viewport {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+}
+
+// The grid stretches to the bottom of the scroller whatever the number of
+// rows, so the timeline (and with it the today marker) does not stop in the
+// middle of the screen when the window holds a handful of records. It is a
+// column flex box so the body below the header can take the remaining height.
+// The *column lines* are the exception: they are given the rows' own height by
+// the template so they end where the rows end instead of running on through
+// the empty space below them.
+.o_gantt_soft_grid {
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    flex: 1 1 auto;
+}
+
+// Side (record names) column, shared by the header and the body so the two
+// stay aligned without any JavaScript measurement.
+.o_gantt_soft_side {
+    flex: 0 0 $o-gantt-soft-side-width;
+    width: $o-gantt-soft-side-width;
+    background-color: $o-gantt-soft-surface;
+    border-right: 1px solid $o-gantt-soft-border;
+}
+
+.o_gantt_soft_header {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background-color: $o-gantt-soft-surface;
+    border-bottom: 1px solid $o-gantt-soft-border;
+}
+
+.o_gantt_soft_lane_header {
+    flex: 1 1 auto;
+    position: relative;
+    min-width: 0;
+}
+
+// Two header levels: the coarse bands on top, the cells of the finest unit the
+// scale is read with just below them.
+.o_gantt_soft_band_row,
+.o_gantt_soft_cell_row {
+    position: relative;
+    height: 24px;
+}
+
+.o_gantt_soft_cell_row {
+    height: 28px;
+}
+
+.o_gantt_soft_band {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    padding: 0 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: $o-gantt-soft-muted;
+    border-left: 1px solid $o-gantt-soft-border;
+}
+
+// The label of one column, read at the unit the scale is drawn with (the hour
+// of an hour cell, the day and its weekday of a day cell). A cell is only as
+// wide as one day, so the label is kept slightly smaller and given a little
+// padding on both sides: at the row's font size it would otherwise sit right
+// against the two column borders and read as cramped. The colour is the view's
+// muted token -- the legible grey step, deliberately not the text colour, which
+// would make the header louder than the rows it describes.
+.o_gantt_soft_cell {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 0 0.25rem;
+    font-size: 0.6875rem;
+    white-space: nowrap;
+    color: $o-gantt-soft-muted;
+    border-left: 1px solid $o-gantt-soft-gridline;
+}
+
+.o_gantt_soft_cell_weekend {
+    background-color: $o-gantt-soft-stripe;
+}
+
+.o_gantt_soft_body {
+    display: flex;
+    flex: 1 1 auto;
+    min-height: 0;
+}
+
+.o_gantt_soft_label {
+    display: flex;
+    align-items: center;
+    height: $o-gantt-soft-row-height;
+    padding: 0 0.5rem;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    color: $o-gantt-soft-text;
+    border-bottom: 1px solid $o-gantt-soft-lane-separator;
+    cursor: pointer;
+
+    &:hover {
+        background-color: $o-gantt-soft-row-hover;
+    }
+
+    &.o_selected {
+        background-color: $o-gantt-soft-row-selected;
+    }
+}
+
+// Fold toggle of a grouped row. The arrow is drawn as generated content so it
+// stays out of the label's own text (which is what the row reads as).
+.o_gantt_soft_group_toggle {
+    flex: 0 0 auto;
+    width: 1rem;
+    margin-inline-end: 0.25rem;
+    text-align: center;
+    color: $o-gantt-soft-muted;
+    cursor: pointer;
+
+    &::before {
+        content: "▼";
+        font-size: 0.625rem;
+    }
+
+    &.o_gantt_soft_group_toggle_collapsed::before {
+        content: "▶";
+    }
+}
+
+.o_gantt_soft_timeline {
+    flex: 1 1 auto;
+    position: relative;
+    min-width: 0;
+}
+
+// The container of the column lines and of the today marker. Its height is set
+// inline to the rows' height (the template passes `rowsHeight`), so it must not
+// be pinned to the bottom of the timeline: it stops where the rows stop, and
+// the today line inside it therefore stops there too.
+.o_gantt_soft_gridlines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    pointer-events: none;
+}
+
+// The columns are painted once for the whole timeline instead of once per row.
+.o_gantt_soft_gridline {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px solid $o-gantt-soft-gridline;
+}
+
+.o_gantt_soft_gridline_weekend {
+    background-color: $o-gantt-soft-stripe;
+}
+
+// Today's line, and the day-column highlight it belongs to. Both are rendered
+// inside the gridlines container (see the template), so they share the rows'
+// height: they mark today across the rows and stop at the last one, instead of
+// running down through the empty space below the plan. The element carries the
+// band as its background and the line as its left border, so the two can never
+// drift apart.
+.o_gantt_soft_today {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    background-color: $o-gantt-soft-today-band;
+    border-left: 2px solid $o-gantt-soft-today;
+    pointer-events: none;
+    z-index: 1;
+}
+
+// The marker a planner looks for: the line alone is easy to miss. The badge is
+// a solid warning fill with a dark ink and is rendered in the header band,
+// anchored on the today column (the template puts its `left` there), so it sits
+// above every row and can never cover a bar or clip its label.
+.o_gantt_soft_today_label {
+    position: absolute;
+    top: 0;
+    margin-left: 2px;
+    padding: 0 0.25rem;
+    border-radius: 0.25rem;
+    background-color: $o-gantt-soft-today-bg;
+    color: $o-gantt-soft-today-text;
+    font-size: 0.6875rem;
+    line-height: 1.25rem;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.o_gantt_soft_rows {
+    position: relative;
+}
+
+.o_gantt_soft_row {
+    position: relative;
+    height: $o-gantt-soft-row-height;
+    border-bottom: 1px solid $o-gantt-soft-lane-separator;
+
+    &.o_selected {
+        background-color: $o-gantt-soft-row-selected;
+    }
+}
+
+.o_gantt_soft_bar {
+    position: absolute;
+    // The renderer sets the vertical offset itself (row and lane offsets), so
+    // the bar geometry has one source of truth: gantt_renderer.js.
+    height: $o-gantt-soft-bar-height;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-radius: 4px;
+    color: $o-gantt-soft-bar-text;
+    background-color: $o-gantt-soft-bar-bg;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+    touch-action: none;
+    user-select: none;
+}
+
+// A folded group stands for several records: clicking it unfolds the group
+// instead of opening one record, so it reads as an action, not as a handle.
+.o_gantt_soft_bar_collapsed {
+    cursor: pointer;
+}
+
+.o_gantt_soft_bar_draggable {
+    cursor: grab;
+
+    &:active {
+        cursor: grabbing;
+    }
+}
+
+// Resize grips: two thin hit areas on the edges of a bar, invisible until the
+// bar is hovered (or one of its grips focused), so the plan stays uncluttered.
+.o_gantt_soft_bar_handle {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 0.5rem;
+    opacity: 0;
+    cursor: ew-resize;
+    touch-action: none;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.o_gantt_soft_bar_handle_start {
+    left: 0;
+}
+
+.o_gantt_soft_bar_handle_end {
+    right: 0;
+}
+
+.o_gantt_soft_bar:hover .o_gantt_soft_bar_handle,
+.o_gantt_soft_bar:focus-within .o_gantt_soft_bar_handle {
+    opacity: 1;
+}
+
+.o_gantt_soft_bar_progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(255, 255, 255, 0.35);
+    pointer-events: none;
+}
+
+.o_gantt_soft_bar_label {
+    position: relative;
+    padding: 0 0.4rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.o_gantt_soft_placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: $o-gantt-soft-muted;
+}
+
+.o_gantt_soft_footer {
+    flex: 0 0 auto;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    color: $o-gantt-soft-muted;
+    border-top: 1px solid $o-gantt-soft-border;
+}
+
+.o_gantt_soft_scale_buttons {
+    margin-inline-end: 0.5rem;
+}
+
+// ---------------------------------------------------------------------------
+// The bar card, rendered in Odoo's portal (outside the view root)
+// ---------------------------------------------------------------------------
+// The popover service wraps the card in a `.o_popover` element carrying the
+// Bootstrap popover styling. `popoverClass` puts `o_gantt_soft_popover_host` on
+// that container, so every rule here is scoped to this popover alone: no other
+// popover of the client is repainted. Both the container's surfaces and its
+// Bootstrap popover variables are set from the view's own tokens, so the card,
+// its header, its body and its arrow follow the theme.
+
+.o_gantt_soft_popover_host {
+    // The client's Bootstrap build may or may not expose these variables
+    // (`$variable-prefix` differs between a Community and a themed build): both
+    // spellings are declared, and the plain properties below are set directly so
+    // the card is right even when neither variable exists. The values must be
+    // interpolated (`#{}`): Sass parses a custom property's value as plain CSS
+    // and would otherwise emit the literal `$o-gantt-soft-*` token, leaving
+    // Bootstrap's defaults in charge of the card's arrow.
+    --popover-bg: #{$o-gantt-soft-popover-bg};
+    --popover-border-color: #{$o-gantt-soft-popover-border};
+    --popover-arrow-border: #{$o-gantt-soft-popover-border};
+    --popover-header-bg: #{$o-gantt-soft-popover-header-bg};
+    --popover-header-color: #{$o-gantt-soft-popover-text};
+    --popover-body-color: #{$o-gantt-soft-popover-text};
+    --bs-popover-bg: #{$o-gantt-soft-popover-bg};
+    --bs-popover-border-color: #{$o-gantt-soft-popover-border};
+    --bs-popover-arrow-border: #{$o-gantt-soft-popover-border};
+    --bs-popover-header-bg: #{$o-gantt-soft-popover-header-bg};
+    --bs-popover-header-color: #{$o-gantt-soft-popover-text};
+    --bs-popover-body-color: #{$o-gantt-soft-popover-text};
+
+    background-color: $o-gantt-soft-popover-bg;
+    border: 1px solid $o-gantt-soft-popover-border;
+    color: $o-gantt-soft-popover-text;
+
+    .popover-header,
+    .o_gantt_soft_popover_title {
+        color: $o-gantt-soft-popover-text;
+    }
+
+    .popover-header {
+        background-color: $o-gantt-soft-popover-header-bg;
+        border-bottom-color: $o-gantt-soft-popover-border;
+    }
+
+    .popover-body {
+        color: $o-gantt-soft-popover-text;
+    }
+
+    .popover-footer {
+        padding: 0.5rem 0.75rem;
+        border-top: 1px solid $o-gantt-soft-popover-border;
+        color: $o-gantt-soft-popover-text;
+    }
+
+    // The arrow's two halves are coloured by Bootstrap from `--popover-bg` and
+    // `--popover-border-color` (declared above), so it follows the tokens
+    // without a per-direction override that would flatten it into a block.
+
+    .o_gantt_soft_popover_fields {
+        margin-bottom: 0;
+
+        dt {
+            color: $o-gantt-soft-muted;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        dd {
+            color: $o-gantt-soft-popover-text;
+            margin-bottom: 0.25rem;
+        }
+    }
+}
+
+// The close glyph of the card is a black icon: on the dark card the token above
+// inverts it, in the light one it is left alone.
+.o_gantt_soft_popover_host .btn-close {
+    filter: $o-gantt-soft-popover-close-filter;
+}
+
+// ---------------------------------------------------------------------------
+// Bar colours used by the optional `color` field (Odoo colour indexes 0..11).
+// ---------------------------------------------------------------------------
+
+$o-gantt-soft-palette: (
+    0: #714b67,
+    1: #017e84,
+    2: #8f8f8f,
+    3: #d9534f,
+    4: #f0ad4e,
+    5: #5bc0de,
+    6: #5cb85c,
+    7: #875a7b,
+    8: #28a745,
+    9: #17a2b8,
+    10: #ffc107,
+    11: #dc3545,
+);
+
+// The label must read on the bar. A palette entry is a fixed colour (it does
+// not follow the colour scheme), so its ink is fixed too: the entry's perceived
+// brightness picks between the bar's two inks, which are plain black and white
+// -- never `$o-black` / `$o-white`, which this stack *swaps* between light and
+// dark and would invert the text on a bar whose colour did not change.
+@function o-gantt-soft-brightness($color) {
+    @return (0.299 * red($color) + 0.587 * green($color) + 0.114 * blue($color)) / 255;
+}
+
+@function o-gantt-soft-on-bar($color) {
+    @return if(
+        o-gantt-soft-brightness($color) > 0.55,
+        $o-gantt-soft-bar-text-dark,
+        $o-gantt-soft-bar-text
+    );
+}
+
+@each $index, $color in $o-gantt-soft-palette {
+    .o_gantt_soft_color_#{$index} {
+        background-color: $color;
+        color: o-gantt-soft-on-bar($color);
+    }
+}

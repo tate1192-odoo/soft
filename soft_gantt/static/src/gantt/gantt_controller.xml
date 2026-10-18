@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="soft_gantt.GanttController">
+        <div t-att-class="props.className">
+            <Layout className="'o_gantt_soft_view'" display="props.display">
+                <t t-set-slot="control-panel-additional-actions">
+                    <CogMenu/>
+                </t>
+                <t t-set-slot="control-panel-create-button">
+                    <!-- The arch's `create` attribute gates the button, like the
+                         create button of the other multi-record views. -->
+                    <button t-if="props.createRecord and props.archInfo.activeActions?.create"
+                            type="button" class="btn btn-primary o_gantt_soft_button_add"
+                            data-hotkey="c" t-on-click="() => this.props.createRecord()">
+                        New
+                    </button>
+                </t>
+                <t t-set-slot="layout-buttons">
+                    <div class="o_gantt_soft_window_buttons btn-group" role="group" aria-label="Period">
+                        <button type="button" class="btn btn-secondary" t-on-click="previousWindow"
+                                t-att-title="previousTitle">
+                            <i class="fa fa-chevron-left"/>
+                        </button>
+                        <button type="button" class="btn btn-secondary o_gantt_soft_window_label"
+                                t-on-click="todayWindow" t-att-title="todayTitle">
+                            <i class="fa fa-calendar me-1"/><t t-esc="windowLabel"/>
+                        </button>
+                        <button type="button" class="btn btn-secondary" t-on-click="nextWindow"
+                                t-att-title="nextTitle">
+                            <i class="fa fa-chevron-right"/>
+                        </button>
+                    </div>
+                    <div class="o_gantt_soft_scale_buttons btn-group" t-if="props.archInfo.scales.length &gt; 1">
+                        <button t-foreach="props.archInfo.scales" t-as="scale" t-key="scale"
+                                type="button"
+                                class="btn btn-secondary"
+                                t-att-class="state.scale === scale ? 'active' : ''"
+                                t-on-click="() => this.setScale(scale)">
+                            <t t-esc="scaleLabel(scale)"/>
+                        </button>
+                    </div>
+                </t>
+                <t t-set-slot="layout-actions">
+                    <SearchBar toggler="searchBarToggler"/>
+                </t>
+                <t t-set-slot="control-panel-navigation-additional">
+                    <t t-component="searchBarToggler.component" t-props="searchBarToggler.props"/>
+                </t>
+                <t t-component="props.Renderer" t-props="rendererProps"/>
+            </Layout>
+        </div>
+    </t>
+
+</templates>
