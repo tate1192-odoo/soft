@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        The Gantt view of a task: a bar from the (new) start date to the
+        deadline. A task carrying only one of the two dates is drawn on that
+        date alone, so the view is useful before every task has a start date.
+    -->
+    <record id="view_project_task_gantt_soft" model="ir.ui.view">
+        <field name="name">project.task.gantt.soft</field>
+        <field name="model">project.task</field>
+        <field name="arch" type="xml">
+            <gantt_soft
+                string="Gantt"
+                date_start="date_start"
+                date_stop="date_deadline"
+                color="color"
+                default_order="date_start asc, id asc"
+                mode="month"
+                scales="day,week,month"
+            />
+        </field>
+    </record>
+
+    <!--
+        Offer the Gantt on every task screen a user actually reaches.
+
+        The mode is added to ``view_mode`` rather than bound with an
+        ``ir.actions.act_window.view`` record, and that choice matters: the
+        ordered view list the client receives is built as "the action's view
+        records first, then the ``view_mode`` entries they do not cover"
+        (``ir.actions.act_window._compute_views``). A lone view record would
+        therefore become the *first* view of the screen and change what users
+        see when they open it; listing the mode keeps the existing landing view
+        and only adds a button to the view switcher.
+
+        ``project.action_view_task`` is kept although no menu points at it
+        today; ``action_view_my_task`` and ``action_view_all_task`` are what
+        the Project > Tasks menu opens, and
+        ``act_project_project_2_project_task_all`` is the task smart button of
+        a project.
+
+        Trade-off: a Char field cannot be appended to, so each value below is
+        the whole ``view_mode`` string of that action. It is re-applied on
+        every update of this module, which is what repairs it after the
+        ``project`` module rewrites its own actions, but it also means a view
+        mode added by a later Odoo version is not picked up automatically.
+        ``tests/test_gantt_view.py`` guards the result.
+    -->
+    <record id="project.action_view_task" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,form,gantt_soft,calendar,pivot,graph,activity</field>
+    </record>
+    <record id="project.action_view_my_task" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,form,gantt_soft,calendar,activity,pivot,graph</field>
+    </record>
+    <record id="project.action_view_all_task" model="ir.actions.act_window">
+        <field name="view_mode">list,kanban,form,gantt_soft,calendar,activity,pivot,graph</field>
+    </record>
+    <record id="project.act_project_project_2_project_task_all" model="ir.actions.act_window">
+        <field name="view_mode">kanban,list,form,gantt_soft,calendar,pivot,graph,activity</field>
+    </record>
+
+    <!--
+        The start date is editable on the task form, next to the deadline it is
+        scheduled against. The xpath targets the deadline field by its parent
+        div so it stays unique whatever else the form contains.
+    -->
+    <record id="view_task_form2_soft_gantt" model="ir.ui.view">
+        <field name="name">project.task.form.inherit.soft.gantt</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='date_deadline_and_recurring_task']/field[@name='date_deadline']"
+                   position="before">
+                <field name="date_start" nolabel="1"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

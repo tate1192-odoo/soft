@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="soft_gantt.GanttRenderer">
+        <div class="o_gantt_soft_renderer">
+            <!--
+                Scroll container registered with `useVirtualGrid`: only the rows
+                around it are painted. The spacers further down keep the
+                scrollbar true to the whole list.
+            -->
+            <div class="o_gantt_soft_viewport" t-ref="viewport">
+                <div class="o_gantt_soft_grid" t-if="!isEmpty and !hasNothingScheduled">
+
+                    <!-- Header: one cell per column, plus the side column spacer. -->
+                    <div class="o_gantt_soft_header">
+                        <div class="o_gantt_soft_side"/>
+                        <div class="o_gantt_soft_lane o_gantt_soft_lane_header">
+                            <!-- Upper level: the coarse bands the cells fall under. -->
+                            <div class="o_gantt_soft_band_row">
+                                <div t-foreach="bands" t-as="band" t-key="band.key"
+                                     class="o_gantt_soft_band"
+                                     t-attf-style="left: {{ band.left }}%; width: {{ band.width }}%">
+                                    <span t-esc="band.label"/>
+                                </div>
+                                <!--
+                                    The today badge lives up here, in the header
+                                    band: anchored on the today column it sits
+                                    above every row, so it can never cover a bar
+                                    and clip the label under it.
+                                -->
+                                <span t-if="todayLeft !== null" class="o_gantt_soft_today_label"
+                                      t-attf-style="left: {{ todayLeft }}%" t-esc="todayLabel"/>
+                            </div>
+                            <!-- Lower level: the unit the scale is read with. -->
+                            <div class="o_gantt_soft_cell_row">
+                                <div t-foreach="columns" t-as="column" t-key="column.key"
+                                     class="o_gantt_soft_cell"
+                                     t-att-class="column.isWeekend ? 'o_gantt_soft_cell_weekend' : ''"
+                                     t-attf-style="left: {{ column.left }}%; width: {{ column.width }}%">
+                                    <span t-esc="column.label"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Body: the columns are painted once, behind every row. -->
+                    <div class="o_gantt_soft_body">
+                        <div class="o_gantt_soft_side">
+                            <div t-attf-style="height: {{ paddingTop }}px"/>
+                            <div t-foreach="visibleRows" t-as="row" t-key="row.id"
+                                 class="o_gantt_soft_label"
+                                 t-attf-style="height: {{ row.height }}px"
+                                 t-att-title="row.bars.length === 1 ? row.bars[0].title : row.label"
+                                 t-on-click="(ev) => this.onRowLabelClick(ev, row)">
+                                <!-- A grouped row folds: the arrow is decoration (its
+                                     text is not part of the label), the click is what
+                                     asks the controller to hide or show the group. -->
+                                <span t-if="row.key !== undefined"
+                                      t-attf-class="o_gantt_soft_group_toggle {{ row.collapsed ? 'o_gantt_soft_group_toggle_collapsed' : '' }}"
+                                      t-att-title="toggleTitle(row.collapsed)"
+                                      t-on-click="(ev) => this.onToggleGroupClick(ev, row.key)"/>
+                                <span t-esc="row.label"/>
+                            </div>
+                            <div t-attf-style="height: {{ paddingBottom }}px"/>
+                        </div>
+                        <div class="o_gantt_soft_timeline">
+                            <!--
+                                The column lines and the today marker share the
+                                height of the rows (spacers included) rather than
+                                the whole timeline: the timeline still stretches
+                                to the viewport, but lines running under the last
+                                row through empty space (or a today line doing
+                                the same) would read as a row that is not there.
+                            -->
+                            <div class="o_gantt_soft_gridlines" t-attf-style="height: {{ rowsHeight }}px">
+                                <div t-foreach="columns" t-as="column" t-key="column.key"
+                                     class="o_gantt_soft_gridline"
+                                     t-att-class="column.isWeekend ? 'o_gantt_soft_gridline_weekend' : ''"
+                                     t-attf-style="left: {{ column.left }}%; width: {{ column.width }}%"/>
+                                <div class="o_gantt_soft_today" t-if="todayLeft !== null"
+                                     t-attf-style="left: {{ todayLeft }}%; width: {{ todayWidth }}%"/>
+                            </div>
+                            <div class="o_gantt_soft_rows">
+                                <div t-attf-style="height: {{ paddingTop }}px"/>
+                                <div t-foreach="visibleRows" t-as="row" t-key="row.id"
+                                     class="o_gantt_soft_row"
+                                     t-attf-style="height: {{ row.height }}px">
+                                    <div t-foreach="row.bars" t-as="bar" t-key="bar.id"
+                                         t-if="bar.geometry"
+                                         class="o_gantt_soft_bar"
+                                         t-att-class="bar.barClass"
+                                         t-attf-style="left: {{ bar.geometry.left }}%; width: {{ bar.geometry.width }}%; top: {{ bar.top }}px"
+                                         t-att-title="bar.title"
+                                         t-on-click="(ev) => this.onBarClick(ev, bar)"
+                                         t-on-pointerdown="(ev) => this.onBarPointerDown(ev, bar)">
+                                        <div class="o_gantt_soft_bar_progress" t-if="bar.progress !== null"
+                                             t-attf-style="width: {{ bar.progress }}%"/>
+                                        <!-- Resize grips, only when the record may be
+                                             edited: dragging one changes that date. A
+                                             folded group has no single record to resize. -->
+                                        <span t-if="props.canEdit and !bar.collapsedGroup"
+                                              class="o_gantt_soft_bar_handle o_gantt_soft_bar_handle_start"
+                                              t-on-pointerdown="(ev) => this.onResizePointerDown(ev, bar, 'start')"/>
+                                        <span class="o_gantt_soft_bar_label" t-esc="bar.label"/>
+                                        <span t-if="props.canEdit and !bar.collapsedGroup"
+                                              class="o_gantt_soft_bar_handle o_gantt_soft_bar_handle_end"
+                                              t-on-pointerdown="(ev) => this.onResizePointerDown(ev, bar, 'end')"/>
+                                    </div>
+                                </div>
+                                <div t-attf-style="height: {{ paddingBottom }}px"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="o_gantt_soft_placeholder" t-if="isEmpty">
+                    Nothing to schedule.
+                </div>
+                <div class="o_gantt_soft_placeholder" t-if="hasNothingScheduled">
+                    No record carries a date yet: set one to see it on the timeline.
+                </div>
+            </div>
+            <div class="o_gantt_soft_footer" t-if="unscheduledCount and !hasNothingScheduled">
+                <span t-esc="unscheduledLabel"/>
+            </div>
+        </div>
+    </t>
+
+</templates>
