@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form_no_quick_create" model="ir.ui.view">
+        <field name="name">purchase.order.form.no.quick.create</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='products']//field[@name='order_line']/list//field[@name='product_id'][1]" position="attributes">
+                <attribute name="options">{'show_label_warning': True, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True}</attribute>
+            </xpath>
+            <xpath expr="//page[@name='products']//field[@name='order_line']/form//field[@name='product_id'][1]" position="attributes">
+                <attribute name="options">{'show_label_warning': True, 'no_create': True, 'no_quick_create': True, 'no_create_edit': True}</attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>
