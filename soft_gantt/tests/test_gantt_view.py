@@ -6,6 +6,13 @@ Two things are locked here: the view type is registered the way Odoo expects
 (so ``<gantt_soft>`` is a real view, usable in an action's ``view_mode``), and
 the arch is validated when the view is installed, not when a user opens the
 screen. The second point is the whole reason the validation lives in Python.
+
+Nothing here needs a business module, and that is deliberate: the type is
+generic, so the tests create their views on ``res.partner`` (``create_date``
+and ``write_date`` are datetimes every model carries), and one test proves the
+same type is accepted on a second model. This is what keeps the module
+depending on ``web`` alone: each model brings its own view through a consumer
+module (``field_operation_gantt`` is the reference, see the README).
 """
 
 from lxml import etree
@@ -13,7 +20,10 @@ from lxml import etree
 from odoo.exceptions import ValidationError
 from odoo.tests import TransactionCase, tagged
 
-VALID_ARCH = '<gantt_soft date_start="date_start" date_stop="date_deadline" color="color"/>'
+#: A valid arch on ``res.partner``: two datetimes and an Integer colour.
+VALID_ARCH = (
+    '<gantt_soft date_start="create_date" date_stop="write_date" color="color"/>'
+)
 
 
 @tagged('post_install', '-at_install', 'soft_gantt')
@@ -24,7 +34,7 @@ class TestSoftGanttView(TransactionCase):
         super().setUpClass()
         cls.View = cls.env['ir.ui.view']
 
-    def _create_view(self, arch, model='project.task'):
+    def _create_view(self, arch, model='res.partner'):
         """Create a view from a raw arch, forcing the constraints to run."""
         view = self.View.create({
             'name': 'test.gantt.soft',
@@ -64,169 +74,138 @@ class TestSoftGanttView(TransactionCase):
         view = self._create_view(VALID_ARCH)
         self.assertEqual(view.type, 'gantt_soft')
 
+    def test_gantt_view_can_be_resolved_by_the_model(self):
+        """The server hands the arch to the client for the gantt type."""
+        view = self._create_view(VALID_ARCH)
+        arch = self.env['res.partner'].get_view(view.id, 'gantt_soft')['arch']
+        self.assertIn('gantt_soft', arch)
+
     # ------------------------------------------------------------------
     # The arch is validated at install time
     # ------------------------------------------------------------------
 
     def test_missing_date_start_is_refused(self):
-        self._assert_arch_is_refused('<gantt_soft date_stop="date_deadline"/>')
+        self._assert_arch_is_refused('<gantt_soft date_stop="write_date"/>')
 
     def test_missing_date_stop_is_refused(self):
-        self._assert_arch_is_refused('<gantt_soft date_start="date_start"/>')
+        self._assert_arch_is_refused('<gantt_soft date_start="create_date"/>')
 
     def test_unknown_date_field_is_refused(self):
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="not_a_field"/>'
+            '<gantt_soft date_start="create_date" date_stop="not_a_field"/>'
         )
 
     def test_non_date_field_is_refused(self):
         """A Char field cannot be used as a date."""
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="name" date_stop="date_deadline"/>'
+            '<gantt_soft date_start="name" date_stop="write_date"/>'
         )
 
     def test_unknown_attribute_is_refused(self):
         """An attribute that is not implemented must not be silently ignored."""
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" whatever="1"/>'
+            '<gantt_soft date_start="create_date" date_stop="write_date" whatever="1"/>'
         )
 
     def test_invalid_mode_is_refused(self):
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" mode="year"/>'
+            '<gantt_soft date_start="create_date" date_stop="write_date" mode="year"/>'
         )
 
     def test_non_numeric_limit_is_refused(self):
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" limit="many"/>'
+            '<gantt_soft date_start="create_date" date_stop="write_date" limit="many"/>'
         )
 
     def test_zero_limit_is_refused(self):
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" limit="0"/>'
+            '<gantt_soft date_start="create_date" date_stop="write_date" limit="0"/>'
         )
 
     def test_invalid_scale_is_refused(self):
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" '
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
             'scales="day,decade"/>'
         )
 
     def test_mode_outside_the_scales_is_refused(self):
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" '
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
             'scales="week,month" mode="day"/>'
         )
 
     def test_char_color_is_refused(self):
         """The palette is indexed by the Odoo colour integer, not by a text."""
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" color="name"/>'
+            '<gantt_soft date_start="create_date" date_stop="write_date" color="name"/>'
         )
 
     def test_unsupported_group_by_field_is_refused(self):
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" '
-            'group_by="date_deadline"/>'
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="write_date"/>'
         )
 
     def test_unknown_child_tag_is_refused(self):
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline">'
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
             '<filter name="mine"/></gantt_soft>'
         )
 
     def test_unsupported_declared_field_is_refused(self):
         """A relational list has no readable value to put in the card."""
         self._assert_arch_is_refused(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline">'
-            '<field name="user_ids"/></gantt_soft>'
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
+            '<field name="category_id"/></gantt_soft>'
         )
 
     def test_optional_attributes_are_accepted(self):
         """The optional arch attributes pass validation."""
         view = self._create_view(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" '
-            'progress="sequence" color="color" mode="week" scales="day,week" '
-            'limit="50" default_order="date_start asc" create="1" edit="1"/>'
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'progress="partner_latitude" color="color" mode="week" '
+            'scales="day,week" limit="50" default_order="create_date asc" '
+            'create="1" edit="1"/>'
+        )
+        self.assertEqual(view.type, 'gantt_soft')
+
+    def test_declared_fields_are_accepted(self):
+        """A renderable ``<field>`` node is what the card reads."""
+        view = self._create_view(
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
+            '<field name="name"/><field name="active"/><field name="country_id"/>'
+            '</gantt_soft>'
         )
         self.assertEqual(view.type, 'gantt_soft')
 
     def test_other_models_can_reuse_the_view_type(self):
         """The type is generic: any model with two date fields works."""
         view = self._create_view(
-            '<gantt_soft date_start="date_start" date_stop="date"/>',
-            model='project.project',
+            '<gantt_soft date_start="create_date" date_stop="write_date"/>',
+            model='res.company',
         )
         self.assertEqual(view.type, 'gantt_soft')
-        self.assertEqual(view.model, 'project.project')
+        self.assertEqual(view.model, 'res.company')
 
     # ------------------------------------------------------------------
-    # What the module ships
+    # The module is a view type, not a business module
     # ------------------------------------------------------------------
 
-    def test_shipped_task_view_is_a_gantt(self):
-        view = self.env.ref('soft_gantt.view_project_task_gantt_soft')
-        self.assertEqual(view.model, 'project.task')
-        self.assertEqual(view.type, 'gantt_soft')
-        arch = etree.fromstring(view.arch)
-        self.assertEqual(arch.tag, 'gantt_soft')
-        self.assertEqual(arch.get('date_start'), 'date_start')
-        self.assertEqual(arch.get('date_stop'), 'date_deadline')
+    def test_only_web_is_a_dependency(self):
+        """No business model may pull the view type in, or be pulled by it.
 
-    def test_task_actions_offer_the_view(self):
-        """Every task screen a user reaches offers the Gantt."""
-        for xmlid in (
-            'project.action_view_task',
-            'project.action_view_my_task',
-            'project.action_view_all_task',
-            'project.act_project_project_2_project_task_all',
-        ):
-            action = self.env.ref(xmlid)
-            self.assertIn('gantt_soft', action.view_mode.split(','), xmlid)
-
-    def test_task_actions_keep_their_landing_view(self):
-        """The Gantt is offered without becoming the landing view.
-
-        This is the trap the module avoids: ``_compute_views`` builds the
-        ordered view list the client receives as "the action's view records
-        first, then the ``view_mode`` entries they do not cover", so binding
-        the Gantt with a single ``ir.actions.act_window.view`` would silently
-        make it the first view of those screens.
+        A ``project`` / ``mrp`` dependency would make the type unavailable to
+        every other model and tie it to the first model that used it. The
+        model specific view and field belong to a consumer module instead.
         """
-        for xmlid in (
-            'project.action_view_task',
-            'project.action_view_my_task',
-            'project.action_view_all_task',
-            'project.act_project_project_2_project_task_all',
-        ):
-            action = self.env.ref(xmlid)
-            modes = [mode for _view_id, mode in action.views]
-            self.assertIn('gantt_soft', modes, xmlid)
-            self.assertEqual(modes[0], action.view_mode.split(',')[0], xmlid)
-            self.assertNotEqual(modes[0], 'gantt_soft', xmlid)
+        module = self.env['ir.module.module'].search([('name', '=', 'soft_gantt')])
+        self.assertTrue(module, "soft_gantt must be known to ir.module.module")
+        self.assertEqual(module.dependencies_id.mapped('name'), ['web'])
 
-    def test_gantt_view_can_be_resolved_by_the_model(self):
-        """The server hands the arch to the client for the gantt type."""
-        view = self.env.ref('soft_gantt.view_project_task_gantt_soft')
-        arch = self.env['project.task'].get_view(view.id, 'gantt_soft')['arch']
-        self.assertIn('gantt_soft', arch)
-
-    def test_task_start_date_field_is_added(self):
-        field = self.env['project.task']._fields.get('date_start')
-        self.assertTrue(field, "project.task.date_start should be added by the module")
-        self.assertEqual(field.type, 'datetime')
-
-    def test_task_form_inheritance_is_in_place(self):
-        """The form patch resolved when it was created, otherwise it would not exist."""
-        view = self.env.ref('soft_gantt.view_task_form2_soft_gantt')
-        self.assertEqual(view.inherit_id, self.env.ref('project.view_task_form2'))
-        self.assertEqual(view.type, 'form')
-
-    def test_task_form_shows_the_start_date(self):
-        form_view = self.env.ref('project.view_task_form2')
-        arch = self.env['project.task'].get_view(form_view.id, 'form')['arch']
-        self.assertIn('date_start', arch)
+    def test_the_enterprise_gantt_is_excluded(self):
+        """``web_gantt`` and this module must never be installed together."""
+        module = self.env['ir.module.module'].search([('name', '=', 'soft_gantt')])
+        self.assertIn('web_gantt', module.exclusion_ids.mapped('name'))
 
 
 @tagged('post_install', '-at_install', 'soft_gantt')

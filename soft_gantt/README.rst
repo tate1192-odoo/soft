@@ -15,7 +15,7 @@ library to vendor or to keep up to date.
 Usage
 =====
 
-A Gantt view is declared like any other view, then offered by an action::
+A Gantt view is declared like any other view::
 
     <record id="my_model_gantt_view" model="ir.ui.view">
         <field name="model">my.model</field>
@@ -24,22 +24,49 @@ A Gantt view is declared like any other view, then offered by an action::
         </field>
     </record>
 
-    <record id="my_module.my_model_action" model="ir.actions.act_window">
-        <field name="view_mode">list,form,gantt_soft</field>
-    </record>
-
-Adding the mode to ``view_mode`` is the right way to offer the view on an
-existing action, and the reason is worth knowing: the ordered view list the
-client receives is built as *the action's view records first, then the
-``view_mode`` entries they do not cover* (``ir.actions.act_window._compute_views``).
-Binding a single ``ir.actions.act_window.view`` record to an action that has
-none therefore makes the Gantt the **default** view of that screen. Listing the
-mode keeps the existing landing view and only adds a button to the view
-switcher.
+The action of that model then has to offer the mode. It is added to
+``view_mode``, and ``ir.actions.act_window.view`` records are avoided for a
+reason worth knowing: the ordered view list the client receives is built as
+*the action's view records first, then the ``view_mode`` entries they do not
+cover* (``ir.actions.act_window._compute_views``). Binding a single
+``ir.actions.act_window.view`` record to an action that has none therefore
+makes the Gantt the **default** view of that screen, instead of adding a button
+to the view switcher. Because ``view_mode`` is a Char that a data record can
+only replace, the mode is added from Python by the consumer module: see
+`Consumer modules`_.
 
 The view type names its own fields, so the same view type schedules any model
-that has two suitable fields (project tasks, manufacturing orders or leaves)
-with no code change.
+that has two suitable fields (field operations, tasks, manufacturing orders or
+leaves) with no code change.
+
+Consumer modules
+================
+
+This module ships **the view type and nothing else**: no view, no field, no
+action. It depends on ``web`` alone, on purpose: a business dependency would
+make the type unavailable to every model it does not depend on, and would tie
+a view type to the first model that happened to use it. A module that
+schedules a model is a *consumer*:
+
+* it depends on ``soft_gantt`` (and on its own business module),
+* it declares the ``<gantt_soft>`` view of its model, and the fields the chart
+  reads when the model has no suitable ones (a completion percentage, a colour
+  index),
+* it adds the ``gantt_soft`` mode to the action of that model.
+
+``field_operation_gantt`` is the reference consumer. Adding the mode deserves
+care, because ``view_mode`` is a comma separated Char: a data record listing it
+can only **replace** the whole string, so the last module to be updated wins and
+silently drops the modes of the others. A consumer therefore adds the mode from
+Python (read the modes, insert the new one after a known mode, write the value
+back) and removes it again in an ``uninstall_hook``. ``field_operation_gantt``
+does exactly that, with a test that pins the behaviour.
+
+The Enterprise Gantt (``web_gantt``) answers the ``gantt`` view type. Offering
+both in one database would give users two buttons for the same screen, so the
+module declares ``excludes: ["web_gantt"]`` in its manifest: Odoo refuses to
+install the two together.
+
 
 Arch attributes
 ===============
@@ -153,13 +180,6 @@ Behaviour
   ``ir_http.color_scheme()`` is dark (Odoo 19 Community returns ``light`` by
   default; a colour-scheme module such as ``ica_web_responsive`` can return
   ``dark``). No media query and no theme attribute are involved.
-
-Scope
-=====
-
-This version schedules ``project.task`` out of the box. Since Odoo 19 Community
-has no start date on tasks, the module adds an optional ``date_start`` field and
-offers it on the task form next to the deadline. Other models only need a view.
 
 Known limitations
 =================
