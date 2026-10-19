@@ -1,7 +1,6 @@
 import ast
 
 from lxml import etree
-
 from odoo.tests.common import TransactionCase, tagged
 
 
@@ -13,9 +12,9 @@ class TestUpdateRestricView(TransactionCase):
         arch = self.env[model].get_view(self.env.ref(view_xmlid).id, "form")["arch"]
         root = etree.fromstring(arch)
         nodes = root.xpath(xpath)
-        self.assertTrue(nodes, "No node for %s in %s" % (xpath, view_xmlid))
+        self.assertTrue(nodes, f"No node for {xpath} in {view_xmlid}")
         options = nodes[0].get("options")
-        self.assertTrue(options, "No options for %s in %s" % (xpath, view_xmlid))
+        self.assertTrue(options, f"No options for {xpath} in {view_xmlid}")
         return ast.literal_eval(options)
 
     def _assert_create_disabled(self, model, view_xmlid, xpath):
