@@ -1,0 +1,204 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sale_terms
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15 21:34+0000\n"
+"PO-Revision-Date: 2026-10-15 21:34+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__active
+msgid "Active"
+msgstr "Aktif"
+
+#. module: sale_terms
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_search_view
+msgid "Archived"
+msgstr "Arşivlenmiş"
+
+#. module: sale_terms
+#: model_terms:sale.terms.template,terms:sale_terms.sale_terms_template_1
+msgid ""
+"Belirtilen fiyatlar, CIF ISTANBUL teslimi ve Net fiyattır. \n"
+"Ürünün teslim yerlerine ulaştırılmasına ilişkin, Yurt İçi Yükleme-Boşaltma ve Nakliye Giderleri ve Nakliye Sigortası Hariçtir,\n"
+"kesinlikle fiyata dahil değildir. Tüm Gümrük hizmetleri, Tüm Vergiler, Ek Vergiler, Lokal Masraflar,\n"
+"Ordino, Demuraj, Ardiye, TAREKS ve TSE denetiminden dolayı oluşabilecek masraflar, Serbest bölge çıkış fonu,\n"
+"''Yurtiçi Nakliye, Yükleme - Boşaltma ve Sigortaları'', KDV, Devir Masrafları vesair her türlü giderler ile\n"
+"Malın Devrinden “ALICI” nın işletmesinde kurulum (montaj) yapılacak yere indirilmesine kadar meydana gelebilecek\n"
+"bütün hasar, zarar, ziyan, sigorta ve masrafları “ALICI” ya aittir. Malın ALICI ‘ya devrine kadar oluşabilecek\n"
+"bütün hasar, zarar, ziyan ve gecikmelerden ''SATICI'' sorumlu tutulamaz ve hasar bedeli Sigorta Şirketi tarafından karşılanır.\n"
+"Ayrıca malın teslimine kadar oluşabilecek Gümrük Mevzuatı değişikliklerden ''SATICI'' sorumlu tutulamaz.\n"
+"“ALICI” tüm bu hususlarda herhangi bir itirazda bulunmayacağını kabul, beyan ve taahhüt eder."
+msgstr ""
+"Belirtilen fiyatlar, CIF ISTANBUL teslimi ve Net fiyattır. \n"
+"Ürünün teslim yerlerine ulaştırılmasına ilişkin, Yurt İçi Yükleme-Boşaltma ve Nakliye Giderleri ve Nakliye Sigortası Hariçtir,\n"
+"kesinlikle fiyata dahil değildir. Tüm Gümrük hizmetleri, Tüm Vergiler, Ek Vergiler, Lokal Masraflar,\n"
+"Ordino, Demuraj, Ardiye, TAREKS ve TSE denetiminden dolayı oluşabilecek masraflar, Serbest bölge çıkış fonu,\n"
+"''Yurtiçi Nakliye, Yükleme - Boşaltma ve Sigortaları'', KDV, Devir Masrafları vesair her türlü giderler ile\n"
+"Malın Devrinden “ALICI” nın işletmesinde kurulum (montaj) yapılacak yere indirilmesine kadar meydana gelebilecek\n"
+"bütün hasar, zarar, ziyan, sigorta ve masrafları “ALICI” ya aittir. Malın ALICI ‘ya devrine kadar oluşabilecek\n"
+"bütün hasar, zarar, ziyan ve gecikmelerden ''SATICI'' sorumlu tutulamaz ve hasar bedeli Sigorta Şirketi tarafından karşılanır.\n"
+"Ayrıca malın teslimine kadar oluşabilecek Gümrük Mevzuatı değişikliklerden ''SATICI'' sorumlu tutulamaz.\n"
+"“ALICI” tüm bu hususlarda herhangi bir itirazda bulunmayacağını kabul, beyan ve taahhüt eder."
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__company_id
+msgid "Company"
+msgstr "Firma"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__create_uid
+msgid "Created by"
+msgstr "Oluşturan"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__create_date
+msgid "Created on"
+msgstr "Oluşturuldu"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__display_name
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__display_name
+msgid "Display Name"
+msgstr "Ad Görünümü"
+
+#. module: sale_terms
+#: model:ir.model.fields.selection,name:sale_terms.selection__sale_terms_template__position__down
+msgid "Down Line"
+msgstr "Alt Satır"
+
+#. module: sale_terms
+#: model:ir.model.fields.selection,name:sale_terms.selection__sale_terms_template__priority__1
+msgid "High"
+msgstr "Yüksek"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__id
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__id
+msgid "ID"
+msgstr "ID"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__write_uid
+msgid "Last Updated by"
+msgstr "Son Güncelleyen"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__write_date
+msgid "Last Updated on"
+msgstr "Son Güncelleme"
+
+#. module: sale_terms
+#: model:ir.model.fields.selection,name:sale_terms.selection__sale_terms_template__priority__0
+msgid "Low"
+msgstr "Düşük"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__position
+msgid "Position"
+msgstr "Pozisyon"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__priority
+msgid "Priority"
+msgstr "Öncelik"
+
+#. module: sale_terms
+#: model:ir.model,name:sale_terms.model_sale_terms_template
+msgid "Sale Terms Template"
+msgstr "Satış Koşulları Şablonu"
+
+#. module: sale_terms
+#: model:ir.model,name:sale_terms.model_sale_order
+msgid "Sales Order"
+msgstr "Satış Siparişi"
+
+#. module: sale_terms
+#: model:sale.terms.template,name:sale_terms.sale_terms_template_2
+msgid "Teklif Üst Yazısı"
+msgstr "Teklif Üst Yazısı"
+
+#. module: sale_terms
+#: model_terms:ir.ui.view,arch_db:sale_terms.terms_sale_order_form_view
+msgid "Terms"
+msgstr "Şartlar"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__terms
+msgid "Terms Content"
+msgstr "Koşul İçereği"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__sale_terms_down
+msgid "Terms Down"
+msgstr "Alt Satır"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__name
+msgid "Terms Name"
+msgstr "Koşul Adı"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__sale_terms_temp_down_id
+msgid "Terms Template Down"
+msgstr "Şartlar Şablonu Aşağı"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__sale_terms_temp_up_id
+msgid "Terms Template Up"
+msgstr "Şartlar Şablonu Yukarı"
+
+#. module: sale_terms
+#: model:ir.actions.act_window,name:sale_terms.action_sale_terms_template
+#: model:ir.ui.menu,name:sale_terms.menu_sale_terms_template
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_form_view
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_list_view
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_search_view
+msgid "Terms Templates"
+msgstr "Sözleşme Şablonları"
+
+#. module: sale_terms
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_form_view
+msgid "Terms Title..."
+msgstr "Şart Koşul başlığı"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__sale_terms_up
+msgid "Terms Up"
+msgstr "Üst Satır"
+
+#. module: sale_terms
+#: model_terms:ir.ui.view,arch_db:sale_terms.terms_sale_order_form_view
+msgid "The terms will be displayed on the printed document."
+msgstr "Şartlar basılı belge üzerinde görüntülenecektir."
+
+#. module: sale_terms
+#: model:ir.model.fields.selection,name:sale_terms.selection__sale_terms_template__position__up
+msgid "Up Line"
+msgstr "Üst Satır"
+
+#. module: sale_terms
+#: model_terms:sale.terms.template,terms:sale_terms.sale_terms_template_2
+msgid ""
+"Yaptığınız araştırmalar neticesinde ürünlerimize gösterdiğiniz ilgiden dolayı teşekkür ederiz.\n"
+"        Bizden talep ettiğiniz, ürün ile ilgili detaylı açıklamaları aşağıda bulabilirsiniz. Daha fazla bilgi için\n"
+"        Satış Temsilciniz ile iletişime geçebilirsiniz."
+msgstr ""
+"<span class=\"o_small-fs\">Yaptığınız araştırmalar neticesinde ürünlerimize gösterdiğiniz ilgiden dolayı teşekkür ederiz.\n"
+"        Bizden talep ettiğiniz, ürün ile ilgili detaylı açıklamaları aşağıda bulabilirsiniz. Daha fazla bilgi için\n"
+"        Satış Temsilciniz ile iletişime geçebilirsiniz.</span>"
+
+#. module: sale_terms
+#: model:sale.terms.template,name:sale_terms.sale_terms_template_1
+msgid "Şartlar ve Koşullar (CIF)"
+msgstr "Şartlar ve Koşullar (CIF)"

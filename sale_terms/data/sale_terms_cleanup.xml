@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- The customer-portal terms views were dropped from the module (both
+         blocks rendered a stray/duplicated label on the portal). Deleting the
+         data files does NOT remove the view records earlier versions already
+         loaded into installed databases — this function drops them on every
+         install and -u, and is a no-op once they are gone. -->
+    <function model="sale.terms.template" name="_sale_terms_remove_portal_views"/>
+    <function model="sale.terms.template" name="_fix_sale_terms_default_priority"/>
+</odoo>

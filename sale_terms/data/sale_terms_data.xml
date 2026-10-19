@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="sale_terms_template_1" model="sale.terms.template">
+            <field name="name">Şartlar ve Koşullar (CIF)</field>
+            <field name="position">down</field>
+            <field name="priority">1</field>
+            <field name="terms">
+
+        Belirtilen fiyatlar, CIF ISTANBUL teslimi ve Net fiyattır. 
+Ürünün teslim yerlerine ulaştırılmasına ilişkin, Yurt İçi Yükleme-Boşaltma ve Nakliye Giderleri ve Nakliye Sigortası Hariçtir,
+kesinlikle fiyata dahil değildir. Tüm Gümrük hizmetleri, Tüm Vergiler, Ek Vergiler, Lokal Masraflar,
+Ordino, Demuraj, Ardiye, TAREKS ve TSE denetiminden dolayı oluşabilecek masraflar, Serbest bölge çıkış fonu,
+''Yurtiçi Nakliye, Yükleme - Boşaltma ve Sigortaları'', KDV, Devir Masrafları vesair her türlü giderler ile
+Malın Devrinden “ALICI” nın işletmesinde kurulum (montaj) yapılacak yere indirilmesine kadar meydana gelebilecek
+bütün hasar, zarar, ziyan, sigorta ve masrafları “ALICI” ya aittir. Malın ALICI ‘ya devrine kadar oluşabilecek
+bütün hasar, zarar, ziyan ve gecikmelerden ''SATICI'' sorumlu tutulamaz ve hasar bedeli Sigorta Şirketi tarafından karşılanır.
+Ayrıca malın teslimine kadar oluşabilecek Gümrük Mevzuatı değişikliklerden ''SATICI'' sorumlu tutulamaz.
+“ALICI” tüm bu hususlarda herhangi bir itirazda bulunmayacağını kabul, beyan ve taahhüt eder.
+
+
+            </field>
+        </record>
+
+        <record id="sale_terms_template_2" model="sale.terms.template">
+            <field name="name">Teklif Üst Yazısı</field>
+            <field name="position">up</field>
+            <field name="priority">1</field>
+            <field name="terms">
+
+        Yaptığınız araştırmalar neticesinde ürünlerimize gösterdiğiniz ilgiden dolayı teşekkür ederiz.
+        Bizden talep ettiğiniz, ürün ile ilgili detaylı açıklamaları aşağıda bulabilirsiniz. Daha fazla bilgi için
+        Satış Temsilciniz ile iletişime geçebilirsiniz.
+
+
+            </field>
+        </record>
+    </data>
+</odoo>

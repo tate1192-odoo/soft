@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sale_terms_template_search_view" model="ir.ui.view">
+        <field name="name">sale.terms.template.search</field>
+        <field name="model">sale.terms.template</field>
+        <field name="arch" type="xml">
+            <search string="Terms Templates">
+                <field name="name"/>
+                <field name="position"/>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="sale_terms_template_form_view" model="ir.ui.view">
+        <field name="name">sale.terms.template.form</field>
+        <field name="model">sale.terms.template</field>
+        <field name="arch" type="xml">
+            <form string="Terms Templates">
+                <field name="active" invisible="1"/>
+                <div class="oe_title pe-0">
+                    <h1 class="d-flex justify-content-between align-items-center">
+                        <div class="d-flex w-100">
+                            <field name="priority" widget="priority" class="me-3"/>
+                            <field name="name" class="o_task_name text-truncate w-100 w-md-75 pe-2"
+                                   placeholder="Terms Title..."/>
+                        </div>
+                    </h1>
+                </div>
+                <group>
+                    <field name="position"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                    <field name="terms" colspan="2" widget="html"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_terms_template_list_view" model="ir.ui.view">
+        <field name="name">sale.terms.template.list</field>
+        <field name="model">sale.terms.template</field>
+        <field name="arch" type="xml">
+            <list string="Terms Templates">
+                <field name="priority" widget="priority" optional="show" nolabel="1" options="{'autosave': False}"/>
+                <field name="name"/>
+                <field name="position"/>
+                <field name="company_id" groups="base.group_multi_company" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_sale_terms_template" model="ir.actions.act_window">
+        <field name="name">Terms Templates</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.terms.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="sale_terms_template_list_view"/>
+    </record>
+
+    <menuitem
+            name="Terms Templates"
+            id="menu_sale_terms_template"
+            action="sale_terms.action_sale_terms_template"
+            parent="sale.menu_sale_config"
+    />
+</odoo>
