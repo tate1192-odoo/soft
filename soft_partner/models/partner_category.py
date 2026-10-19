@@ -1,0 +1,54 @@
+from odoo import api, fields, models
+
+
+class PartnerCategory(models.Model):
+    """Structured partner classification (Bronze, Silver, ... Diamond)."""
+
+    _name = 'partner.category'
+    _description = 'Partner Category'
+    _order = 'sequence, name'
+
+    name = fields.Char(required=True, translate=True)
+    code = fields.Char(
+        help="Technical code used in filters and reports, e.g. bronze.",
+    )
+    description = fields.Text()
+    sequence = fields.Integer(
+        default=10,
+        help="Order of the category in lists and in the group by result.",
+    )
+    color = fields.Integer(
+        help="Color used for the kanban cards and list decorations.",
+    )
+    active = fields.Boolean(default=True)
+    partner_ids = fields.One2many(
+        'res.partner',
+        'partner_category_id',
+        string='Partners',
+    )
+    partner_count = fields.Integer(
+        string='Partner Count',
+        compute='_compute_partner_count',
+    )
+
+    _code_uniq = models.Constraint(
+        'unique(code)',
+        'This partner category code already exists!',
+    )
+
+    @api.depends('partner_ids')
+    def _compute_partner_count(self):
+        for category in self:
+            category.partner_count = len(category.partner_ids)
+
+    def action_open_partners(self):
+        """Open the partner list restricted to this category."""
+        self.ensure_one()
+        return {
+            'type': 'ir.actions.act_window',
+            'name': self.env._('Partners'),
+            'res_model': 'res.partner',
+            'view_mode': 'list,form',
+            'domain': [('partner_category_id', '=', self.id)],
+            'context': {'default_partner_category_id': self.id},
+        }

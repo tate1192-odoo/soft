@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="partner_segment_key" model="partner.segment">
+        <field name="name">Key Account</field>
+        <field name="code">key</field>
+        <field name="sequence">10</field>
+        <field name="color">2</field>
+        <field name="description">Bant: son 24 ay net ciro 100.000 TL ve üzeri veya 5 ve daha fazla
+            fatura. Hizmet sürekliliği en yüksek grup; fiyat listesi ve sözleşme yenileme takibi bu
+            grupta yürütülür.</field>
+    </record>
+
+    <record id="partner_segment_regular" model="partner.segment">
+        <field name="name">Regular</field>
+        <field name="code">regular</field>
+        <field name="sequence">20</field>
+        <field name="color">4</field>
+        <field name="description">Bant: son 24 ay net ciro 20.000 - 100.000 TL veya 2-4 fatura. Aynı
+            hizmeti tekrar alan cari; periyodik hatırlatma ve yenileme teklifi hedefi.</field>
+    </record>
+
+    <record id="partner_segment_oneoff" model="partner.segment">
+        <field name="name">One Off</field>
+        <field name="code">oneoff</field>
+        <field name="sequence">30</field>
+        <field name="color">3</field>
+        <field name="description">Bant: son 24 ayda tek fatura ve net ciro 20.000 TL altı. Hizmeti bir
+            kez almış; tekrar satışa açık.</field>
+    </record>
+
+    <record id="partner_segment_passive" model="partner.segment">
+        <field name="name">Passive</field>
+        <field name="code">passive</field>
+        <field name="sequence">40</field>
+        <field name="color">1</field>
+        <field name="description">Bant: son fatura 24 aydan eski. Geri kazanım (win-back) kampanyası
+            hedefi.</field>
+    </record>
+
+    <record id="partner_segment_prospect" model="partner.segment">
+        <field name="name">Prospect</field>
+        <field name="code">prospect</field>
+        <field name="sequence">50</field>
+        <field name="color">6</field>
+        <field name="description">Bant: fatura yok ama iz var (sipariş, görev, CRM kaydı, saha işi veya
+            sözleşme). İlk satışı kapatma hedefi.</field>
+    </record>
+
+    <record id="partner_segment_lead_warm" model="partner.segment">
+        <field name="name">Warm Lead</field>
+        <field name="code">lead_warm</field>
+        <field name="sequence">52</field>
+        <field name="color">10</field>
+        <field name="description">Bant: fatura ve iş izi yok; telefon veya e-posta var ve kayıtta
+            etkileşim izi var (mail takipçisi, aktivite veya chatter notu). Doğrudan arama listesi.</field>
+    </record>
+
+    <record id="partner_segment_lead_reachable" model="partner.segment">
+        <field name="name">Reachable Lead</field>
+        <field name="code">lead_reachable</field>
+        <field name="sequence">53</field>
+        <field name="color">5</field>
+        <field name="description">Bant: iş izi yok; telefon veya e-posta var, hiç etkileşim izi yok.
+            Kampanya (SMS / e-posta) listesi.</field>
+    </record>
+
+    <record id="partner_segment_lead_address" model="partner.segment">
+        <field name="name">Address Only Lead</field>
+        <field name="code">lead_address</field>
+        <field name="sequence">54</field>
+        <field name="color">8</field>
+        <field name="description">Bant: iş izi yok; telefon ve e-posta yok, yalnız adres/il var.
+            Zarf gönderimi ve saha ziyareti listesi.</field>
+    </record>
+
+    <record id="partner_segment_vendor" model="partner.segment">
+        <field name="name">Vendor</field>
+        <field name="code">vendor</field>
+        <field name="sequence">55</field>
+        <field name="color">9</field>
+        <field name="description">Tedarikçi: tedarikçi faturası veya supplier_rank &gt; 0; satış izi
+            olmayan alım hesabı.</field>
+    </record>
+
+    <record id="partner_segment_rubbish" model="partner.segment">
+        <field name="name">Junk</field>
+        <field name="code">rubbish</field>
+        <field name="sequence">60</field>
+        <field name="color">7</field>
+        <field name="description">Bant yok: ne iletişim bilgisi ne iz (fatura, sipariş, görev, CRM
+            kaydı yok). Veri hijyeni için ayrılır; pazarlama aksiyonu hedeflenmez.</field>
+    </record>
+
+</odoo>

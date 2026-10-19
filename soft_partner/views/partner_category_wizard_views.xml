@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_category_assign_form" model="ir.ui.view">
+        <field name="name">partner.category.assign.form</field>
+        <field name="model">partner.category.assign</field>
+        <field name="arch" type="xml">
+            <form string="Assign Partner Category">
+                <group>
+                    <field name="category_id" options="{'no_quick_create': True}"/>
+                    <field name="partner_ids"
+                           widget="many2many_tags"
+                           options="{'no_create': True}"/>
+                </group>
+                <footer>
+                    <button name="action_apply"
+                            type="object"
+                            string="Assign"
+                            class="btn-primary"/>
+                    <button name="action_clear"
+                            type="object"
+                            string="Remove Category"
+                            class="btn-secondary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- Available in the Action menu of the contacts list and form -->
+    <record id="action_partner_category_assign" model="ir.actions.act_window">
+        <field name="name">Assign Partner Category</field>
+        <field name="res_model">partner.category.assign</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+        <field name="binding_model_id" ref="base.model_res_partner"/>
+        <field name="binding_view_types">list,form</field>
+    </record>
+
+</odoo>

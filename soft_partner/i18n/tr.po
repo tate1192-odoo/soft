@@ -1,0 +1,623 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* soft_partner
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-09-30 14:55+0000\n"
+"PO-Revision-Date: 2026-09-30 14:55+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/wizard/partner_segment_assign.py:0
+msgid "%(count)s partner(s) assigned to segment '%(segment)s'."
+msgstr "%(count)s iş ortağı '%(segment)s' segmentine atandı."
+
+#. module: soft_partner
+#: model_terms:ir.actions.act_window,help:soft_partner.action_partner_category
+msgid ""
+"Classify customers and vendors into categories such as Company,\n"
+"               Bronze, Silver, Gold, Platinum, Diamond or Supplier, then assign\n"
+"               them from the contact form or in bulk from the contacts list.\n"
+"               Categories are data: rename, add or deactivate them."
+msgstr ""
+"Müşterileri ve tedarikçileri Firma, Bronz, Gümüş, Altın, Platin, Elmas veya "
+"Tedarikçi gibi kategorilere ayırın, ardından kontak formundan ya da kişiler "
+"listesinden toplu olarak atayın. Kategoriler veridir: yeniden adlandırın, "
+"ekleyin veya pasifleştirin."
+
+#. module: soft_partner
+#: model:partner.category,name:soft_partner.partner_category_company
+msgid "Company"
+msgstr "Firma"
+
+#. module: soft_partner
+#: model:partner.segment,name:soft_partner.partner_segment_rubbish
+msgid "Junk"
+msgstr "Çöp"
+
+#. module: soft_partner
+#: model:partner.segment,name:soft_partner.partner_segment_key
+msgid "Key Account"
+msgstr "Kilit Müşteri"
+
+#. module: soft_partner
+#: model:partner.segment,name:soft_partner.partner_segment_oneoff
+msgid "One Off"
+msgstr "Tek Seferlik"
+
+#. module: soft_partner
+#: model_terms:ir.actions.act_window,help:soft_partner.action_partner_by_segment
+msgid "Partners grouped by their segment."
+msgstr "İş ortağı segmentine göre gruplanmış iş ortakları."
+
+#. module: soft_partner
+#: model:partner.segment,name:soft_partner.partner_segment_passive
+msgid "Passive"
+msgstr "Pasif"
+
+#. module: soft_partner
+#: model:partner.segment,name:soft_partner.partner_segment_prospect
+msgid "Prospect"
+msgstr "Aday"
+
+#. module: soft_partner
+#: model:partner.segment,name:soft_partner.partner_segment_regular
+msgid "Regular"
+msgstr "Düzenli Müşteri"
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/wizard/partner_segment_assign.py:0
+msgid "Segment removed from %(count)s partner(s)."
+msgstr "%(count)s iş ortağından segment kaldırıldı."
+
+#. module: soft_partner
+#: model:ir.model,name:soft_partner.model_partner_segment_assign
+#: model:ir.actions.act_window,name:soft_partner.action_partner_segment_assign
+msgid "Assign Partner Segment"
+msgstr "Cari Segmenti Ata"
+
+#. module: soft_partner
+#: model_terms:ir.actions.act_window,help:soft_partner.action_partner_segment
+msgid "Create a partner segment"
+msgstr "Cari segmenti oluşturun"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_res_partner_filter_partner_ref
+msgid "Has Partner Segment"
+msgstr "Segmenti Olan"
+
+#. module: soft_partner
+#: model:ir.model,name:soft_partner.model_partner_segment
+#: model:ir.model.fields,field_description:soft_partner.field_partner_segment_assign__segment_id
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_segment_form
+msgid "Partner Segment"
+msgstr "Cari Segmenti"
+
+#. module: soft_partner
+#: model:ir.actions.act_window,name:soft_partner.action_partner_segment
+#: model:ir.ui.menu,name:soft_partner.menu_partner_segment_config
+msgid "Partner Segments"
+msgstr "Cari Segmentleri"
+
+#. module: soft_partner
+#: model:ir.actions.act_window,name:soft_partner.action_partner_by_segment
+msgid "Partners by Segment"
+msgstr "Segmente Göre Cariler"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_segment_assign_form
+msgid "Remove Segment"
+msgstr "Segmenti Kaldır"
+
+#. module: soft_partner
+#: model:ir.ui.view,name:soft_partner.view_partner_segment_search
+msgid "Search Partner Segment"
+msgstr "Cari Segmenti Ara"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_res_partner__partner_segment_id
+#: model:ir.model.fields,field_description:soft_partner.field_partner_segment__name
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_segment_search
+msgid "Segment"
+msgstr "Segment"
+
+#. module: soft_partner
+#: model_terms:ir.actions.act_window,help:soft_partner.action_partner_segment
+msgid ""
+"Segment the customer base by commercial weight (key account, regular,\n"
+"               one off, passive, prospect, junk) and assign it from the contact form\n"
+"               or in bulk from the contacts list. The seed bands are examples: edit\n"
+"               the segments to match your own scale."
+msgstr ""
+"Müşteri tabanını ticari ağırlığa göre segmentlere ayırın (kilit müşteri, "
+"düzenli, tek seferlik, pasif, aday, çöp) ve kontak formundan ya da kişiler "
+"listesinden toplu olarak atayın. Tohum bantlar örnektir: segmentleri kendi "
+"ölçeğinize göre düzenleyin."
+
+#. module: soft_partner
+#: model:partner.category,name:soft_partner.partner_category_supplier
+msgid "Supplier"
+msgstr "Tedarikçi"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_segment__description
+msgid "Value band rule..."
+msgstr "Değer bandı kuralı..."
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/wizard/partner_category_assign.py:0
+msgid "%(count)s partner(s) assigned to category '%(category)s'."
+msgstr "%(count)s iş ortağı '%(category)s' kategorisine atandı."
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/wizard/partner_code_resequence.py:0
+msgid "%(count)s partner(s) resequenced."
+msgstr "%(count)s iş ortağının kodu yeniden numaralandırıldı."
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__active
+msgid "Active"
+msgstr "Aktif"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_code_resequence_wizard
+msgid ""
+"All commercial partners will be renumbered in chronological\n"
+"                    order (by create date). Contacts follow the code of their\n"
+"                    company."
+msgstr ""
+"Tüm ticari iş ortakları kronolojik sırayla (oluşturma tarihine göre) yeniden"
+" numaralandırılır. Kontaklar bağlı oldukları firmanın kodunu izler."
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_search
+msgid "Archived"
+msgstr "Arşivlenmiş"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_assign_form
+msgid "Assign"
+msgstr "Ata"
+
+#. module: soft_partner
+#: model:ir.actions.act_window,name:soft_partner.action_partner_category_assign
+#: model:ir.model,name:soft_partner.model_partner_category_assign
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_assign_form
+msgid "Assign Partner Category"
+msgstr "İş Ortağı Kategorisi Ata"
+
+#. module: soft_partner
+#: model:partner.category,name:soft_partner.partner_category_bronze
+msgid "Bronze"
+msgstr "Bronz"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_assign_form
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_code_resequence_wizard
+msgid "Cancel"
+msgstr "Vazgeç"
+
+#. module: soft_partner
+#: model:ir.ui.menu,name:soft_partner.menu_partner_category
+msgid "Categories"
+msgstr "Kategoriler"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_res_partner__partner_category_id
+#: model:ir.model.fields,field_description:soft_partner.field_res_users__partner_category_id
+msgid "Category"
+msgstr "Kategori"
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/wizard/partner_category_assign.py:0
+msgid "Category removed from %(count)s partner(s)."
+msgstr "%(count)s iş ortağından kategori kaldırıldı."
+
+#. module: soft_partner
+#: model:ir.model.fields,help:soft_partner.field_partner_category_assign__category_id
+msgid "Category that will be set on every selected partner."
+msgstr "Seçilen her iş ortağına atanacak kategori."
+
+#. module: soft_partner
+#: model:ir.model.fields,help:soft_partner.field_res_partner__partner_category_id
+#: model:ir.model.fields,help:soft_partner.field_res_users__partner_category_id
+msgid "Classification level of the partner, e.g. Bronze or Gold."
+msgstr "İş ortağının sınıflandırma seviyesi, örn. Bronz veya Altın."
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__code
+#: model:ir.model.fields,field_description:soft_partner.field_res_partner__partner_code
+#: model:ir.model.fields,field_description:soft_partner.field_res_users__partner_code
+msgid "Code"
+msgstr "Kod"
+
+#. module: soft_partner
+#: model:ir.model.fields,help:soft_partner.field_res_partner__partner_code
+#: model:ir.model.fields,help:soft_partner.field_res_users__partner_code
+msgid ""
+"Code assigned automatically from the res.partner sequence (prefix P/). "
+"Assigned to commercial partners and propagated to their contacts."
+msgstr ""
+"res.partner sekansından (P/ önekli) otomatik atanan kod. Ticari iş "
+"ortaklarına atanır ve kontaklarına yayılır."
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__color
+msgid "Color"
+msgstr "Renk"
+
+#. module: soft_partner
+#: model:ir.model.fields,help:soft_partner.field_partner_category__color
+msgid "Color used for the kanban cards and list decorations."
+msgstr "Kanban kartlarında ve liste süslemelerinde kullanılan renk."
+
+#. module: soft_partner
+#: model:ir.model,name:soft_partner.model_res_partner
+msgid "Contact"
+msgstr "İş Ortağı"
+
+#. module: soft_partner
+#: model_terms:ir.actions.act_window,help:soft_partner.action_partner_category
+msgid "Create a partner category"
+msgstr "Bir iş ortağı kategorisi oluşturun"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__create_uid
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category_assign__create_uid
+#: model:ir.model.fields,field_description:soft_partner.field_partner_code_resequence_wizard__create_uid
+msgid "Created by"
+msgstr "Oluşturan"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__create_date
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category_assign__create_date
+#: model:ir.model.fields,field_description:soft_partner.field_partner_code_resequence_wizard__create_date
+msgid "Created on"
+msgstr "Oluşturma Tarihi"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__description
+msgid "Description"
+msgstr "Açıklama"
+
+#. module: soft_partner
+#: model:partner.category,name:soft_partner.partner_category_diamond
+msgid "Diamond"
+msgstr "Elmas"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__display_name
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category_assign__display_name
+#: model:ir.model.fields,field_description:soft_partner.field_partner_code_resequence_wizard__display_name
+#: model:ir.model.fields,field_description:soft_partner.field_res_partner__display_name
+msgid "Display Name"
+msgstr "Görünen Ad"
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/models/res_partner.py:0
+msgid "Either field values or an id must be provided."
+msgstr "Alan değerleri veya bir kimlik sağlanmalıdır."
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_code_resequence_wizard
+msgid "Format: <strong>P/XXXXX</strong>"
+msgstr "Biçim: <strong>P/XXXXX</strong>"
+
+#. module: soft_partner
+#: model:partner.category,name:soft_partner.partner_category_gold
+msgid "Gold"
+msgstr "Altın"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_res_partner_filter_partner_ref
+msgid "Has Partner Category"
+msgstr "İş Ortağı Kategorisi Olan"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__id
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category_assign__id
+#: model:ir.model.fields,field_description:soft_partner.field_partner_code_resequence_wizard__id
+#: model:ir.model.fields,field_description:soft_partner.field_res_partner__id
+msgid "ID"
+msgstr "Kimlik"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_form
+msgid "Internal description..."
+msgstr "Dahili açıklama..."
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__write_uid
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category_assign__write_uid
+#: model:ir.model.fields,field_description:soft_partner.field_partner_code_resequence_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Son Güncelleyen"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__write_date
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category_assign__write_date
+#: model:ir.model.fields,field_description:soft_partner.field_partner_code_resequence_wizard__write_date
+msgid "Last Updated on"
+msgstr "Son Güncelleme Tarihi"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__name
+msgid "Name"
+msgstr "Ad"
+
+#. module: soft_partner
+#: model_terms:ir.actions.act_window,help:soft_partner.action_partner_by_category
+#: model_terms:ir.actions.act_window,help:soft_partner.action_partner_by_segment
+msgid "No partner found"
+msgstr "İş ortağı bulunamadı"
+
+#. module: soft_partner
+#: model:ir.model.fields,help:soft_partner.field_partner_category__sequence
+msgid "Order of the category in lists and in the group by result."
+msgstr "Kategorinin listelerdeki ve gruplama sonucundaki sırası."
+
+#. module: soft_partner
+#: model:ir.actions.act_window,name:soft_partner.action_partner_category
+#: model:ir.ui.menu,name:soft_partner.menu_partner_base_root
+#: model:ir.ui.menu,name:soft_partner.menu_partner_category_config
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_tree
+msgid "Partner Categories"
+msgstr "İş Ortağı Kategorileri"
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/wizard/partner_category_assign.py:0
+#: model:ir.model,name:soft_partner.model_partner_category
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category_assign__category_id
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_form
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_res_partner_filter_partner_ref
+msgid "Partner Category"
+msgstr "İş Ortağı Kategorisi"
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/wizard/partner_code_resequence.py:0
+msgid "Partner Code"
+msgstr "İş Ortağı Kodu"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__partner_count
+msgid "Partner Count"
+msgstr "İş Ortağı Sayısı"
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/models/partner_category.py:0
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__partner_ids
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category_assign__partner_ids
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_form
+msgid "Partners"
+msgstr "İş Ortakları"
+
+#. module: soft_partner
+#: model:ir.actions.act_window,name:soft_partner.action_partner_by_category
+#: model:ir.ui.menu,name:soft_partner.menu_partner_by_category
+msgid "Partners by Category"
+msgstr "Kategoriye Göre İş Ortakları"
+
+#. module: soft_partner
+#: model_terms:ir.actions.act_window,help:soft_partner.action_partner_by_category
+msgid "Partners grouped by their partner category."
+msgstr "İş ortağı kategorisine göre gruplanmış iş ortakları."
+
+#. module: soft_partner
+#: model:partner.category,name:soft_partner.partner_category_platinum
+msgid "Platinum"
+msgstr "Platin"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_code_resequence_wizard__total_count
+msgid "Records to Process"
+msgstr "İşlenecek Kayıt"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_assign_form
+msgid "Remove Category"
+msgstr "Kategoriyi Kaldır"
+
+#. module: soft_partner
+#: model:ir.actions.act_window,name:soft_partner.action_partner_code_resequence
+#: model:ir.model,name:soft_partner.model_partner_code_resequence_wizard
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_code_resequence_wizard
+msgid "Resequence Partner Codes"
+msgstr "İş Ortağı Kodlarını Yeniden Numaralandır"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_search
+msgid "Search Partner Category"
+msgstr "İş Ortağı Kategorisi Ara"
+
+#. module: soft_partner
+#: model:ir.model.fields,field_description:soft_partner.field_partner_category__sequence
+msgid "Sequence"
+msgstr "Sıra"
+
+#. module: soft_partner
+#: model:partner.category,name:soft_partner.partner_category_silver
+msgid "Silver"
+msgstr "Gümüş"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_code_resequence_wizard
+msgid "Start Resequence"
+msgstr "Yeniden Numaralandırmayı Başlat"
+
+#. module: soft_partner
+#: model:ir.model.fields,help:soft_partner.field_partner_category__code
+msgid "Technical code used in filters and reports, e.g. bronze."
+msgstr "Filtrelerde ve raporlarda kullanılan teknik kod, örn. bronze."
+
+#. module: soft_partner
+#: model:ir.model.constraint,message:soft_partner.constraint_partner_category_code_uniq
+msgid "This partner category code already exists!"
+msgstr "Bu iş ortağı kategori kodu zaten mevcut!"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_form
+msgid "e.g. Gold"
+msgstr "örn. Altın"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_segment_form
+msgid "e.g. Key Account"
+msgstr "ör. Kilit Müşteri"
+
+#. module: soft_partner
+#: model_terms:ir.ui.view,arch_db:soft_partner.view_partner_category_form
+msgid "e.g. gold"
+msgstr "örn. altin"
+
+#. module: soft_partner
+#. odoo-python
+#: code:addons/soft_partner/models/partner_category.py:0
+msgid "partner_category_id"
+msgstr "partner_category_id"
+
+#. module: soft_partner
+#: model:ir.module.module,summary:base.module_soft_partner
+msgid ""
+"Partner code sequence (partner_code), structured partner categories "
+"(Company, Bronze - Diamond, Supplier) and commercial weight segments (Key "
+"account, Regular, One off, Passive, Prospect) with bulk assignment actions"
+msgstr ""
+"İş ortağı kodu sekansı (partner_code), yapılandırılmış iş ortağı "
+"kategorileri (Firma, Bronz - Elmas, Tedarikçi) ve ticari ağırlık segmentleri "
+"(Kilit müşteri, Düzenli, Tek seferlik, Pasif, Aday, Çöp); toplu atama "
+"eylemleriyle."
+
+#. module: soft_partner
+#: model:ir.module.module,description:base.module_soft_partner
+msgid ""
+"\n"
+"Soft Partner\n"
+"============\n"
+"\n"
+"Two partner data foundations in a single add-on.\n"
+"\n"
+"Partner code sequence\n"
+"---------------------\n"
+"``partner_code`` field: the code is\n"
+"taken from the ``res.partner`` sequence (prefix ``P/``, 5 digits) on creation\n"
+"and on copy. It is assigned to commercial partners only, and it is a commercial\n"
+"field, so it is written on the parent company and propagated to its contacts.\n"
+"The standard Odoo ``Reference`` (``ref``) field is left untouched.\n"
+"\n"
+"Partner categories\n"
+"------------------\n"
+"Structured classification of customers and partners with predefined categories\n"
+"(Company, Bronze, Silver, Gold, Platinum, Diamond, Supplier, editable by the\n"
+"administrator). The category is a commercial field: it is written on the company\n"
+"and propagated to its contacts, like the partner code.\n"
+"\n"
+"* Category field on the contact form (Sales & Purchase page) and as a column\n"
+"  in the contacts list.\n"
+"* Filter and group by on every partner search view, so partners can be grouped\n"
+"  and filtered by category in Sales, Purchase, Contacts and any other app that\n"
+"  selects partners.\n"
+"* Bulk assignment from the contacts list: select partners and use\n"
+"  Action > Assign Partner Category (or remove the category in one call).\n"
+"* Category screen with the partner counter and a filtered partner list.\n"
+"\n"
+"Partner segments\n"
+"----------------\n"
+"Second, independent classification axis: how much commercial weight the partner\n"
+"carries, measured from the invoice history. Predefined segments (editable by the\n"
+"administrator) and their value bands - the seed values below are EXAMPLES, edit\n"
+"or deactivate the records to match your own scale:\n"
+"\n"
+"* Key account - example band: last 24 months net revenue >= 100.000 TRY or >= 5 invoices.\n"
+"* Regular - example band: net revenue 20.000 - 100.000 TRY or 2-4 invoices.\n"
+"* One off - example band: single invoice below 20.000 TRY.\n"
+"* Passive - example band: last invoice older than 24 months.\n"
+"* Prospect - example band: no invoice yet, but an order, task or CRM trace.\n"
+"* Junk - no band: no invoice and no trace at all, kept aside for data hygiene.\n"
+"\n"
+"The segment uses the same mechanism as the category: commercial field propagated\n"
+"to the contacts, form field, list column, filter and group by, and bulk\n"
+"assignment in one call (Action > Assign Partner Segment). Both classifications\n"
+"and their seed records are DATA: rename, edit, deactivate or add records without\n"
+"touching the code.\n"
+"\n"
+"Partner code resequence\n"
+"-----------------------\n"
+"Wizard bound to the contacts list (Action > Resequence Partner Codes) that\n"
+"renumbers every commercial partner from the ``res.partner`` sequence in\n"
+"chronological order (create date), so incorrect or missing codes can be fixed\n"
+"in one call. Contacts follow the code of their company.\n"
+msgstr ""
+"Soft Partner\n"
+"============\n"
+"\n"
+"Tek bir eklentide iki iş ortağı veri temeli.\n"
+"\n"
+"İş ortağı kod sekansı\n"
+"---------------------\n"
+"``partner_code`` alanı: kod, oluşturma ve kopyalama sırasında ``res.partner``\n"
+"sekansından (``P/`` öneki, 5 hane) alınır. Yalnızca ticari iş ortaklarına atanır\n"
+"ve ticari bir alan olduğundan ana firmaya yazılır ve kontaklarına yayılır.\n"
+"Standart Odoo ``Reference`` (``ref``) alanına dokunulmaz.\n"
+"\n"
+"İş ortağı kategorileri\n"
+"----------------------\n"
+"Müşteri ve iş ortaklarının önceden tanımlı kategorilerle (Firma, Bronz, Gümüş,\n"
+"Altın, Platin, Elmas, Tedarikçi; yönetici tarafından düzenlenebilir)\n"
+"yapılandırılmış sınıflandırması. Kategori ticari bir alandır: firma kaydına\n"
+"yazılır ve kontaklarına yayılır, tıpkı iş ortağı kodu gibi.\n"
+"\n"
+"* Kontak formunda (Satış ve Satın Alma sayfası) kategori alanı ve kişiler\n"
+"  listesinde bir sütun.\n"
+"* Tüm iş ortağı arama görünümlerinde filtre ve gruplama; böylece iş ortakları\n"
+"  Satış, Satın Alma, Kişiler ve iş ortağı seçen diğer tüm uygulamalarda\n"
+"  kategoriye göre gruplanıp filtrelenebilir.\n"
+"* Kişiler listesinden toplu atama: iş ortaklarını seçin ve\n"
+"  Eylem > İş Ortağı Kategorisi Ata'yı kullanın (veya kategoriyi tek çağrıda\n"
+"  kaldırın).\n"
+"* İş ortağı sayacı ve filtrelenmiş iş ortağı listesini içeren kategori ekranı.\n"
+"\n"
+"İş ortağı segmentleri\n"
+"---------------------\n"
+"İkinci ve bağımsız sınıflandırma ekseni: iş ortağının fatura geçmişinden\n"
+"ölçülen ticari ağırlığı. Önceden tanımlı segmentler (yönetici tarafından\n"
+"düzenlenebilir) ve değer bantları - aşağıdaki değerler ÖRNEKTİR; kayıtları\n"
+"kendi ölçeğinize göre düzenleyin veya pasifleştirin:\n"
+"\n"
+"* Kilit müşteri - örnek bant: son 24 ay net ciro >= 100.000 TRY veya >= 5 fatura.\n"
+"* Düzenli - örnek bant: net ciro 20.000 - 100.000 TRY veya 2-4 fatura.\n"
+"* Tek seferlik - örnek bant: 20.000 TRY altında tek fatura.\n"
+"* Pasif - örnek bant: son fatura 24 aydan eski.\n"
+"* Aday - örnek bant: henüz fatura yok, ancak sipariş, görev veya CRM izi var.\n"
+"* Çöp - bant yok: fatura ve iz yok, veri hijyeni için ayrı tutulur.\n"
+"\n"
+"Segment, kategoriyle aynı mekanizmayı kullanır: kontaklara yayılan ticari alan,\n"
+"form alanı, liste sütunu, filtre ve gruplama, ve tek çağrıda toplu atama\n"
+"(Eylem > İş Ortağı Segmenti Ata). Her iki sınıflandırma ve tohum kayıtları\n"
+"VERİDİR: koda dokunmadan yeniden adlandırın, düzenleyin, pasifleştirin veya yeni\n"
+"kayıt ekleyin.\n"
+"\n"
+"İş ortağı kodu yeniden numaralandırma\n"
+"-------------------------------------\n"
+"Kişiler listesine bağlı sihirbaz (Eylem > İş Ortağı Kodlarını Yeniden\n"
+"Numaralandır) tüm ticari iş ortaklarını ``res.partner`` sekansından kronolojik\n"
+"sırayla (oluşturma tarihi) yeniden numaralandırır; böylece hatalı veya eksik\n"
+"kodlar tek çağrıda düzeltilebilir. Kontaklar bağlı oldukları firmanın kodunu\n"
+"izler.\n"

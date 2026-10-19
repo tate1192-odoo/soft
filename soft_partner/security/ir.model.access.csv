@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_partner_category_user,partner.category user,model_partner_category,base.group_user,1,0,0,0
+access_partner_category_system,partner.category system,model_partner_category,base.group_system,1,1,1,1
+access_partner_category_assign_user,partner.category.assign user,model_partner_category_assign,base.group_user,1,1,1,1
+access_partner_segment_user,partner.segment user,model_partner_segment,base.group_user,1,0,0,0
+access_partner_segment_system,partner.segment system,model_partner_segment,base.group_system,1,1,1,1
+access_partner_segment_assign_user,partner.segment.assign user,model_partner_segment_assign,base.group_user,1,1,1,1
+access_partner_code_resequence_wizard,partner.code.resequence.wizard system,model_partner_code_resequence_wizard,base.group_system,1,1,1,1
