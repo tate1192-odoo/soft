@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_partner_category_tree" model="ir.ui.view">
+        <field name="name">partner.category.list</field>
+        <field name="model">partner.category</field>
+        <field name="arch" type="xml">
+            <list string="Partner Categories" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="partner_count"/>
+                <field name="active" invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_partner_category_form" model="ir.ui.view">
+        <field name="name">partner.category.form</field>
+        <field name="model">partner.category</field>
+        <field name="arch" type="xml">
+            <form string="Partner Category">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_open_partners"
+                                type="object"
+                                class="oe_stat_button"
+                                icon="fa-users">
+                            <field name="partner_count" widget="statinfo" string="Partners"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="e.g. Gold"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="code" placeholder="e.g. gold"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group>
+                            <field name="color"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="description" placeholder="Internal description..."/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_partner_category_search" model="ir.ui.view">
+        <field name="name">partner.category.search</field>
+        <field name="model">partner.category</field>
+        <field name="arch" type="xml">
+            <search string="Search Partner Category">
+                <field name="name"/>
+                <field name="code"/>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_partner_category_kanban" model="ir.ui.view">
+        <field name="name">partner.category.kanban</field>
+        <field name="model">partner.category</field>
+        <field name="arch" type="xml">
+            <kanban default_order="sequence, name">
+                <field name="color"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <field name="name" class="fw-bold"/>
+                            <span class="badge rounded-pill text-bg-secondary">
+                                <field name="partner_count"/>
+                            </span>
+                        </div>
+                        <field name="description" class="text-muted mt-2"/>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="action_partner_category" model="ir.actions.act_window">
+        <field name="name">Partner Categories</field>
+        <field name="res_model">partner.category</field>
+        <field name="view_mode">list,form,kanban</field>
+        <field name="search_view_id" ref="view_partner_category_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create a partner category</p>
+            <p>Classify customers and vendors into categories such as Company,
+               Bronze, Silver, Gold, Platinum, Diamond or Supplier, then assign
+               them from the contact form or in bulk from the contacts list.
+               Categories are data: rename, add or deactivate them.</p>
+        </field>
+    </record>
+
+    <record id="action_partner_by_category" model="ir.actions.act_window">
+        <field name="name">Partners by Category</field>
+        <field name="res_model">res.partner</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_group_partner_category': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No partner found</p>
+            <p>Partners grouped by their partner category.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_partner_category_config"
+              name="Partner Categories"
+              parent="contacts.res_partner_menu_config"
+              action="action_partner_category"
+              sequence="25"
+              groups="base.group_system"/>
+
+</odoo>

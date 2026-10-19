@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Contacts list: partner code and partner category columns -->
+    <record id="view_partner_tree_partner_ref" model="ir.ui.view">
+        <field name="name">res.partner.list.partner.ref</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <field name="phone" position="after">
+                <field name="partner_code" optional="show"/>
+                <field name="partner_category_id" optional="hide"/>
+                <field name="partner_segment_id" optional="hide"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Contact form: partner code, category and segment across from the Geolocation group -->
+    <record id="view_partner_form_partner_ref" model="ir.ui.view">
+        <field name="name">res.partner.form.partner.ref</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='geo_location']/group" position="inside">
+                <group string="Partner">
+                    <field name="partner_code" readonly="1"/>
+                    <field name="partner_category_id" readonly="parent_id"/>
+                    <field name="partner_segment_id" readonly="parent_id"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Partner search view: fields, filter and group by -->
+    <record id="view_res_partner_filter_partner_ref" model="ir.ui.view">
+        <field name="name">res.partner.select.partner.ref</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <field name="email" position="after">
+                <field name="partner_code"/>
+                <field name="partner_category_id"/>
+                <field name="partner_segment_id"/>
+            </field>
+            <filter name="type_company" position="after">
+                <filter name="has_partner_category"
+                        string="Has Partner Category"
+                        domain="[('partner_category_id', '!=', False)]"/>
+                <filter name="has_partner_segment"
+                        string="Has Partner Segment"
+                        domain="[('partner_segment_id', '!=', False)]"/>
+            </filter>
+            <group name="group_by" position="inside">
+                <filter name="group_partner_category"
+                        string="Partner Category"
+                        domain="[]"
+                        context="{'group_by': 'partner_category_id'}"/>
+                <filter name="group_partner_segment"
+                        string="Partner Segment"
+                        domain="[]"
+                        context="{'group_by': 'partner_segment_id'}"/>
+            </group>
+        </field>
+    </record>
+
+</odoo>
