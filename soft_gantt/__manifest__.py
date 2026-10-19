@@ -1,21 +1,34 @@
 {
     'name': 'Soft Gantt',
-    'version': '19.0.1.1.0',
-    'summary': 'Native Gantt / timeline view for Odoo 19 Community: bars read '
-               'their dates from the view itself, search and filters drive the '
-               'records, bars can be dragged to reschedule. No Enterprise, no '
-               'vendored JavaScript library.',
+    'version': '19.0.1.2.0',
+    'summary': 'Native Gantt / timeline view type for Odoo 19 Community: bars '
+               'read their dates from the view itself, search and filters drive '
+               'the records, bars can be dragged to reschedule. No Enterprise, '
+               'no vendored JavaScript library, no business dependency.',
     'author': 'Softteknik Bilişim',
     'website': 'https://softteknik.com',
     'license': 'AGPL-3',
     'category': 'Productivity/Productivity',
+    # The view type is generic: it names its own date fields, so it schedules
+    # any model without knowing which one. This module must therefore depend on
+    # `web` and nothing else: a business dependency (`project`, `mrp`, ...)
+    # would make the type unavailable to the models it does not depend on, and
+    # would tie a view type to the first model that happened to use it.
     'depends': [
         'web',
-        'project',
     ],
-    'data': [
-        'views/project_task_gantt_views.xml',
+    # The Enterprise Gantt answers the `gantt` view type. Offering both in the
+    # same database would give users two buttons for the same screen, so the
+    # two modules are never installed together: this is the manifest key
+    # `ir.module.module._update_exclusions` reads (the same way `soft_web_map`
+    # excludes `web_map`).
+    'excludes': [
+        'web_gantt',
     ],
+    # No `data`: this module ships the view type only, without a view, a field
+    # or an action. A module that schedules a model declares its own
+    # `<gantt_soft>` view and adds the mode to its action's `view_mode`
+    # (`field_operation_gantt` is the reference consumer, see the README).
     'assets': {
         'web.assets_backend': [
             'soft_gantt/static/src/gantt/gantt_soft.scss',
