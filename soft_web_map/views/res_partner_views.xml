@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_partner_view_leaflet_map" model="ir.ui.view">
+        <field name="name">res.partner.view.leaflet_map</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <leaflet_map latitude="partner_latitude" longitude="partner_longitude" limit="80">
+                <field name="display_name"/>
+                <field name="partner_latitude"/>
+                <field name="partner_longitude"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="street"/>
+                <field name="city"/>
+            </leaflet_map>
+        </field>
+    </record>
+</odoo>

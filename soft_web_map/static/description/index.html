@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <title>Soft Web Map</title>
+</head>
+<body>
+<section class="container">
+    <div class="row">
+        <div class="col-lg-8">
+            <h1>Soft Web Map</h1>
+            <p class="lead">
+                A Leaflet / OpenStreetMap view for Odoo 19. Display any model with
+                latitude and longitude fields as an interactive map, with a record
+                sidebar, marker popups and optional clustering.
+            </p>
+            <p>
+                The core module is standalone. Install the optional
+                <strong>Soft Web Map — Contacts</strong> bridge to add the map view
+                to the Contacts application.
+            </p>
+
+            <h2>Features</h2>
+            <ul>
+                <li>Leaflet 1.9 map with OpenStreetMap tiles</li>
+                <li>Marker popups with name, address, email and phone</li>
+                <li>Record sidebar with search, pager and Google Maps directions</li>
+                <li>Optional marker clustering</li>
+                <li>Responsive desktop and mobile layout</li>
+                <li>Configurable tile URL and attribution</li>
+                <li>Turkish and English user interface</li>
+            </ul>
+
+            <h2>Configuration</h2>
+            <p>
+                Set <code>soft_web_map.tile_url</code> and
+                <code>soft_web_map.copyright</code> in <em>Settings &rarr; Technical
+                &rarr; Parameters &rarr; System Parameters</em>.
+            </p>
+            <pre><code>&lt;leaflet_map latitude="partner_latitude"
+             longitude="partner_longitude"
+             limit="80"
+             clustering="1"&gt;
+    &lt;field name="display_name"/&gt;
+&lt;/leaflet_map&gt;</code></pre>
+
+            <h2>License and credits</h2>
+            <p>
+                Copyright Softteknik Bilişim. Licensed under LGPL-3.
+                Bundled libraries: Leaflet (BSD-2-Clause) and Leaflet.markercluster
+                (MIT). See the license files under <code>static/lib/leaflet/</code>
+                for the bundled library notices.
+            </p>
+        </div>
+        <div class="col-lg-4 text-center">
+            <img src="icon.png" alt="Soft Web Map" class="img img-fluid" style="max-width: 180px;"/>
+        </div>
+    </div>
+</section>
+</body>
+</html>

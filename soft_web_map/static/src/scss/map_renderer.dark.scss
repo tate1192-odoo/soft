@@ -1,0 +1,66 @@
+// Leaflet Map — dark color scheme overrides.
+// Odoo 19 loads this bundle only when the `color_scheme` cookie is "dark"
+// (see web.assets_web_dark in web/views/webclient_templates.xml), so no
+// media query is needed here.
+
+.o_swm_map {
+    background: #141414;
+    color: #e9ecef;
+}
+
+.o_swm_sidebar {
+    color: #e9ecef;
+    background: #1f1f1f;
+    border-color: #343a40;
+}
+
+.o_swm_sidebar_header,
+.o_swm_sidebar_footer {
+    background: #262626;
+    border-color: #343a40;
+}
+
+.o_swm_sidebar_stats,
+.o_swm_record,
+.o_swm_stat + .o_swm_stat {
+    border-color: #343a40;
+}
+
+.o_swm_record {
+    color: #e9ecef;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    &--active,
+    &--active:hover {
+        color: #fff;
+        background: var(--o-brand-primary, #714b67);
+    }
+}
+
+.o_swm_stat_label,
+.o_swm_record_coords,
+.o_swm_record_meta,
+.o_swm_sidebar_footer,
+.o_swm_empty {
+    color: #adb5bd;
+}
+
+.o_swm_stats,
+.o_swm_actions .o_swm_action,
+.o_swm_sidebar_toggle {
+    color: #e9ecef;
+    background: #262626;
+    border-color: #495057;
+}
+
+.o_swm_actions .o_swm_action:hover,
+.o_swm_sidebar_close:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.o_swm_stats_label {
+    color: #adb5bd;
+}

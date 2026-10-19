@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <!-- Main map layout: sidebar + canvas on desktop, canvas + overlay on mobile. -->
+    <t t-name="soft_web_map.MapCanvas">
+        <div class="o_swm_map">
+            <t t-if="!env.isSmall">
+                <t t-call="soft_web_map.MapSidebar"/>
+            </t>
+
+            <div class="o_swm_canvas_wrap">
+                <div t-ref="mapContainer"
+                     class="o_swm_canvas"
+                     t-att-style="mapHeight ? 'height: ' + mapHeight : null"/>
+
+                <div t-if="state.error" class="o_swm_error" role="alert">
+                    <i class="fa fa-exclamation-triangle me-2"/>
+                    Failed to load the map. Please try refreshing the page.
+                </div>
+
+                <div class="o_swm_stats" role="status">
+                    <i class="fa fa-map-marker"/>
+                    <span>
+                        <strong t-out="locatedCount"/> / <strong t-out="totalCount"/>
+                        <span class="o_swm_stats_label">located</span>
+                    </span>
+                </div>
+
+                <button t-if="env.isSmall"
+                        type="button"
+                        class="o_swm_sidebar_toggle"
+                        t-on-click="toggleSidebar"
+                        aria-label="Open record list"
+                        title="Open record list">
+                    <i class="fa fa-list"/>
+                </button>
+
+                <div t-if="state.loading" class="o_swm_loading" role="status">
+                    <span class="spinner-border text-primary" aria-hidden="true"/>
+                    <span class="visually-hidden">Loading map...</span>
+                </div>
+
+                <div class="o_swm_actions">
+                    <button type="button"
+                            class="o_swm_action"
+                            t-on-click="fitMarkers"
+                            aria-label="Fit map to markers"
+                            title="Fit map to markers">
+                        <i class="fa fa-crosshairs"/>
+                    </button>
+                    <button type="button"
+                            class="o_swm_action"
+                            t-on-click="redraw"
+                            aria-label="Redraw map"
+                            title="Redraw map">
+                        <i class="fa fa-refresh"/>
+                    </button>
+                </div>
+            </div>
+
+            <t t-if="env.isSmall and state.panelOpen">
+                <t t-call="soft_web_map.MapSidebar"/>
+            </t>
+        </div>
+    </t>
+
+    <!-- Record sidebar / mobile overlay. -->
+    <t t-name="soft_web_map.MapSidebar">
+        <aside t-att-class="env.isSmall ? 'o_swm_sidebar o_swm_sidebar--overlay' : 'o_swm_sidebar'">
+            <header class="o_swm_sidebar_header">
+                <div t-if="!hideTitle" class="o_swm_sidebar_title">
+                    <i class="fa fa-map-o"/>
+                    <span t-out="panelTitle"/>
+                </div>
+                <button t-if="env.isSmall"
+                        type="button"
+                        class="o_swm_sidebar_close"
+                        t-on-click="toggleSidebar"
+                        aria-label="Close record list"
+                        title="Close record list">
+                    <i class="fa fa-times"/>
+                </button>
+            </header>
+
+            <div class="o_swm_sidebar_body">
+                <a class="btn btn-outline-primary btn-sm o_swm_external_link"
+                   t-att-href="googleDirectionsUrl"
+                   target="_blank"
+                   rel="noopener noreferrer">
+                    <i class="fa fa-external-link"/>
+                    Open in Google Maps
+                </a>
+
+                <div class="o_swm_sidebar_stats">
+                    <div class="o_swm_stat">
+                        <span class="o_swm_stat_value" t-out="totalCount"/>
+                        <span class="o_swm_stat_label">Total</span>
+                    </div>
+                    <div class="o_swm_stat">
+                        <span class="o_swm_stat_value" t-out="locatedCount"/>
+                        <span class="o_swm_stat_label">Located</span>
+                    </div>
+                </div>
+
+                <div class="o_swm_records_wrap">
+                    <t t-if="locatedRecords.length">
+                        <t t-call="soft_web_map.MapRecordList"/>
+                    </t>
+                    <t t-else="">
+                        <p class="o_swm_empty">No records with coordinates.</p>
+                    </t>
+                </div>
+            </div>
+
+            <footer class="o_swm_sidebar_footer">
+                <i class="fa fa-info-circle"/>
+                Click a record to center the map
+            </footer>
+        </aside>
+    </t>
+
+    <!-- Record rows. -->
+    <t t-name="soft_web_map.MapRecordList">
+        <ul class="o_swm_records" role="list">
+            <li t-foreach="locatedRecords" t-as="record" t-key="record.id">
+                <button type="button"
+                        class="o_swm_record"
+                        t-att-data-record-id="record.id"
+                        t-att-class="record.id === state.selectedId ? 'o_swm_record--active' : ''"
+                        t-on-click="onRecordClick">
+                    <span class="o_swm_record_icon">
+                        <i class="fa"
+                           t-att-class="record.id === state.selectedId ? 'fa-dot-circle-o' : 'fa-map-marker'"/>
+                    </span>
+                    <span class="o_swm_record_content">
+                        <span t-if="!hideName" class="o_swm_record_name" t-out="recordName(record)"/>
+                        <span class="o_swm_record_coords">
+                            <i class="fa fa-map-marker"/>
+                            <t t-out="coordinateLabel(record)"/>
+                        </span>
+                        <span t-if="record.phone" class="o_swm_record_meta">
+                            <i class="fa fa-phone"/>
+                            <t t-out="record.phone"/>
+                        </span>
+                    </span>
+                </button>
+            </li>
+        </ul>
+    </t>
+
+</templates>

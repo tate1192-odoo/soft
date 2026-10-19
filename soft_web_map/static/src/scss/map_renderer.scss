@@ -1,0 +1,446 @@
+.o_swm_map {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+    overflow: hidden;
+    background: var(--o-webclient-background-color, #f8f9fa);
+    color: var(--o-main-text-color, #212529);
+}
+
+// ---------------------------------------------------------------------
+// Record sidebar
+// ---------------------------------------------------------------------
+
+.o_swm_sidebar {
+    display: flex;
+    flex: 0 0 280px;
+    flex-direction: column;
+    min-width: 220px;
+    max-width: 320px;
+    background: var(--o-view-background-color, #fff);
+    border-right: 1px solid var(--o-border-color, #dee2e6);
+    color: var(--o-main-text-color, #212529);
+    z-index: 2;
+}
+
+.o_swm_sidebar--overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    width: 100%;
+    max-width: none;
+    border-right: 0;
+}
+
+.o_swm_sidebar_header {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: var(--o-control-panel-background-color, #fff);
+    border-bottom: 1px solid var(--o-border-color, #dee2e6);
+}
+
+.o_swm_sidebar_title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-overflow: ellipsis;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.o_swm_sidebar_close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    margin-left: auto;
+    padding: 0;
+    color: inherit;
+    background: transparent;
+    border: 0;
+    border-radius: 0.25rem;
+    cursor: pointer;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.06);
+    }
+}
+
+.o_swm_sidebar_body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.o_swm_external_link {
+    flex: 0 0 auto;
+    margin: 0.75rem;
+}
+
+.o_swm_sidebar_stats {
+    display: flex;
+    flex: 0 0 auto;
+    border-top: 1px solid var(--o-border-color, #dee2e6);
+    border-bottom: 1px solid var(--o-border-color, #dee2e6);
+}
+
+.o_swm_stat {
+    flex: 1 1 0;
+    padding: 0.6rem;
+    text-align: center;
+
+    & + & {
+        border-left: 1px solid var(--o-border-color, #dee2e6);
+    }
+}
+
+.o_swm_stat_value {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 600;
+    line-height: 1.2;
+}
+
+.o_swm_stat_label {
+    display: block;
+    font-size: 0.7rem;
+    color: var(--o-muted-color, #6c757d);
+    text-transform: uppercase;
+}
+
+.o_swm_records_wrap {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+.o_swm_records {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.o_swm_record {
+    display: flex;
+    gap: 0.6rem;
+    align-items: flex-start;
+    width: 100%;
+    padding: 0.6rem 1rem;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--o-border-color, #eee);
+    transition: background-color 0.15s ease;
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.04);
+    }
+
+    &--active {
+        color: #fff;
+        background: var(--o-brand-primary, #714b67);
+
+        &:hover {
+            background: var(--o-brand-primary, #714b67);
+        }
+
+        .o_swm_record_icon,
+        .o_swm_record_name,
+        .o_swm_record_coords,
+        .o_swm_record_meta {
+            color: #fff;
+        }
+
+        .o_swm_record_coords,
+        .o_swm_record_meta {
+            opacity: 0.85;
+        }
+    }
+}
+
+.o_swm_record_icon {
+    flex: 0 0 1rem;
+    padding-top: 0.1rem;
+    color: var(--o-brand-primary, #714b67);
+}
+
+.o_swm_record_content {
+    display: block;
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.o_swm_record_name {
+    display: block;
+    overflow: hidden;
+    font-weight: 500;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.o_swm_record_coords,
+.o_swm_record_meta {
+    display: block;
+    margin-top: 0.15rem;
+    overflow: hidden;
+    font-size: 0.75rem;
+    color: var(--o-muted-color, #6c757d);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.o_swm_empty {
+    padding: 1rem;
+    margin: 0;
+    font-size: 0.875rem;
+    color: var(--o-muted-color, #6c757d);
+    text-align: center;
+}
+
+.o_swm_sidebar_footer {
+    flex: 0 0 auto;
+    padding: 0.5rem 1rem;
+    font-size: 0.75rem;
+    color: var(--o-muted-color, #6c757d);
+    border-top: 1px solid var(--o-border-color, #dee2e6);
+}
+
+// ---------------------------------------------------------------------
+// Map canvas and overlays
+// ---------------------------------------------------------------------
+
+.o_swm_canvas_wrap {
+    position: relative;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+}
+
+.o_swm_canvas {
+    width: 100%;
+    height: 100%;
+    min-height: 400px;
+}
+
+.o_swm_stats {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    z-index: 1000;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    padding: 0.4rem 0.65rem;
+    font-size: 0.8rem;
+    pointer-events: none;
+    background: var(--o-view-background-color, #fff);
+    border: 1px solid var(--o-border-color, #dee2e6);
+    border-radius: 0.375rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.o_swm_stats_label {
+    margin-left: 0.25rem;
+    color: var(--o-muted-color, #6c757d);
+}
+
+.o_swm_sidebar_toggle {
+    position: absolute;
+    top: 5.5rem;
+    left: 0.75rem;
+    z-index: 1000;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.25rem;
+    padding: 0;
+    color: var(--o-main-text-color, #212529);
+    cursor: pointer;
+    background: var(--o-view-background-color, #fff);
+    border: 1px solid var(--o-border-color, #dee2e6);
+    border-radius: 0.375rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+}
+
+.o_swm_actions {
+    position: absolute;
+    right: 0.75rem;
+    bottom: 0.75rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.o_swm_action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    color: var(--o-main-text-color, #212529);
+    cursor: pointer;
+    background: var(--o-view-background-color, #fff);
+    border: 1px solid var(--o-border-color, #dee2e6);
+    border-radius: 0.375rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+
+    &:hover {
+        background: rgba(0, 0, 0, 0.04);
+    }
+}
+
+.o_swm_loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translate(-50%, -50%);
+}
+
+.o_swm_error {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    left: 0.75rem;
+    z-index: 1001;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.875rem;
+    color: #842029;
+    background: #f8d7da;
+    border: 1px solid #f5c2c7;
+    border-radius: 0.375rem;
+}
+
+// ---------------------------------------------------------------------
+// Markers and popup
+// ---------------------------------------------------------------------
+
+.o_swm_marker {
+    background: transparent;
+    border: 0;
+}
+
+.o_swm_marker_dot {
+    display: block;
+    width: 20px;
+    height: 20px;
+    background: #dc3545;
+    border: 3px solid #fff;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transition: transform 0.15s ease;
+}
+
+.o_swm_marker--active .o_swm_marker_dot {
+    background: #0d6efd;
+    transform: scale(1.15);
+}
+
+.o_swm_popup {
+    min-width: 220px;
+    padding: 0.25rem;
+}
+
+.o_swm_popup_name {
+    margin-bottom: 0.35rem;
+    font-weight: 600;
+}
+
+.o_swm_popup_address,
+.o_swm_popup_meta {
+    margin-top: 0.2rem;
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+.o_swm_open_record {
+    width: 100%;
+    margin-top: 0.75rem;
+}
+
+// ---------------------------------------------------------------------
+// Leaflet integration overrides (scoped to the map view)
+// ---------------------------------------------------------------------
+
+.o_swm_view {
+    .leaflet-popup-close-button {
+        display: none !important;
+    }
+
+    .leaflet-top,
+    .leaflet-bottom {
+        z-index: 999 !important;
+    }
+
+    .leaflet-container [aria-hidden="true"],
+    .leaflet-container [aria-hidden="1"] {
+        display: inline !important;
+    }
+
+    // Leaflet popups keep their light surface independent of the Odoo
+    // color scheme; theme variables would otherwise paint the text white.
+    .leaflet-popup-content-wrapper,
+    .leaflet-popup-tip {
+        color: #212529;
+        background: #fff;
+        --bs-body-color: #212529;
+        --bs-emphasis-color: #212529;
+        --bs-heading-color: #212529;
+        --bs-secondary-color: #6c757d;
+    }
+}
+
+// ---------------------------------------------------------------------
+// Mobile
+// ---------------------------------------------------------------------
+
+@media (max-width: 767.98px) {
+    .o_swm_sidebar {
+        flex-basis: 100%;
+        max-width: none;
+    }
+
+    .o_swm_stats {
+        top: 0.5rem;
+        right: 0.5rem;
+        padding: 0.3rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .o_swm_sidebar_toggle {
+        top: 5.5rem;
+        left: 0.5rem;
+    }
+
+    .o_swm_actions {
+        right: 0.5rem;
+        bottom: 0.5rem;
+    }
+
+    .o_swm_canvas,
+    .o_swm_canvas_wrap {
+        min-height: 0;
+    }
+}

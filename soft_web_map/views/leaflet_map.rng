@@ -1,0 +1,66 @@
+<!-- Relax NG schema for the leaflet_map view architecture. -->
+<grammar xmlns="http://relaxng.org/ns/structure/1.0"
+    datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes"
+    xmlns:rng="http://relaxng.org/ns/structure/1.0">
+    <define name="leaflet_map">
+        <element name="leaflet_map">
+            <zeroOrMore>
+                <choice>
+                    <attribute name="string"/>
+                    <attribute name="panel_title"/>
+                    <attribute name="limit"/>
+                    <attribute name="zoom"/>
+                    <attribute name="latitude"/>
+                    <attribute name="longitude"/>
+                    <attribute name="hide_title"/>
+                    <attribute name="hide_address"/>
+                    <attribute name="hide_name"/>
+                    <attribute name="clustering"/>
+                    <attribute name="clustering_radius"/>
+                    <attribute name="show_controls"/>
+                    <attribute name="default_order"/>
+                    <attribute name="map_height"/>
+                    <attribute name="tile_url"/>
+                </choice>
+            </zeroOrMore>
+            <zeroOrMore>
+                <choice>
+                    <ref name="field"/>
+                    <ref name="options"/>
+                </choice>
+            </zeroOrMore>
+        </element>
+    </define>
+
+    <define name="field">
+        <element name="field">
+            <attribute name="name"/>
+        </element>
+    </define>
+
+    <define name="options">
+        <element name="options">
+            <zeroOrMore>
+                <choice>
+                    <element name="tile_layer">
+                        <optional>
+                            <attribute name="url"/>
+                        </optional>
+                    </element>
+                    <element name="clustering">
+                        <optional>
+                            <attribute name="enabled"/>
+                        </optional>
+                        <optional>
+                            <attribute name="radius"/>
+                        </optional>
+                    </element>
+                </choice>
+            </zeroOrMore>
+        </element>
+    </define>
+
+    <start>
+        <ref name="leaflet_map"/>
+    </start>
+</grammar>

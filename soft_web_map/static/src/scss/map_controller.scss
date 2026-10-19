@@ -1,0 +1,9 @@
+.o_swm_view {
+    height: 100%;
+    min-height: 500px;
+    background: var(--o-webclient-background-color, #f8f9fa);
+
+    @media (max-width: 768px) {
+        min-height: 400px;
+    }
+}
