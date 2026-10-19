@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="sale_proforma_template_1" model="sale.proforma.template">
+            <field name="name">Leasing Proforma</field>
+            <field name="priority">1</field>
+            <field name="proforma"><![CDATA[
+<p>Ödeme Koşulu: Toplam ürün bedeli Proformada belirtilen Döviz Cinsi üzerinden satıcının banka hesabına yatırılır.</p>
+<p>Model Yılı / Durumu: 2023 Model / Yeni ve Kullanılmamıştır.</p>
+<p>CE Bilgileri: Ürünün CE Sertifikası vardır. Türkçe Uyarı ve İkaz İşaretlemeleri mevcuttur.</p>
+<p>Ürün Aksamı: Çalışması için zorunlu olanlar dışında aksam ve aksesuar bulunmamaktadır.</p>
+<p>Sigorta: Ürünün Türkiye 'de Gümrüklü Sahaya girene kadar olan sigortaları SATICI’ya aittir. Gümrüklü saha içinde konteynerin indirilmesi dahil, yapılacak tüm operasyon ve işlemlerin sigortaları, oluşacak tüm hasar, ziyan ve masrafları ALICI’ya aittir.</p>
+<p>Masraflar: Devir işlemleri tamamlanana kadar oluşacak Tüm Vergiler, Ek Vergiler, Lokal Masraflar, Ardiye, Ordino, Terminal, Tahliye, Demuraj, Antrepo, Tareks &amp; TSE 'den dolayı oluşabilecek masraflar ve Devir Ücretleri ALICI ‘ya aittir. Gümrüklü Sahada Oluşan Lokal Masraflar SATICI tarafından ALICI’ya ayrıca fatura edilecektir. Sadece Ürün Gümrüklü Sahaya girene kadar oluşan masraflar SATICI ’ya aittir.</p>
+<p>Garanti: Ürün 1 yıl Mekanik ve 2 Yıl Kontrol ünitesi üreticisinin garantisi altındadır.</p>
+<p>Gecikmeler: Nakliye, Liman, Gümrükler ve Üretici fabrika'dan kaynaklanan gecikmelerden ve Mücbir Sebeplerden doğan gecikmelerden Satıcı Sorumlu Tutulamaz</p>
+            ]]></field>
+        </record>
+    </data>
+</odoo>

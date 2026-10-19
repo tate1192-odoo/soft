@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sale_order_report_proforma" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//div[@name='so_total_summary']" position="after">
+            <div t-if="not is_html_empty(doc.sale_proforma)"
+                 class="mt-4"
+                 name="sale_proforma"
+                 t-field="doc.sale_proforma"/>
+        </xpath>
+    </template>
+</odoo>
