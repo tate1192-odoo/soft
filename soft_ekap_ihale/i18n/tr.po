@@ -410,7 +410,7 @@ msgstr "C = Tort2 / YM"
 #. module: soft_ekap_ihale
 #: model_terms:ir.ui.view,arch_db:soft_ekap_ihale.view_ekap_labor_calc_form
 msgid "Calculation (KGT 79.7 — including the 3% contract and overhead)"
-msgstr "Hesap (KGT 79.7 — %3 sözleşme ve genel gider dâhil)"
+msgstr "Hesap (KGT 79.7 — yüzde 3 sözleşme ve genel gider dâhil)"
 
 #. module: soft_ekap_ihale
 #: model_terms:ir.ui.view,arch_db:soft_ekap_ihale.view_ekap_limit_value_wizard_form
@@ -524,7 +524,7 @@ msgstr "Danışmanlık"
 #. module: soft_ekap_ihale
 #: model:ir.model.fields,field_description:soft_ekap_ihale.field_ekap_labor_calc__contract_overhead
 msgid "Contract + Overhead (3%)"
-msgstr "Sözleşme + Genel Gider (%3)"
+msgstr "Sözleşme + Genel Gider (yüzde 3)"
 
 #. module: soft_ekap_ihale
 #: model:ir.model.fields,field_description:soft_ekap_ihale.field_ekap_tender__contract_price
@@ -638,8 +638,8 @@ msgstr "Doğrudan temin / diğer"
 
 #. module: soft_ekap_ihale
 #: model:ir.model.fields,field_description:soft_ekap_ihale.field_ekap_tender__discount_rate
-msgid "Discount (Kırım) %"
-msgstr "Kırım Oranı (%)"
+msgid "Discount (%)"
+msgstr "İndirim (%)"
 
 #. module: soft_ekap_ihale
 #: model:ir.model.fields,field_description:soft_ekap_ihale.field_ekap_bid__bulk_discount_rate
@@ -718,7 +718,7 @@ msgstr "En az bir teklif tutarı girin."
 
 #. module: soft_ekap_ihale
 #: model:ir.model.fields,help:soft_ekap_ihale.field_ekap_limit_value_wizard__bid_text
-msgid "Enter the bids of the tender, one amount per line. Turkish notation (12.345,67) and dotted notation (12345.67) are both accepted."
+msgid "Enter the bids of the tender, one amount per line. Local notation (12.345,67) and dotted notation (12345.67) are both accepted."
 msgstr "İhaleye verilen teklifleri her satıra bir tutar olacak şekilde girin. Türkçe biçim (12.345,67) ve noktalı biçim (12345.67) kabul edilir."
 
 #. module: soft_ekap_ihale
@@ -1772,7 +1772,7 @@ msgstr "Sonuç ilanındaki sözleşme bedeli. Yaklaşık maliyetle birlikte idar
 
 #. module: soft_ekap_ihale
 #: model:ir.model.fields,help:soft_ekap_ihale.field_ekap_tender__winning_firm
-msgid "The firm the contract was awarded to, as printed in the result notice (EKAP sonuç ilanı). Our own company is filled in automatically when our bid wins."
+msgid "The firm the contract was awarded to, as printed in the result notice (EKAP result notice). Our own company is filled in automatically when our bid wins."
 msgstr "Sözleşmenin verildiği firma (EKAP sonuç ilanındaki şekliyle). Kendi teklifimiz kazanırsa şirketimiz otomatik yazılır."
 
 #. module: soft_ekap_ihale
@@ -2032,9 +2032,3 @@ msgstr "örn. ABC İnşaat Ltd. Şti."
 #: model:ir.model.fields,help:soft_ekap_ihale.field_ekap_labor_rate__source
 msgid "e.g. Minimum Wage Fixing Commission decision / Official Gazette."
 msgstr "Örn. Asgari Ücret Tespit Komisyonu kararı / RG."
-
-#. module: soft_ekap_ihale
-#. odoo-python
-#: code:addons/soft_ekap_ihale/models/tender.py:0
-msgid "tender_id"
-msgstr ""

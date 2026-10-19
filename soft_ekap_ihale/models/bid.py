@@ -67,6 +67,7 @@ class EkapBid(models.Model):
     )
     award_stamp_duty = fields.Monetary(compute="_compute_stamp_duty", string="Award Stamp Duty")
     contract_stamp_duty = fields.Monetary(compute="_compute_stamp_duty", string="Contract Stamp Duty")
+    tax_warning = fields.Char(compute="_compute_stamp_duty", string="Tax Check")
 
     submitted_on = fields.Datetime(string="Submission Date", readonly=True, copy=False)
     ekey_sent = fields.Boolean(string="e-Key Sent", tracking=True)
@@ -141,7 +142,7 @@ class EkapBid(models.Model):
                             ("ay", "month")
                         )
                     )
-                    to_check = monthly_items or bid.line_ids[:1]
+                    to_check = monthly_items or bid.line_ids
                     minimum = labor.minimum_unit_cost
                     below = to_check.filtered(
                         lambda l, minimum=minimum: l.offer_unit_price
@@ -163,21 +164,32 @@ class EkapBid(models.Model):
                 bid.provisional_security = bid.final_security = 0.0
                 bid.final_security_basis = False
                 continue
+            codes = ["PROVISIONAL_SECURITY", "FINAL_SECURITY"]
+            works_below_limit = (
+                bid.tender_type == "works"
+                and bid.limit_value
+                and bid.approximate_cost
+                and bid.bid_total < bid.limit_value
+            )
+            if works_below_limit:
+                codes.append("FINAL_SECURITY_BELOW_LIMIT")
             rates = {
-                "provisional": Params.get_value("PROVISIONAL_SECURITY", company=bid.company_id),
-                "final": Params.get_value("FINAL_SECURITY", company=bid.company_id),
-                "below_limit": Params.get_value_or_false(
-                    "FINAL_SECURITY_BELOW_LIMIT", company=bid.company_id
-                ),
+                code: Params.get_value_or_false(code, company=bid.company_id)
+                for code in codes
             }
+            missing = [code for code, value in rates.items() if value is False]
+            if missing:
+                bid.provisional_security = bid.final_security = 0.0
+                bid.final_security_basis = _("Missing parameter(s): %s.") % ", ".join(missing)
+                continue
             result = securities(
                 bid.bid_total,
-                rates["provisional"],
-                rates["final"],
+                rates["PROVISIONAL_SECURITY"],
+                rates["FINAL_SECURITY"],
                 approximate_cost=bid.approximate_cost,
                 limit_value=bid.limit_value,
                 works=bid.tender_type == "works",
-                final_below_limit_rate=rates["below_limit"],
+                final_below_limit_rate=rates.get("FINAL_SECURITY_BELOW_LIMIT"),
             )
             bid.provisional_security = result["provisional_security"]
             bid.final_security = result["final_security"]
@@ -189,15 +201,35 @@ class EkapBid(models.Model):
         for bid in self:
             if not bid.bid_total:
                 bid.award_stamp_duty = bid.contract_stamp_duty = 0.0
+                bid.tax_warning = False
+                continue
+            award_rate = Params.get_value_or_false(
+                "STAMP_DUTY_AWARD", company=bid.company_id
+            )
+            contract_rate = Params.get_value_or_false(
+                "STAMP_DUTY_CONTRACT", company=bid.company_id
+            )
+            missing = [
+                code
+                for code, value in (
+                    ("STAMP_DUTY_AWARD", award_rate),
+                    ("STAMP_DUTY_CONTRACT", contract_rate),
+                )
+                if value is False
+            ]
+            if missing:
+                bid.award_stamp_duty = bid.contract_stamp_duty = 0.0
+                bid.tax_warning = _("Missing parameter(s): %s.") % ", ".join(missing)
                 continue
             duties = stamp_duties(
                 bid.bid_total,
                 bid.bid_total,
-                Params.get_value("STAMP_DUTY_AWARD", company=bid.company_id),
-                Params.get_value("STAMP_DUTY_CONTRACT", company=bid.company_id),
+                award_rate,
+                contract_rate,
             )
             bid.award_stamp_duty = duties["award_stamp_duty"]
             bid.contract_stamp_duty = duties["contract_stamp_duty"]
+            bid.tax_warning = False
 
     def action_generate_lines(self):
         """Create one bid line per tender item, carrying the public unit price."""
@@ -236,9 +268,36 @@ class EkapBid(models.Model):
                 line.item_id.offer_unit_price = line.offer_unit_price
         return True
 
+    def _check_required_parameters(self):
+        """Block submission when a rate used by the bid is missing.
+
+        The display fields are forgiving (a manager archiving a parameter must
+        not make the bid list unreadable); the hard check belongs here, when the
+        bid is actually being submitted.
+        """
+        self.ensure_one()
+        codes = [
+            "PROVISIONAL_SECURITY",
+            "FINAL_SECURITY",
+            "STAMP_DUTY_AWARD",
+            "STAMP_DUTY_CONTRACT",
+        ]
+        if (
+            self.tender_type == "works"
+            and self.limit_value
+            and self.approximate_cost
+            and self.bid_total
+            and self.bid_total < self.limit_value
+        ):
+            codes.append("FINAL_SECURITY_BELOW_LIMIT")
+        Params = self.env["ekap.parameter"]
+        for code in codes:
+            Params.get_value(code, company=self.company_id)
+
     def action_submit(self):
         """Mark the bid as submitted — the submission itself happens on EKAP."""
         for bid in self:
+            bid._check_required_parameters()
             if not bid.line_ids:
                 raise UserError(_("A bid cannot be marked as submitted before its items exist."))
             if bid.abnormally_low and bid.tender_id.reject_without_explanation:
@@ -259,19 +318,27 @@ class EkapBid(models.Model):
         return True
 
     def action_won(self):
-        self.write({"state": "won"})
-        vals = {"state": "won"}
-        # The winner of our own award is known: fill it in, but never overwrite
-        # what the operator typed from the result notice.
-        if not self.tender_id.winning_firm:
-            vals["winning_firm"] = self.company_id.name
-        self.tender_id.write(vals)
+        for bid in self:
+            bid.write({"state": "won"})
+            vals = {"state": "won"}
+            # The winner of our own award is known: fill it in, but never
+            # overwrite what the operator typed from the result notice.
+            if not bid.tender_id.winning_firm:
+                vals["winning_firm"] = bid.company_id.name
+            bid.tender_id.write(vals)
+        return True
 
     def action_lost(self):
-        self.write({"state": "lost"})
-        # The winner is a competitor here: it comes from the result notice, so the
-        # operator fills the contract price, the winner and the valid bid count.
-        self.tender_id.write({"state": "lost"})
+        for bid in self:
+            bid.write({"state": "lost"})
+            # A lost bid does not make the tender lost while another bid of
+            # the same tender has won.
+            other_won = bid.tender_id.bid_ids.filtered(
+                lambda other: other.id != bid.id and other.state == "won"
+            )
+            if not other_won:
+                bid.tender_id.write({"state": "lost"})
+        return True
 
     def action_cancel(self):
         self.write({"state": "cancelled"})

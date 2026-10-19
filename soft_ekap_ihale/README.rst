@@ -106,7 +106,7 @@ Tests
 The suite covers the two limit value formulas, the abnormally low bid states,
 the labour floor arithmetic, securities, stamp duty, VAT, the amount parser,
 access rights, company-specific parameters, the tender → items → bid → controls
-flow, the lowest-bid selection and the award result/history. **45 tests.**
+flow, the lowest-bid selection and the award result/history. **49 tests.**
 
 License
 -------

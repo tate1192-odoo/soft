@@ -363,7 +363,9 @@ class EkapTenderItem(models.Model):
     _description = "Tender Work Item"
     _order = "tender_id, sequence, id"
 
-    tender_id = fields.Many2one("ekap.tender", required=True, ondelete="cascade", index=True)
+    tender_id = fields.Many2one(
+        "ekap.tender", required=True, ondelete="cascade", index=True, string="Tender"
+    )
     sequence = fields.Integer(default=10)
     item_no = fields.Char(string="Item No")
     name = fields.Char(string="Work Item", required=True)

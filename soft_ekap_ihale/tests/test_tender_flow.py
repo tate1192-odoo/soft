@@ -133,7 +133,10 @@ class TestTenderFlow(TransactionCase):
         )
         self.tender.labor_calc_id = calc
         bid = self._make_bid()
-        bid.line_ids[0].offer_unit_price = 20_000
+        # The first line stays above the floor; the warning must come from the
+        # second line, otherwise the check only inspected line_ids[:1].
+        bid.line_ids[0].offer_unit_price = 50_000
+        bid.line_ids[1].offer_unit_price = 20_000
         bid.line_ids.flush_recordset()
         self.assertTrue(bid.labor_warning)
 
@@ -243,3 +246,53 @@ class TestTenderFlow(TransactionCase):
 
         self.assertGreater(first.bid_total, second.bid_total)
         self.assertEqual(self.tender.best_bid_id, second)
+
+
+    def test_archived_parameter_keeps_the_bid_screen_readable(self):
+        """A missing display parameter must not break the list/form; submit blocks."""
+        params = self.env["ekap.parameter"].search([
+            ("code", "=", "PROVISIONAL_SECURITY"),
+            ("active", "=", True),
+        ])
+        params.write({"active": False})
+        bid = self._make_bid()
+
+        values = bid.read(
+            ["provisional_security", "final_security", "final_security_basis"]
+        )[0]
+        self.assertEqual(values["provisional_security"], 0.0)
+        self.assertEqual(values["final_security"], 0.0)
+        self.assertIn("PROVISIONAL_SECURITY", values["final_security_basis"])
+
+        with self.assertRaises(UserError):
+            bid.action_submit()
+        self.assertEqual(bid.state, "draft")
+
+    def test_result_actions_are_multi_record_safe(self):
+        """Two bids on two tenders can be closed as one recordset."""
+        first = self._make_bid()
+        other_tender = self.Tender.create(
+            {"tender_no": "2026/777003", "tender_type": "works"}
+        )
+        second = self.Bid.create({"tender_id": other_tender.id})
+
+        (first | second).action_won()
+
+        self.assertEqual(first.state, "won")
+        self.assertEqual(second.state, "won")
+        self.assertEqual(self.tender.state, "won")
+        self.assertEqual(other_tender.state, "won")
+        self.assertEqual(self.tender.winning_firm, first.company_id.name)
+        self.assertEqual(other_tender.winning_firm, second.company_id.name)
+
+    def test_a_lost_bid_does_not_hide_another_won_bid(self):
+        """The tender stays won while another bid of the same tender won."""
+        first = self._make_bid()
+        second = self._make_bid()
+
+        first.action_won()
+        second.action_lost()
+
+        self.assertEqual(first.state, "won")
+        self.assertEqual(second.state, "lost")
+        self.assertEqual(self.tender.state, "won")

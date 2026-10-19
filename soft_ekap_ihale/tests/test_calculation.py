@@ -25,18 +25,33 @@ class TestLimitValue(BaseCase):
     def test_works_limit_value_follows_45_1_1(self):
         """AC 10,000,000, N 1.20, bids 7.5M / 8M / 9M / 9.5M.
 
-        Tort1 = 8,500,000 · σ = 790,569.415 · band [7,709,430.58 ; 9,290,569.42]
+        Tort1 = 8,500,000 · σ = 912,870.929 (n−1) · band [7,587,129.07 ; 9,412,870.93]
         → Tort2 = (8,000,000 + 9,000,000) / 2 = 8,500,000 · C = 0.85
         → K = (3.2 × 0.85 − 0.85² − 0.6) / 1.85 = 0.7554054054
         → SD = (K × Tort2) / (C × N) = 6,295,045.045
         """
         result = limit_value_works(10_000_000, [7_500_000, 8_000_000, 9_000_000, 9_500_000], 1.20, detail=True)
         self.assertAlmostEqual(result["tort1"], 8_500_000.0, places=2)
-        self.assertAlmostEqual(result["sigma"], 790_569.4150420949, places=4)
+        self.assertAlmostEqual(result["sigma"], 912_870.9291752769, places=4)
         self.assertAlmostEqual(result["tort2"], 8_500_000.0, places=2)
         self.assertAlmostEqual(result["c"], 0.85, places=6)
         self.assertAlmostEqual(result["k"], 0.7554054054054056, places=9)
         self.assertAlmostEqual(result["limit_value"], 6_295_045.045045046, places=4)
+
+    def test_works_uses_the_sample_standard_deviation(self):
+        """KGT 45.1.1 uses n-1; this set changes the Tort2 band if n is used.
+
+        Bids 440k / 865k / 1,046k, AC 1,000,000, N 1.20:
+        population band [865,000] → SD 634,394.55;
+        sample band [865,000; 1,046,000] → Tort2 955,500 → SD 658,237.34.
+        """
+        result = limit_value_works(
+            1_000_000, [440_000, 865_000, 1_046_000], 1.20, detail=True
+        )
+        self.assertAlmostEqual(result["sigma"], 311_079.3039296143, places=4)
+        self.assertEqual(result["band_bids"], [865_000.0, 1_046_000.0])
+        self.assertAlmostEqual(result["tort2"], 955_500.0, places=2)
+        self.assertAlmostEqual(result["limit_value"], 658_237.3433904373, places=2)
 
     def test_works_discards_bids_outside_the_40_120_band(self):
         """Bids above AC×1.20 and below AC×0.40 never enter Tort1."""

@@ -15,7 +15,9 @@ class EkapLimitValueWizard(models.TransientModel):
     _name = "ekap.limit.value.wizard"
     _description = "Limit Value Calculation"
 
-    tender_id = fields.Many2one("ekap.tender", required=True, ondelete="cascade")
+    tender_id = fields.Many2one(
+        "ekap.tender", required=True, ondelete="cascade", string="Tender"
+    )
     tender_type = fields.Selection(related="tender_id.tender_type", string="Type")
     currency_id = fields.Many2one(related="tender_id.currency_id", string="Currency")
     company_id = fields.Many2one(related="tender_id.company_id")

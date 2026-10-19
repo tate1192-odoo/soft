@@ -2,10 +2,11 @@
 
 Construction works — Public Procurement General Communiqué (KGT) 45.1.1: the bids outside
 [approximate cost × 0.40, approximate cost × 1.20] are discarded, Tort1 is the
-arithmetic mean of the rest, sigma their standard deviation, Tort2 the mean of the
-bids inside [Tort1 - sigma, Tort1 + sigma], C = Tort2 / YM, K is read from the
-piecewise rule below and SD = (K × Tort2) / (C × N). SD can never be smaller than
-40% of the approximate cost.
+arithmetic mean of the rest, sigma their sample standard deviation (n-1), Tort2
+the mean of the bids inside [Tort1 - sigma, Tort1 + sigma], C = Tort2 / YM, K is
+read from the piecewise rule below and SD = (K × Tort2) / (C × N). SD can never
+be smaller than 40% of the approximate cost. The n-1 denominator follows the
+formula printed in KGT 45.1.1 and the official worked example.
 
 Service procurement (not personnel based) — KGT 79.1.2:
 SD = ((YM + ΣTn) / (n + 1)) × R, where the bids below 60% of YM and above YM are
@@ -16,7 +17,7 @@ offer components" (KGT 62/A), which is why :func:`check_abnormally_low` refuses 
 judge a goods tender by a limit value.
 """
 
-from statistics import mean, pstdev
+from statistics import mean, stdev
 
 # KGT 45.1.1 — the cuts applied before the average is taken.
 WORKS_LOWER_RATIO = 0.40
@@ -70,7 +71,7 @@ def limit_value_works(approximate_cost, bids, n_coefficient=1.20, detail=False):
         )
 
     tort1 = mean(valid)
-    sigma = pstdev(valid) if len(valid) > 1 else 0.0
+    sigma = stdev(valid) if len(valid) > 1 else 0.0
     if sigma:
         band = [b for b in valid if tort1 - sigma <= b <= tort1 + sigma]
     else:
