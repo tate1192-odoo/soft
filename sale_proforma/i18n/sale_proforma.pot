@@ -1,0 +1,207 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sale_proforma
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15 21:11+0000\n"
+"PO-Revision-Date: 2026-10-15 21:11+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__active
+msgid "Active"
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:ir.ui.view,arch_db:sale_proforma.sale_proforma_template_search_view
+msgid "Archived"
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:sale.proforma.template,proforma:sale_proforma.sale_proforma_template_1
+msgid ""
+"CE Bilgileri: Ürünün CE Sertifikası vardır. Türkçe Uyarı ve İkaz "
+"İşaretlemeleri mevcuttur."
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__company_id
+msgid "Company"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_order__display_name
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:sale.proforma.template,proforma:sale_proforma.sale_proforma_template_1
+msgid ""
+"Garanti: Ürün 1 yıl Mekanik ve 2 Yıl Kontrol ünitesi üreticisinin garantisi "
+"altındadır."
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:sale.proforma.template,proforma:sale_proforma.sale_proforma_template_1
+msgid ""
+"Gecikmeler: Nakliye, Liman, Gümrükler ve Üretici fabrika'dan kaynaklanan "
+"gecikmelerden ve Mücbir Sebeplerden doğan gecikmelerden Satıcı Sorumlu "
+"Tutulamaz"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields.selection,name:sale_proforma.selection__sale_proforma_template__priority__1
+msgid "High"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_order__id
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__id
+msgid "ID"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: sale_proforma
+#: model:sale.proforma.template,name:sale_proforma.sale_proforma_template_1
+msgid "Leasing Proforma"
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:ir.ui.view,arch_db:sale_proforma.sale_order_proforma_add_form_view
+msgid "Load a template"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields.selection,name:sale_proforma.selection__sale_proforma_template__priority__0
+msgid "Low"
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:sale.proforma.template,proforma:sale_proforma.sale_proforma_template_1
+msgid ""
+"Masraflar: Devir işlemleri tamamlanana kadar oluşacak Tüm Vergiler, Ek "
+"Vergiler, Lokal Masraflar, Ardiye, Ordino, Terminal, Tahliye, Demuraj, "
+"Antrepo, Tareks &amp; TSE 'den dolayı oluşabilecek masraflar ve Devir "
+"Ücretleri ALICI ‘ya aittir. Gümrüklü Sahada Oluşan Lokal Masraflar SATICI "
+"tarafından ALICI’ya ayrıca fatura edilecektir. Sadece Ürün Gümrüklü Sahaya "
+"girene kadar oluşan masraflar SATICI ’ya aittir."
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:sale.proforma.template,proforma:sale_proforma.sale_proforma_template_1
+msgid "Model Yılı / Durumu: 2023 Model / Yeni ve Kullanılmamıştır."
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__priority
+msgid "Priority"
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:ir.ui.view,arch_db:sale_proforma.sale_order_proforma_add_form_view
+msgid "Proforma"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__proforma
+msgid "Proforma Content"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.ui.menu,name:sale_proforma.menu_proforma_invoice_template_sale
+msgid "Proforma Document"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_order__sale_proforma_template_id
+msgid "Proforma Invoice"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_proforma_template__name
+msgid "Proforma Name"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.actions.act_window,name:sale_proforma.action_sale_proforma_template
+#: model_terms:ir.ui.view,arch_db:sale_proforma.sale_proforma_template_form_view
+#: model_terms:ir.ui.view,arch_db:sale_proforma.sale_proforma_template_list_view
+#: model_terms:ir.ui.view,arch_db:sale_proforma.sale_proforma_template_search_view
+msgid "Proforma Templates"
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:ir.ui.view,arch_db:sale_proforma.sale_proforma_template_form_view
+msgid "Proforma Title..."
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model.fields,field_description:sale_proforma.field_sale_order__sale_proforma
+msgid "Proforma invoice"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model,name:sale_proforma.model_sale_proforma_template
+msgid "Sale Proforma Template"
+msgstr ""
+
+#. module: sale_proforma
+#: model:ir.model,name:sale_proforma.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:sale.proforma.template,proforma:sale_proforma.sale_proforma_template_1
+msgid ""
+"Sigorta: Ürünün Türkiye 'de Gümrüklü Sahaya girene kadar olan sigortaları "
+"SATICI’ya aittir. Gümrüklü saha içinde konteynerin indirilmesi dahil, "
+"yapılacak tüm operasyon ve işlemlerin sigortaları, oluşacak tüm hasar, ziyan"
+" ve masrafları ALICI’ya aittir."
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:ir.ui.view,arch_db:sale_proforma.sale_order_proforma_add_form_view
+msgid "The proforma will be displayed on the printed document."
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:sale.proforma.template,proforma:sale_proforma.sale_proforma_template_1
+msgid ""
+"Ödeme Koşulu: Toplam ürün bedeli Proformada belirtilen Döviz Cinsi üzerinden"
+" satıcının banka hesabına yatırılır."
+msgstr ""
+
+#. module: sale_proforma
+#: model_terms:sale.proforma.template,proforma:sale_proforma.sale_proforma_template_1
+msgid ""
+"Ürün Aksamı: Çalışması için zorunlu olanlar dışında aksam ve aksesuar "
+"bulunmamaktadır."
+msgstr ""

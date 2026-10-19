@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="sale_proforma_template_search_view" model="ir.ui.view">
+        <field name="name">sale.proforma.template.search</field>
+        <field name="model">sale.proforma.template</field>
+        <field name="arch" type="xml">
+            <search string="Proforma Templates">
+                <field name="name"/>
+                <filter name="inactive" string="Archived" domain="[('active', '=', False)]"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="sale_proforma_template_form_view" model="ir.ui.view">
+        <field name="name">sale.proforma.template.form</field>
+        <field name="model">sale.proforma.template</field>
+        <field name="arch" type="xml">
+            <form string="Proforma Templates">
+                <field name="active" invisible="1"/>
+                <h1 class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex w-100">
+                        <field name="priority" widget="priority" class="me-3"/>
+                        <field name="name" class="o_task_name text-truncate w-100 w-md-75 pe-2"
+                               placeholder="Proforma Title..."/>
+                    </div>
+                </h1>
+                <group>
+                    <field name="proforma" colspan="2" widget="html"/>
+                    <field name="company_id" groups="base.group_multi_company"/>
+                </group>
+            </form>
+        </field>
+    </record>
+
+    <record id="sale_proforma_template_list_view" model="ir.ui.view">
+        <field name="name">sale.proforma.template.list</field>
+        <field name="model">sale.proforma.template</field>
+        <field name="arch" type="xml">
+            <list string="Proforma Templates">
+                <field name="priority" widget="priority" optional="show" nolabel="1" options="{'autosave': False}"/>
+                <field name="name"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_sale_proforma_template" model="ir.actions.act_window">
+        <field name="name">Proforma Templates</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">sale.proforma.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="sale_proforma_template_list_view"/>
+    </record>
+
+     <menuitem
+        name="Proforma Document"
+        id="menu_proforma_invoice_template_sale"
+        action="sale_proforma.action_sale_proforma_template"
+        parent="sale.menu_sale_config"
+    />
+</odoo>
