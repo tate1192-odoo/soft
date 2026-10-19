@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_ekap_tender" model="ir.sequence">
+            <field name="name">Tender Reference</field>
+            <field name="code">ekap.tender</field>
+            <field name="prefix">TENDER/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+        <record id="seq_ekap_bid" model="ir.sequence">
+            <field name="name">Bid Reference</field>
+            <field name="code">ekap.bid</field>
+            <field name="prefix">BID/%(year)s/</field>
+            <field name="padding">4</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,33 @@
+{
+    "name": "Soft EKAP Tender",
+    "version": "19.0.1.0.0",
+    "summary": "Bid preparation and bid pricing for Turkish public tenders (EKAP): "
+    "limit value, abnormally low bid, labour minimum cost, security/stamp duty/VAT",
+    "author": "Softteknik Bilişim",
+    "website": "https://softteknik.com",
+    "license": "LGPL-3",
+    "category": "Services",
+    "sequence": 60,
+    "depends": [
+        "mail",
+        "uom",
+        "sale",
+    ],
+    "data": [
+        "security/security.xml",
+        "security/ir.model.access.csv",
+        "data/parameter_data.xml",
+        "data/sequence_data.xml",
+        "views/tender_views.xml",
+        "views/bid_views.xml",
+        "views/analysis_views.xml",
+        "views/labor_views.xml",
+        "views/parameter_views.xml",
+        "views/limit_value_wizard_views.xml",
+        "views/menu.xml",
+        "report/bid_report.xml",
+    ],
+    "application": True,
+    "installable": True,
+    "auto_install": False,
+}

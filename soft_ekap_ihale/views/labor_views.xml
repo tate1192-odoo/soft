@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ekap_labor_rate_list" model="ir.ui.view">
+        <field name="name">ekap.labor.rate.list</field>
+        <field name="model">ekap.labor.rate</field>
+        <field name="arch" type="xml">
+            <list string="Minimum Wage Periods" editable="bottom">
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="gross_minimum_wage"/>
+                <field name="source"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ekap_labor_rate_form" model="ir.ui.view">
+        <field name="name">ekap.labor.rate.form</field>
+        <field name="model">ekap.labor.rate</field>
+        <field name="arch" type="xml">
+            <form string="Minimum Wage Period">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="gross_minimum_wage"/>
+                            <field name="source"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="currency_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ekap_labor_rate" model="ir.actions.act_window">
+        <field name="name">Minimum Wage Periods</field>
+        <field name="res_model">ekap.labor.rate</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_ekap_labor_calc_list" model="ir.ui.view">
+        <field name="name">ekap.labor.calc.list</field>
+        <field name="model">ekap.labor.calc</field>
+        <field name="arch" type="xml">
+            <list string="Labour Calculations">
+                <field name="name"/>
+                <field name="tender_id"/>
+                <field name="worker_count"/>
+                <field name="month_count"/>
+                <field name="minimum_unit_cost"/>
+                <field name="minimum_hourly_cost"/>
+                <field name="total_minimum_cost"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ekap_labor_calc_form" model="ir.ui.view">
+        <field name="name">ekap.labor.calc.form</field>
+        <field name="model">ekap.labor.calc</field>
+        <field name="arch" type="xml">
+            <form string="Labour Minimum Cost Calculation">
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group string="Inputs">
+                            <field name="tender_id"/>
+                            <field name="rate_id"/>
+                            <field name="worker_count"/>
+                            <field name="month_count"/>
+                            <field name="employer_ss_reduction" widget="boolean_toggle"/>
+                        </group>
+                        <group string="Extra Items">
+                            <field name="transport_monthly"/>
+                            <field name="clothing_yearly"/>
+                            <field name="overtime_hours_monthly"/>
+                            <field name="overtime_coefficient"/>
+                            <field name="monthly_working_hours"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Calculation (KGT 79.7 — including the 3% contract and overhead)">
+                        <group>
+                            <field name="employer_social_security"/>
+                            <field name="meal"/>
+                            <field name="clothing_monthly"/>
+                            <field name="overtime"/>
+                            <field name="total_without_profit"/>
+                            <field name="contract_overhead"/>
+                        </group>
+                        <group>
+                            <field name="minimum_unit_cost"/>
+                            <field name="minimum_hourly_cost"/>
+                            <field name="total_minimum_cost"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ekap_labor_calc" model="ir.actions.act_window">
+        <field name="name">Labour Calculations</field>
+        <field name="res_model">ekap.labor.calc</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Compute the labour minimum cost</p>
+            <p>In personnel-based service procurements a bid cannot be below this
+               calculation (KGT 79.5).</p>
+        </field>
+    </record>
+</odoo>

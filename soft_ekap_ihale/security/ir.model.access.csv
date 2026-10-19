@@ -1,0 +1,15 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ekap_tender_user,ekap.tender user,model_ekap_tender,group_ekap_user,1,1,1,0
+access_ekap_tender_manager,ekap.tender manager,model_ekap_tender,group_ekap_manager,1,1,1,1
+access_ekap_tender_item_user,ekap.tender.item user,model_ekap_tender_item,group_ekap_user,1,1,1,1
+access_ekap_analysis_user,ekap.analysis user,model_ekap_analysis,group_ekap_user,1,1,1,1
+access_ekap_analysis_line_user,ekap.analysis.line user,model_ekap_analysis_line,group_ekap_user,1,1,1,1
+access_ekap_bid_user,ekap.bid user,model_ekap_bid,group_ekap_user,1,1,1,0
+access_ekap_bid_manager,ekap.bid manager,model_ekap_bid,group_ekap_manager,1,1,1,1
+access_ekap_bid_line_user,ekap.bid.line user,model_ekap_bid_line,group_ekap_user,1,1,1,1
+access_ekap_parameter_user,ekap.parameter user,model_ekap_parameter,group_ekap_user,1,0,0,0
+access_ekap_parameter_manager,ekap.parameter manager,model_ekap_parameter,group_ekap_manager,1,1,1,1
+access_ekap_labor_rate_user,ekap.labor.rate user,model_ekap_labor_rate,group_ekap_user,1,0,0,0
+access_ekap_labor_rate_manager,ekap.labor.rate manager,model_ekap_labor_rate,group_ekap_manager,1,1,1,1
+access_ekap_labor_calc_user,ekap.labor.calc user,model_ekap_labor_calc,group_ekap_user,1,1,1,1
+access_ekap_limit_value_wizard,ekap.limit.value.wizard,model_ekap_limit_value_wizard,group_ekap_user,1,1,1,1

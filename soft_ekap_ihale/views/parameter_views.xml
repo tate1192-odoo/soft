@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ekap_parameter_list" model="ir.ui.view">
+        <field name="name">ekap.parameter.list</field>
+        <field name="model">ekap.parameter</field>
+        <field name="arch" type="xml">
+            <list string="Tender Parameters" editable="bottom">
+                <field name="code"/>
+                <field name="name" column_invisible="True"/>
+                <field name="value" widget="float" digits="[16, 6]"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="source"/>
+                <field name="company_id" groups="base.group_multi_company" optional="hide"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ekap_parameter_form" model="ir.ui.view">
+        <field name="name">ekap.parameter.form</field>
+        <field name="model">ekap.parameter</field>
+        <field name="arch" type="xml">
+            <form string="Tender Parameter">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="value" digits="[16, 6]"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                        </group>
+                        <group>
+                            <field name="source"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ekap_parameter_search" model="ir.ui.view">
+        <field name="name">ekap.parameter.search</field>
+        <field name="model">ekap.parameter</field>
+        <field name="arch" type="xml">
+            <search string="Search Parameters">
+                <field name="code"/>
+                <field name="source"/>
+                <filter name="filter_active_now" string="Valid Today"
+                        domain="[('date_from', '&lt;=', context_today().strftime('%Y-%m-%d')), '|', ('date_to', '=', False), ('date_to', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="group_code" string="Code" context="{'group_by': 'code'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ekap_parameter" model="ir.actions.act_window">
+        <field name="name">Parameters</field>
+        <field name="res_model">ekap.parameter</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_ekap_parameter_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">No rate or coefficient is defined</p>
+            <p>Limit value coefficients (N, R), security/stamp duty rates, social security
+               shares and labour rates live here with their effective date. The calculation
+               engine reads this table only.</p>
+        </field>
+    </record>
+</odoo>

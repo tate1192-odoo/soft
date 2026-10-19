@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ekap_analysis_list" model="ir.ui.view">
+        <field name="name">ekap.analysis.list</field>
+        <field name="model">ekap.analysis</field>
+        <field name="arch" type="xml">
+            <list string="Analyses">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="uom_id"/>
+                <field name="kind"/>
+                <field name="total_without_profit"/>
+                <field name="profit_overhead_rate"/>
+                <field name="total_amount"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ekap_analysis_form" model="ir.ui.view">
+        <field name="name">ekap.analysis.form</field>
+        <field name="model">ekap.analysis</field>
+        <field name="arch" type="xml">
+            <form string="Analysis">
+                <sheet>
+                    <div class="oe_title">
+                        <label for="code" string="Analysis Code"/>
+                        <h1><field name="code" placeholder="15.150.1002"/></h1>
+                        <h2><field name="name" placeholder="Analysis description"/></h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="uom_id"/>
+                            <field name="kind"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="total_without_profit"/>
+                            <field name="profit_overhead_rate"/>
+                            <field name="total_amount"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Inputs" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="line_type"/>
+                                    <field name="name"/>
+                                    <field name="reference"/>
+                                    <field name="uom_id"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price"/>
+                                    <field name="price_subtotal" sum="Input total"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ekap_analysis_search" model="ir.ui.view">
+        <field name="name">ekap.analysis.search</field>
+        <field name="model">ekap.analysis</field>
+        <field name="arch" type="xml">
+            <search string="Search Analysis">
+                <field name="code"/>
+                <field name="name"/>
+                <field name="line_ids" string="Input"/>
+                <filter name="filter_public" string="Public Analyses" domain="[('kind', '=', 'public')]"/>
+                <filter name="filter_new_unit_price" string="New Unit Price" domain="[('kind', '=', 'new_unit_price')]"/>
+                <separator/>
+                <filter name="group_kind" string="Type" context="{'group_by': 'kind'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ekap_analysis" model="ir.actions.act_window">
+        <field name="name">Analyses</field>
+        <field name="res_model">ekap.analysis</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_ekap_analysis_search"/>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">The analysis catalogue is empty</p>
+            <p>Enter the public analyses (or your own company analyses); every input
+               is classified as material, labour, machine, transport or other.</p>
+        </field>
+    </record>
+</odoo>
