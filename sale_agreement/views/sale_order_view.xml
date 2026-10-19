@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="sale_agreement_add_form_view" model="ir.ui.view">
+        <field name="name">agreement.template.sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='other_information']" position="after">
+                <page string="Agreement" name="agreement" invisible="state == 'cancel'" >
+                    <p style="margin-top: 10px;">The agreements will be displayed on the PDF document.</p>
+                    <group>
+                        <field name="sale_agreement_template_id"
+                               string="Load a Template"
+                               domain="[('company_id', '=', company_id)]"
+                               options="{'no_create':True}"/>
+                        <field name="sale_agreement" nolabel="1" colspan="2" widget="html"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
