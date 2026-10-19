@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ekap_bid_list" model="ir.ui.view">
+        <field name="name">ekap.bid.list</field>
+        <field name="model">ekap.bid</field>
+        <field name="arch" type="xml">
+            <list string="Bids" decoration-danger="abnormally_low and not explanation_ready">
+                <field name="name"/>
+                <field name="tender_id"/>
+                <field name="tender_type"/>
+                <field name="limit_value"/>
+                <field name="bid_total"/>
+                <field name="abnormally_low"/>
+                <field name="explanation_ready"/>
+                <field name="submitted_on"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'won'"
+                       decoration-danger="state == 'lost'"
+                       decoration-info="state == 'submitted'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ekap_bid_form" model="ir.ui.view">
+        <field name="name">ekap.bid.form</field>
+        <field name="model">ekap.bid</field>
+        <field name="arch" type="xml">
+            <form string="Bid">
+                <header>
+                    <button name="action_generate_lines" type="object" string="Generate Items" class="btn-secondary" invisible="line_ids"/>
+                    <button name="action_submit" type="object" string="Submitted" class="btn-primary" invisible="state not in ('draft', 'ready')"/>
+                    <button name="action_won" type="object" string="Won" invisible="state != 'submitted'"/>
+                    <button name="action_lost" type="object" string="Lost" invisible="state != 'submitted'"/>
+                    <button name="action_cancel" type="object" string="Cancelled" invisible="state in ('won', 'lost', 'cancelled')"/>
+                    <button name="action_reset_draft" type="object" string="Back to Draft" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,submitted,won"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="tender_id"/></h2>
+                    </div>
+                    <div class="alert alert-danger" role="alert" invisible="not abnormally_low">
+                        <field name="abnormally_low_status" readonly="1"/>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not labor_warning">
+                        <field name="labor_warning" readonly="1"/>
+                    </div>
+                    <div class="alert alert-warning" role="alert" invisible="not tax_warning">
+                        <field name="tax_warning" readonly="1"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="bulk_discount_rate"/>
+                            <button name="action_apply_discount" type="object" string="Apply Discount" class="btn-link" colspan="2" invisible="not bulk_discount_rate"/>
+                            <field name="explanation_ready" widget="boolean_toggle"/>
+                            <field name="submission_method"/>
+                        </group>
+                        <group>
+                            <field name="authority_total"/>
+                            <field name="bid_total"/>
+                            <field name="limit_value"/>
+                            <field name="approximate_cost"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Securities and Taxes">
+                        <group>
+                            <field name="provisional_security"/>
+                            <field name="final_security"/>
+                            <field name="final_security_basis"/>
+                        </group>
+                        <group>
+                            <field name="award_stamp_duty"/>
+                            <field name="contract_stamp_duty"/>
+                            <field name="ekey_sent" widget="boolean_toggle"/>
+                            <field name="submitted_on"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Bid Items" name="lines">
+                            <field name="line_ids">
+                                <list editable="bottom">
+                                    <field name="item_no"/>
+                                    <field name="name"/>
+                                    <field name="uom_id"/>
+                                    <field name="quantity"/>
+                                    <field name="authority_unit_price"/>
+                                    <field name="offer_unit_price"/>
+                                    <field name="price_subtotal" sum="Bid total"/>
+                                </list>
+                            </field>
+                            <button name="action_copy_prices_to_tender" type="object"
+                                    string="Write the prices on the tender" class="btn-secondary mt-2"/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ekap_bid_search" model="ir.ui.view">
+        <field name="name">ekap.bid.search</field>
+        <field name="model">ekap.bid</field>
+        <field name="arch" type="xml">
+            <search string="Search Bids">
+                <field name="name"/>
+                <field name="tender_id"/>
+                <filter name="filter_draft" string="In Preparation" domain="[('state', 'in', ('draft', 'ready'))]"/>
+                <filter name="filter_submitted" string="Submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter name="filter_abnormally_low" string="Abnormally Low Risk" domain="[('abnormally_low', '=', True), ('explanation_ready', '=', False)]"/>
+                <separator/>
+                <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                <filter name="group_type" string="Type" context="{'group_by': 'tender_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_ekap_bid" model="ir.actions.act_window">
+        <field name="name">Bids</field>
+        <field name="res_model">ekap.bid</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_ekap_bid_search"/>
+    </record>
+</odoo>

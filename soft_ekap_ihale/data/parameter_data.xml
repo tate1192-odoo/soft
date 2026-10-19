@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Rates and coefficients the calculation engine reads.
+
+        noupdate="1" on purpose: a user who corrects a rate (or adds the new year's
+        coefficient) must not have it overwritten by a later module update. Each row
+        carries the source it came from, so a bid priced last year can be explained.
+    -->
+    <data noupdate="1">
+        <record id="param_works_n_other" model="ekap.parameter">
+            <field name="code">WORKS_N_OTHER</field>
+            <field name="value">1.20</field>
+            <field name="date_from">2010-12-29</field>
+            <field name="source">KGT 45.1.1.1 (other construction works)</field>
+        </record>
+        <record id="param_works_n_superstructure" model="ekap.parameter">
+            <field name="code">WORKS_N_SUPERSTRUCTURE</field>
+            <field name="value">1.00</field>
+            <field name="date_from">2010-12-29</field>
+            <field name="source">KGT 45.1.1.1 (superstructure, electrical, mechanical installation, telecommunication)</field>
+        </record>
+        <record id="param_analysis_profit_overhead" model="ekap.parameter">
+            <field name="code">ANALYSIS_PROFIT_OVERHEAD</field>
+            <field name="value">0.25</field>
+            <field name="date_from">2003-06-11</field>
+            <field name="source">YİUY art.11 and public analyses (10% profit + 15% overhead)</field>
+        </record>
+        <record id="param_new_unit_price_profit" model="ekap.parameter">
+            <field name="code">NEW_UNIT_PRICE_PROFIT</field>
+            <field name="value">0.10</field>
+            <field name="date_from">2025-09-01</field>
+            <field name="source">YİGŞ art.22 (new unit price profit rate)</field>
+        </record>
+        <record id="param_new_unit_price_overhead" model="ekap.parameter">
+            <field name="code">NEW_UNIT_PRICE_OVERHEAD</field>
+            <field name="value">0.15</field>
+            <field name="date_from">2025-09-01</field>
+            <field name="source">YİGŞ art.22 (new unit price overhead cap)</field>
+        </record>
+        <record id="param_provisional_security" model="ekap.parameter">
+            <field name="code">PROVISIONAL_SECURITY</field>
+            <field name="value">0.03</field>
+            <field name="date_from">2003-01-04</field>
+            <field name="source">Law 4734 art.33 (not less than 3% of the bid)</field>
+        </record>
+        <record id="param_final_security" model="ekap.parameter">
+            <field name="code">FINAL_SECURITY</field>
+            <field name="value">0.06</field>
+            <field name="date_from">2003-01-04</field>
+            <field name="source">Law 4734 art.43 (6% of the bid)</field>
+        </record>
+        <record id="param_final_security_below_limit" model="ekap.parameter">
+            <field name="code">FINAL_SECURITY_BELOW_LIMIT</field>
+            <field name="value">0.09</field>
+            <field name="date_from">2003-01-04</field>
+            <field name="source">Law 4734 art.43 — construction bid below the limit value (on the approximate cost; verify the rate)</field>
+        </record>
+        <record id="param_stamp_duty_award" model="ekap.parameter">
+            <field name="code">STAMP_DUTY_AWARD</field>
+            <field name="value">0.00569</field>
+            <field name="date_from">2020-01-01</field>
+            <field name="source">Law 488 Stamp Duty Law table (1) II/2 (5.69 per mille)</field>
+        </record>
+        <record id="param_stamp_duty_contract" model="ekap.parameter">
+            <field name="code">STAMP_DUTY_CONTRACT</field>
+            <field name="value">0.00948</field>
+            <field name="date_from">2020-01-01</field>
+            <field name="source">Law 488 Stamp Duty Law table (1) I/A-1 (9.48 per mille)</field>
+        </record>
+        <record id="param_vat" model="ekap.parameter">
+            <field name="code">VAT</field>
+            <field name="value">0.20</field>
+            <field name="date_from">2023-07-10</field>
+            <field name="source">Law 3065 VAT Law general rate (20%)</field>
+        </record>
+        <record id="param_contract_overhead" model="ekap.parameter">
+            <field name="code">CONTRACT_OVERHEAD</field>
+            <field name="value">0.03</field>
+            <field name="date_from">2003-01-04</field>
+            <field name="source">KGT 79.7 (3% contract and overhead in the labour calculation)</field>
+        </record>
+        <record id="param_employee_social_security" model="ekap.parameter">
+            <field name="code">EMPLOYEE_SOCIAL_SECURITY</field>
+            <field name="value">0.14</field>
+            <field name="date_from">2008-10-01</field>
+            <field name="source">Law 5510 (employee share 14% — verify)</field>
+        </record>
+        <record id="param_employee_unemployment" model="ekap.parameter">
+            <field name="code">EMPLOYEE_UNEMPLOYMENT</field>
+            <field name="value">0.01</field>
+            <field name="date_from">2008-10-01</field>
+            <field name="source">Law 4447 (employee unemployment insurance 1%)</field>
+        </record>
+        <record id="param_employer_ss_reduced" model="ekap.parameter">
+            <field name="code">EMPLOYER_SS_REDUCED</field>
+            <field name="value">0.1575</field>
+            <field name="date_from">2008-10-01</field>
+            <field name="source">Law 5510 + 5-point reduction (employer share — verify)</field>
+        </record>
+        <record id="param_employer_ss_full" model="ekap.parameter">
+            <field name="code">EMPLOYER_SS_FULL</field>
+            <field name="value">0.2075</field>
+            <field name="date_from">2008-10-01</field>
+            <field name="source">Law 5510 (employer share without reduction — verify)</field>
+        </record>
+        <record id="param_employer_unemployment" model="ekap.parameter">
+            <field name="code">EMPLOYER_UNEMPLOYMENT</field>
+            <field name="value">0.02</field>
+            <field name="date_from">2008-10-01</field>
+            <field name="source">Law 4447 (employer unemployment insurance 2%)</field>
+        </record>
+        <record id="param_meal_rate" model="ekap.parameter">
+            <field name="code">MEAL_RATE</field>
+            <field name="value">0.06</field>
+            <field name="date_from">2003-01-04</field>
+            <field name="source">KGT (meal 6% of the daily gross wage)</field>
+        </record>
+        <record id="param_service_r_vehicle_rental" model="ekap.parameter">
+            <field name="code">SERVICE_R_VEHICLE_RENTAL</field>
+            <field name="value">0.77</field>
+            <field name="date_from">2026-02-01</field>
+            <field name="source">KİK decision 2026/DK.D-25 (verify)</field>
+        </record>
+        <record id="param_service_r_information_systems" model="ekap.parameter">
+            <field name="code">SERVICE_R_INFORMATION_SYSTEMS</field>
+            <field name="value">0.87</field>
+            <field name="date_from">2026-02-01</field>
+            <field name="source">KİK decision 2026/DK.D-25 (verify)</field>
+        </record>
+        <record id="param_service_r_catering" model="ekap.parameter">
+            <field name="code">SERVICE_R_CATERING</field>
+            <field name="value">0.77</field>
+            <field name="date_from">2026-02-01</field>
+            <field name="source">KİK decision 2026/DK.D-25 (verify)</field>
+        </record>
+        <record id="param_service_r_engineering" model="ekap.parameter">
+            <field name="code">SERVICE_R_ENGINEERING</field>
+            <field name="value">0.72</field>
+            <field name="date_from">2026-02-01</field>
+            <field name="source">KİK decision 2026/DK.D-25 (verify)</field>
+        </record>
+        <record id="param_service_r_insurance" model="ekap.parameter">
+            <field name="code">SERVICE_R_INSURANCE</field>
+            <field name="value">0.74</field>
+            <field name="date_from">2026-02-01</field>
+            <field name="source">KİK decision 2026/DK.D-25 (verify)</field>
+        </record>
+        <record id="param_service_r_transport" model="ekap.parameter">
+            <field name="code">SERVICE_R_TRANSPORT</field>
+            <field name="value">0.78</field>
+            <field name="date_from">2026-02-01</field>
+            <field name="source">KİK decision 2026/DK.D-25 (verify)</field>
+        </record>
+        <record id="param_service_r_other" model="ekap.parameter">
+            <field name="code">SERVICE_R_OTHER</field>
+            <field name="value">0.78</field>
+            <field name="date_from">2026-02-01</field>
+            <field name="source">KİK decision 2026/DK.D-25 (other services — verify)</field>
+        </record>
+    </data>
+</odoo>

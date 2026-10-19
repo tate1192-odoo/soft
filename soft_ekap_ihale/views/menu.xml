@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_ekap_root" name="Tender" sequence="55" web_icon="soft_ekap_ihale,static/description/icon.png"/>
+
+    <menuitem id="menu_ekap_tender" name="Tenders" parent="menu_ekap_root"
+              action="action_ekap_tender" sequence="10"/>
+    <menuitem id="menu_ekap_bid" name="Bids" parent="menu_ekap_root"
+              action="action_ekap_bid" sequence="20"/>
+
+    <menuitem id="menu_ekap_configuration" name="Configuration" parent="menu_ekap_root" sequence="90"/>
+    <menuitem id="menu_ekap_analysis" name="Analyses" parent="menu_ekap_configuration"
+              action="action_ekap_analysis" sequence="10"/>
+    <menuitem id="menu_ekap_labor_calc" name="Labour Calculations" parent="menu_ekap_configuration"
+              action="action_ekap_labor_calc" sequence="20"/>
+    <menuitem id="menu_ekap_labor_rate" name="Minimum Wage Periods" parent="menu_ekap_configuration"
+              action="action_ekap_labor_rate" sequence="30"/>
+    <menuitem id="menu_ekap_parameter" name="Parameters" parent="menu_ekap_configuration"
+              action="action_ekap_parameter" sequence="40"
+              groups="soft_ekap_ihale.group_ekap_manager"/>
+</odoo>

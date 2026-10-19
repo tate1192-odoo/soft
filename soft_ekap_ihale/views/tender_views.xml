@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ekap_tender_list" model="ir.ui.view">
+        <field name="name">ekap.tender.list</field>
+        <field name="model">ekap.tender</field>
+        <field name="arch" type="xml">
+            <list string="Tenders" decoration-danger="check_status == 'risk'" decoration-warning="check_status == 'warning'">
+                <field name="name"/>
+                <field name="tender_no"/>
+                <field name="contracting_authority"/>
+                <field name="tender_type"/>
+                <field name="province_id"/>
+                <field name="bid_deadline"/>
+                <field name="approximate_cost" optional="show"/>
+                <field name="limit_value" optional="show"/>
+                <field name="best_bid_id" optional="hide"/>
+                <field name="contract_price" optional="hide"/>
+                <field name="discount_rate" optional="show"/>
+                <field name="valid_bid_count" optional="hide"/>
+                <field name="state" widget="badge"
+                       decoration-info="state in ('following', 'in_preparation')"
+                       decoration-success="state == 'won'"
+                       decoration-danger="state == 'lost'"
+                       decoration-muted="state in ('draft', 'cancelled')"/>
+                <field name="check_message" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_ekap_tender_kanban" model="ir.ui.view">
+        <field name="name">ekap.tender.kanban</field>
+        <field name="model">ekap.tender</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="contracting_authority"/>
+                <field name="bid_deadline"/>
+                <field name="currency_id"/>
+                <field name="approximate_cost"/>
+                <field name="limit_value"/>
+                <field name="check_message"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="d-flex justify-content-between">
+                            <strong t-out="record.name.value or ''"/>
+                            <field name="state" widget="label_selection" options="{'classes': {'draft': 'muted', 'won': 'success', 'lost': 'danger'}}"/>
+                        </div>
+                        <div t-out="record.contracting_authority.value or ''" class="text-muted"/>
+                        <div>
+                            <span class="me-1">Tender:</span>
+                            <field name="bid_deadline"/>
+                        </div>
+                        <div>
+                            <span class="me-1">Approximate cost:</span>
+                            <field name="approximate_cost" widget="monetary"/>
+                        </div>
+                        <div>
+                            <span class="me-1">Limit value:</span>
+                            <field name="limit_value" widget="monetary"/>
+                        </div>
+                        <div t-if="record.check_message.value" class="text-danger" t-out="record.check_message.value"/>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_ekap_tender_form" model="ir.ui.view">
+        <field name="name">ekap.tender.form</field>
+        <field name="model">ekap.tender</field>
+        <field name="arch" type="xml">
+            <form string="Tender">
+                <header>
+                    <button name="action_state_following" type="object" string="Start Following" class="btn-secondary" invisible="state != 'draft'"/>
+                    <button name="action_state_in_preparation" type="object" string="Bid Preparation" class="btn-primary" invisible="state not in ('following', 'draft')"/>
+                    <button name="action_create_bid" type="object" string="Create Bid" class="btn-primary" invisible="state in ('won', 'lost', 'cancelled')"/>
+                    <button name="action_state_cancelled" type="object" string="Cancel" invisible="state in ('won', 'lost', 'cancelled')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,following,in_preparation,submitted,won"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_open_bids" icon="fa-gavel">
+                            <field name="bid_count" widget="statinfo" string="Bids"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="tender_no" placeholder="Tender ref (2026/123456)"/></h2>
+                    </div>
+                    <div class="alert alert-info" role="alert" invisible="check_status == 'ok'">
+                        <field name="check_message" readonly="1"/>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="contracting_authority"/>
+                            <field name="province_id"/>
+                            <field name="tender_type"/>
+                            <field name="method"/>
+                            <field name="partial_bid_allowed"/>
+                        </group>
+                        <group>
+                            <field name="bid_deadline"/>
+                            <field name="announcement_date"/>
+                            <field name="qa_date"/>
+                            <field name="user_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                    </group>
+                    <group string="Cost and Checks">
+                        <group>
+                            <field name="approximate_cost"/>
+                            <field name="limit_value"/>
+                            <field name="limit_value_source"/>
+                            <field name="reject_without_explanation" widget="boolean_toggle"/>
+                        </group>
+                        <group>
+                            <field name="n_coefficient" invisible="tender_type != 'works'"/>
+                            <field name="r_coefficient" invisible="tender_type != 'services'"/>
+                            <field name="personnel_based" widget="boolean_toggle"/>
+                            <field name="labor_calc_id"/>
+                            <button name="action_open_limit_value_wizard" type="object" string="Compute the Limit Value" class="btn-link" colspan="2"/>
+                        </group>
+                    </group>
+                    <group string="Award Result (after the tender)">
+                        <group>
+                            <field name="winning_firm" placeholder="e.g. ABC Construction Ltd."/>
+                            <field name="contract_price"/>
+                            <field name="valid_bid_count"/>
+                        </group>
+                        <group>
+                            <field name="discount_rate"/>
+                        </group>
+                    </group>
+                    <div class="text-muted fst-italic mb-3">
+                        <field name="authority_history" readonly="1"/>
+                    </div>
+                    <notebook>
+                        <page string="Work Items" name="items">
+                            <field name="item_ids" context="{'default_tender_id': id}">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="item_no"/>
+                                    <field name="name"/>
+                                    <field name="okas_code" optional="hide"/>
+                                    <field name="uom_id"/>
+                                    <field name="quantity" sum="Total quantity"/>
+                                    <field name="authority_unit_price"/>
+                                    <field name="offer_unit_price"/>
+                                    <field name="price_subtotal" sum="Bid total"/>
+                                    <field name="analysis_id" optional="show"/>
+                                </list>
+                            </field>
+                            <field name="item_count" invisible="1"/>
+                        </page>
+                        <page string="Bids" name="bids">
+                            <field name="bid_ids" context="{'default_tender_id': id}">
+                                <list editable="bottom">
+                                    <field name="name"/>
+                                    <field name="state"/>
+                                    <field name="bid_total"/>
+                                    <field name="abnormally_low"/>
+                                    <field name="submitted_on"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Documents" name="documents">
+                            <field name="document_ids" widget="many2many_binary"/>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="note" placeholder="Specification notes, points to watch…"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_ekap_tender_search" model="ir.ui.view">
+        <field name="name">ekap.tender.search</field>
+        <field name="model">ekap.tender</field>
+        <field name="arch" type="xml">
+            <search string="Search Tenders">
+                <field name="name" string="Reference"/>
+                <field name="tender_no"/>
+                <field name="contracting_authority"/>
+                <field name="province_id"/>
+                <field name="tender_type"/>
+                <filter name="my_tenders" string="My Tenders" domain="[('user_id', '=', uid)]"/>
+                <separator/>
+                <filter name="filter_following" string="Following / Preparation" domain="[('state', 'in', ('following', 'in_preparation'))]"/>
+                <filter name="filter_submitted" string="Submitted" domain="[('state', '=', 'submitted')]"/>
+                <filter name="filter_result" string="Concluded" domain="[('state', 'in', ('won', 'lost'))]"/>
+                <separator/>
+                <filter name="filter_upcoming" string="Deadline Approaching" domain="[('bid_deadline', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
+                <separator/>
+                <filter name="filter_single_bid" string="Single Valid Bid" domain="[('valid_bid_count', '=', 1)]"/>
+                <filter name="filter_discount_above" string="Awarded Above the Estimate" domain="[('discount_rate', '&lt;', 0)]"/>
+                <separator/>
+                <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                <filter name="group_type" string="Type" context="{'group_by': 'tender_type'}"/>
+                <filter name="group_authority" string="Contracting Authority" context="{'group_by': 'contracting_authority'}"/>
+                <filter name="group_province" string="Province" context="{'group_by': 'province_id'}"/>
+                <filter name="group_responsible" string="Responsible" context="{'group_by': 'user_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_ekap_tender_item_form" model="ir.ui.view">
+        <field name="name">ekap.tender.item.form</field>
+        <field name="model">ekap.tender.item</field>
+        <field name="arch" type="xml">
+            <form string="Work Item">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="tender_id"/>
+                            <field name="item_no"/>
+                            <field name="name"/>
+                            <field name="okas_code"/>
+                        </group>
+                        <group>
+                            <field name="uom_id"/>
+                            <field name="quantity"/>
+                            <field name="authority_unit_price"/>
+                            <field name="offer_unit_price"/>
+                            <field name="price_subtotal"/>
+                            <field name="analysis_id"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_ekap_tender" model="ir.actions.act_window">
+        <field name="name">Tenders</field>
+        <field name="res_model">ekap.tender</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_ekap_tender_search"/>
+        <field name="context">{'search_default_filter_following': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Add your first tender</p>
+            <p>Enter the public tenders you follow; run the work items, the bids and the
+               limit value / abnormally low checks from this record.</p>
+        </field>
+    </record>
+</odoo>

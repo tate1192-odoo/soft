@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_ekap_bid_schedule" model="ir.actions.report">
+        <field name="name">Unit Price Bid Schedule</field>
+        <field name="model">ekap.bid</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">soft_ekap_ihale.report_ekap_bid_schedule</field>
+        <field name="report_file">soft_ekap_ihale.report_ekap_bid_schedule</field>
+        <field name="print_report_name">'Bid Schedule - %s' % (object.name)</field>
+        <field name="binding_model_id" ref="model_ekap_bid"/>
+        <field name="binding_type">report</field>
+    </record>
+
+    <template id="report_ekap_bid_schedule">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2>Unit Price Bid Schedule</h2>
+                        <div class="row mt-3">
+                            <div class="col-6">
+                                <div><strong>Tender:</strong> <span t-out="doc.tender_id.name"/></div>
+                                <div><strong>Ref:</strong> <span t-out="doc.tender_id.tender_no or ''"/></div>
+                                <div><strong>Authority:</strong> <span t-out="doc.tender_id.contracting_authority or ''"/></div>
+                                <div><strong>Tender Date:</strong>
+                                    <span t-field="doc.tender_id.bid_deadline"
+                                          t-options="{'format': 'dd/MM/yyyy HH:mm'}"/>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div><strong>Bid No:</strong> <span t-out="doc.name"/></div>
+                                <div><strong>Company:</strong> <span t-out="doc.company_id.name"/></div>
+                                <div><strong>Approximate Cost:</strong>
+                                    <span t-field="doc.approximate_cost"/>
+                                </div>
+                                <div><strong>Limit Value:</strong>
+                                    <span t-field="doc.limit_value"/>
+                                </div>
+                            </div>
+                        </div>
+
+                        <table class="table table-sm mt-4">
+                            <thead>
+                                <tr>
+                                    <th>Item No</th>
+                                    <th>Work Item</th>
+                                    <th class="text-end">Quantity</th>
+                                    <th>Unit</th>
+                                    <th class="text-end">Unit Price</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="doc.line_ids" t-as="line">
+                                    <tr>
+                                        <td t-out="line.item_no or ''"/>
+                                        <td t-out="line.name or ''"/>
+                                        <td class="text-end" t-out="line.quantity"/>
+                                        <td t-out="line.uom_id.name or ''"/>
+                                        <td class="text-end"><span t-field="line.offer_unit_price"/></td>
+                                        <td class="text-end"><span t-field="line.price_subtotal"/></td>
+                                    </tr>
+                                </t>
+                            </tbody>
+                            <tfoot>
+                                <tr>
+                                    <th colspan="5" class="text-end">Bid Total</th>
+                                    <th class="text-end"><span t-field="doc.bid_total"/></th>
+                                </tr>
+                            </tfoot>
+                        </table>
+
+                        <div class="row mt-4">
+                            <div class="col-6">
+                                <h5>Securities and Taxes</h5>
+                                <div><strong>Provisional Security:</strong> <span t-field="doc.provisional_security"/></div>
+                                <div><strong>Final Security:</strong> <span t-field="doc.final_security"/></div>
+                                <div class="text-muted" t-out="doc.final_security_basis or ''"/>
+                                <div><strong>Award Stamp Duty:</strong> <span t-field="doc.award_stamp_duty"/></div>
+                                <div><strong>Contract Stamp Duty:</strong> <span t-field="doc.contract_stamp_duty"/></div>
+                            </div>
+                            <div class="col-6">
+                                <h5>Bid Check</h5>
+                                <div t-if="doc.abnormally_low" class="text-danger">
+                                    <span t-out="doc.abnormally_low_status"/>
+                                </div>
+                                <div t-if="doc.labor_warning" class="text-danger">
+                                    <span t-out="doc.labor_warning"/>
+                                </div>
+                                <div t-if="not doc.abnormally_low and not doc.labor_warning" class="text-success">
+                                    The limit value and labour checks are OK.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-5">
+                            <div class="col-6 text-center">
+                                <div class="border-top pt-2">Stamp / Signature</div>
+                            </div>
+                            <div class="col-6 text-center">
+                                <div class="border-top pt-2">Date</div>
+                            </div>
+                        </div>
+
+                        <p class="text-muted mt-4" style="font-size: 11px;">
+                            This output is the preparation schedule of the bid; it is
+                            not uploaded to EKAP. The bid itself is given in the EKAP
+                            desktop application with the e-signature of the authorised
+                            signatory, and the e-key is sent to EKAP before the bid
+                            opening time.
+                        </p>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>
