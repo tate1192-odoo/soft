@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="terms_sale_order_form_view" model="ir.ui.view">
+        <field name="name">terms.template.sale.order.form</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='other_information']" position="after">
+                <page string="Terms" name="terms">
+                    <p style="margin-top: 10px;">The terms will be displayed on the printed document.</p>
+                    <group>
+                        <field name="sale_terms_temp_up_id" domain="[('position','=','up')]"
+                               options="{'no_create':True}"/>
+                        <field name="sale_terms_up" nolabel="1" colspan="2" widget="html"/>
+                    </group>
+                    <group>
+                        <field name="sale_terms_temp_down_id" domain="[('position','=','down')]"
+                               options="{'no_create':True}"/>
+                        <field name="sale_terms_down" nolabel="1" colspan="2" widget="html"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

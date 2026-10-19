@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="sale_order_report_terms" inherit_id="sale.report_saleorder_document">
+        <xpath expr="//table[hasclass('o_main_table')]" position="before">
+            <div t-if="not is_html_empty(doc.sale_terms_up)"
+                 class="mt-4"
+                 name="sale_terms_up"
+                 t-field="doc.sale_terms_up"/>
+        </xpath>
+        <xpath expr="//div[@name='so_total_summary']" position="after">
+            <div t-if="not is_html_empty(doc.sale_terms_down)"
+                 class="mt-4"
+                 name="sale_terms_down"
+                 t-field="doc.sale_terms_down"/>
+        </xpath>
+    </template>
+</odoo>

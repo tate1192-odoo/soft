@@ -1,0 +1,190 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sale_terms
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-15 21:34+0000\n"
+"PO-Revision-Date: 2026-10-15 21:34+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__active
+msgid "Active"
+msgstr ""
+
+#. module: sale_terms
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_search_view
+msgid "Archived"
+msgstr ""
+
+#. module: sale_terms
+#: model_terms:sale.terms.template,terms:sale_terms.sale_terms_template_1
+msgid ""
+"Belirtilen fiyatlar, CIF ISTANBUL teslimi ve Net fiyattır. \n"
+"Ürünün teslim yerlerine ulaştırılmasına ilişkin, Yurt İçi Yükleme-Boşaltma ve Nakliye Giderleri ve Nakliye Sigortası Hariçtir,\n"
+"kesinlikle fiyata dahil değildir. Tüm Gümrük hizmetleri, Tüm Vergiler, Ek Vergiler, Lokal Masraflar,\n"
+"Ordino, Demuraj, Ardiye, TAREKS ve TSE denetiminden dolayı oluşabilecek masraflar, Serbest bölge çıkış fonu,\n"
+"''Yurtiçi Nakliye, Yükleme - Boşaltma ve Sigortaları'', KDV, Devir Masrafları vesair her türlü giderler ile\n"
+"Malın Devrinden “ALICI” nın işletmesinde kurulum (montaj) yapılacak yere indirilmesine kadar meydana gelebilecek\n"
+"bütün hasar, zarar, ziyan, sigorta ve masrafları “ALICI” ya aittir. Malın ALICI ‘ya devrine kadar oluşabilecek\n"
+"bütün hasar, zarar, ziyan ve gecikmelerden ''SATICI'' sorumlu tutulamaz ve hasar bedeli Sigorta Şirketi tarafından karşılanır.\n"
+"Ayrıca malın teslimine kadar oluşabilecek Gümrük Mevzuatı değişikliklerden ''SATICI'' sorumlu tutulamaz.\n"
+"“ALICI” tüm bu hususlarda herhangi bir itirazda bulunmayacağını kabul, beyan ve taahhüt eder."
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__company_id
+msgid "Company"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__display_name
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields.selection,name:sale_terms.selection__sale_terms_template__position__down
+msgid "Down Line"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields.selection,name:sale_terms.selection__sale_terms_template__priority__1
+msgid "High"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__id
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__id
+msgid "ID"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields.selection,name:sale_terms.selection__sale_terms_template__priority__0
+msgid "Low"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__position
+msgid "Position"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__priority
+msgid "Priority"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model,name:sale_terms.model_sale_terms_template
+msgid "Sale Terms Template"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model,name:sale_terms.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: sale_terms
+#: model:sale.terms.template,name:sale_terms.sale_terms_template_2
+msgid "Teklif Üst Yazısı"
+msgstr ""
+
+#. module: sale_terms
+#: model_terms:ir.ui.view,arch_db:sale_terms.terms_sale_order_form_view
+msgid "Terms"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__terms
+msgid "Terms Content"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__sale_terms_down
+msgid "Terms Down"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_terms_template__name
+msgid "Terms Name"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__sale_terms_temp_down_id
+msgid "Terms Template Down"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__sale_terms_temp_up_id
+msgid "Terms Template Up"
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.actions.act_window,name:sale_terms.action_sale_terms_template
+#: model:ir.ui.menu,name:sale_terms.menu_sale_terms_template
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_form_view
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_list_view
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_search_view
+msgid "Terms Templates"
+msgstr ""
+
+#. module: sale_terms
+#: model_terms:ir.ui.view,arch_db:sale_terms.sale_terms_template_form_view
+msgid "Terms Title..."
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields,field_description:sale_terms.field_sale_order__sale_terms_up
+msgid "Terms Up"
+msgstr ""
+
+#. module: sale_terms
+#: model_terms:ir.ui.view,arch_db:sale_terms.terms_sale_order_form_view
+msgid "The terms will be displayed on the printed document."
+msgstr ""
+
+#. module: sale_terms
+#: model:ir.model.fields.selection,name:sale_terms.selection__sale_terms_template__position__up
+msgid "Up Line"
+msgstr ""
+
+#. module: sale_terms
+#: model_terms:sale.terms.template,terms:sale_terms.sale_terms_template_2
+msgid ""
+"Yaptığınız araştırmalar neticesinde ürünlerimize gösterdiğiniz ilgiden dolayı teşekkür ederiz.\n"
+"        Bizden talep ettiğiniz, ürün ile ilgili detaylı açıklamaları aşağıda bulabilirsiniz. Daha fazla bilgi için\n"
+"        Satış Temsilciniz ile iletişime geçebilirsiniz."
+msgstr ""
+
+#. module: sale_terms
+#: model:sale.terms.template,name:sale_terms.sale_terms_template_1
+msgid "Şartlar ve Koşullar (CIF)"
+msgstr ""
