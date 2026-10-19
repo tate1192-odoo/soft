@@ -186,6 +186,11 @@ export class MapRenderer extends Component {
     }
 
     addressLabel(record) {
+        // Models such as field.operation expose a ready-to-display address
+        // field; prefer it over the individual address components.
+        if (record.display_address) {
+            return String(record.display_address);
+        }
         const parts = [
             record.street,
             record.street2,

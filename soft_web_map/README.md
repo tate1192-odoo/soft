@@ -78,7 +78,9 @@ the Leaflet +/- controls or the keyboard.
 | `panel_title` / `string` | Sidebar title; defaults to the action name. |
 
 `<field name="..."/>` adds a field to the `search_read` field list. The popup
-shows the name, address, email and phone when those fields are available.
+shows the name, address, email and phone when those fields are available. If the
+record has a `display_address` field (for example `field.operation`), that value
+is used as the popup address instead of the individual street/city components.
 `<options>` supports `<tile_layer url="..."/>` and
 `<clustering enabled="1" radius="80"/>`.
 
