@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Default Leaflet configuration. Both keys are namespaced system parameters,
+    so administrators can override them without touching the module.
+-->
+<odoo noupdate="1">
+    <record id="config_parameter_leaflet_tile_url" model="ir.config_parameter" forcecreate="True">
+        <field name="key">soft_web_map.tile_url</field>
+        <field name="value">https://tile.openstreetmap.org/{z}/{x}/{y}.png</field>
+    </record>
+    <record id="config_parameter_leaflet_copyright" model="ir.config_parameter" forcecreate="True">
+        <field name="key">soft_web_map.copyright</field>
+        <field name="value"><![CDATA[&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors]]></field>
+    </record>
+</odoo>
