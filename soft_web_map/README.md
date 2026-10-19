@@ -23,6 +23,12 @@ Install the optional **Soft Web Map — Contacts** (`soft_web_map_contacts`) bri
 add the view to the Contacts application; the bridge also installs Contacts and
 `base_geolocalize`.
 
+## Enterprise
+
+Odoo Enterprise already ships a map view and Leaflet through its `web_map`
+module. `soft_web_map` declares `excludes: ["web_map"]`, so it is intended for
+Odoo Community; on Enterprise use `web_map` instead.
+
 ## Configuration
 
 - `soft_web_map.tile_url` (System Parameter): tile server URL. Defaults to
@@ -88,4 +94,4 @@ Bundled libraries keep their own license files under `static/lib/leaflet/`.
 
 ## License
 
-AGPL-3.0 or later (module metadata).
+LGPL-3 (module metadata).

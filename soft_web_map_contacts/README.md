@@ -11,4 +11,4 @@ See `soft_web_map/README.md` for configuration and view architecture.
 
 ## License
 
-AGPL-3.0 or later.
+LGPL-3.

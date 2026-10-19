@@ -4,8 +4,8 @@
     "version": "19.0.1.0.0",
     "author": "Softteknik Bilişim",
     "website": "https://softteknik.com",
-    "license": "AGPL-3",
-    "category": "Extra Tools",
+    "license": "LGPL-3",
+    "category": "Tools/Map",
     "depends": [
         "soft_web_map",
         "contacts",

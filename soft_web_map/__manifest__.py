@@ -3,12 +3,15 @@
     "summary": "Enhance your Odoo 19 experience with a custom 'Leaflet Map' view. Display markers "
                "using the powerful Leaflet.js library.",
     "version": "19.0.1.0.0",
-    'author': 'Softteknik Bilişim',
+    "author": "Softteknik Bilişim",
     "website": "https://softteknik.com",
-    "license": "AGPL-3",
-    "category": "Extra Tools",
+    "license": "LGPL-3",
+    "category": "Tools/Map",
     "depends": [
         "web",
+    ],
+    "excludes": [
+        "web_map",
     ],
     "data": [
         "data/ir_config_parameter.xml",
