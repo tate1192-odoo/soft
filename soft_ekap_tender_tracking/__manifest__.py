@@ -1,5 +1,5 @@
 {
-    "name": "Soft EKAP Tender",
+    "name": "EKAP İhale Takibi",
     "version": "19.0.1.0.0",
     "summary": "Bid preparation and bid pricing for Turkish public tenders (EKAP): "
     "limit value, abnormally low bid, labour minimum cost, security/stamp duty/VAT",

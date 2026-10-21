@@ -1,5 +1,7 @@
-Soft EKAP Tender
-================
+EKAP İhale Takibi
+=================
+
+EKAP tender tracking.
 
 Tender follow-up and bid pricing for Turkish public tenders (EKAP).
 
@@ -100,8 +102,8 @@ Tests
 
 ::
 
-    odoo-bin -u soft_ekap_ihale -c <config> -d <db> --test-enable \
-        --test-tags /soft_ekap_ihale --stop-after-init
+    odoo-bin -u soft_ekap_tender_tracking -c <config> -d <db> --test-enable \
+        --test-tags /soft_ekap_tender_tracking --stop-after-init
 
 The suite covers the two limit value formulas, the abnormally low bid states,
 the labour floor arithmetic, securities, stamp duty, VAT, the amount parser,
