@@ -1,5 +1,5 @@
 {
-    "name": "EKAP İhale Takibi",
+    "name": "EKAP Tender Tracking",
     "version": "19.0.1.0.0",
     "summary": "Track EKAP tender outcomes and reuse the lessons in the next bid",
     "author": "Softteknik Bilişim",

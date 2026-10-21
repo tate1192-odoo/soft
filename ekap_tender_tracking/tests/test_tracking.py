@@ -62,7 +62,7 @@ class TestEkapTenderTracking(TransactionCase):
         self.assertEqual(tender.price_gap, 0.0)
 
     def test_tracking_fields_are_on_the_tender_form(self):
-        arch = str(self.env.ref("soft_ekap_tender_tracking.view_ekap_tender_tracking_form").arch)
+        arch = str(self.env.ref("ekap_tender_tracking.view_ekap_tender_tracking_form").arch)
         self.assertIn('name="tracking"', arch)
         self.assertIn('name="our_rank"', arch)
         self.assertIn('name="loss_reason"', arch)

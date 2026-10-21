@@ -1,5 +1,5 @@
-EKAP İhale Takibi
-=================
+EKAP Tender Tracking
+====================
 
 EKAP tender outcome tracking on top of the **Soft EKAP Tender** engine.
 
@@ -24,7 +24,7 @@ tender list, and as search filters/group-by on the loss reason.
 Installation
 ------------
 
-Install ``soft_ekap_tender_tracking``; ``soft_ekap_ihale`` is installed
+Install ``ekap_tender_tracking``; ``soft_ekap_ihale`` is installed
 automatically.
 
 Tests
