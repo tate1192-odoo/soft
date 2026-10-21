@@ -208,7 +208,7 @@ class TestTenderFlow(TransactionCase):
                     Command.set(
                         [
                             self.env.ref("base.group_user").id,
-                            self.env.ref("soft_ekap_ihale.group_ekap_user").id,
+                            self.env.ref("soft_ekap_tender.group_ekap_user").id,
                         ]
                     )
                 ],

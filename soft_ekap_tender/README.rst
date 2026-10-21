@@ -100,8 +100,8 @@ Tests
 
 ::
 
-    odoo-bin -u soft_ekap_ihale -c <config> -d <db> --test-enable \
-        --test-tags /soft_ekap_ihale --stop-after-init
+    odoo-bin -u soft_ekap_tender -c <config> -d <db> --test-enable \
+        --test-tags /soft_ekap_tender --stop-after-init
 
 The suite covers the two limit value formulas, the abnormally low bid states,
 the labour floor arithmetic, securities, stamp duty, VAT, the amount parser,

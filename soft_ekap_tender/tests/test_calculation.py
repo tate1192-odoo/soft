@@ -4,7 +4,7 @@ Every expected number is written by hand from the legislation, so a change in th
 engine has to argue with the test instead of with a moving reference.
 """
 
-from odoo.addons.soft_ekap_ihale.models.calculation import (
+from odoo.addons.soft_ekap_tender.models.calculation import (
     check_abnormally_low,
     labor_cost,
     limit_value_services,
@@ -14,7 +14,7 @@ from odoo.addons.soft_ekap_ihale.models.calculation import (
     vat_excluded,
     vat_included,
 )
-from odoo.addons.soft_ekap_ihale.models.calculation.limit_value import CalculationError
+from odoo.addons.soft_ekap_tender.models.calculation.limit_value import CalculationError
 from odoo.tests.common import BaseCase, tagged
 
 

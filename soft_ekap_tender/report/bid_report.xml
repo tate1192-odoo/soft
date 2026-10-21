@@ -4,8 +4,8 @@
         <field name="name">Unit Price Bid Schedule</field>
         <field name="model">ekap.bid</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">soft_ekap_ihale.report_ekap_bid_schedule</field>
-        <field name="report_file">soft_ekap_ihale.report_ekap_bid_schedule</field>
+        <field name="report_name">soft_ekap_tender.report_ekap_bid_schedule</field>
+        <field name="report_file">soft_ekap_tender.report_ekap_bid_schedule</field>
         <field name="print_report_name">'Bid Schedule - %s' % (object.name)</field>
         <field name="binding_model_id" ref="model_ekap_bid"/>
         <field name="binding_type">report</field>
