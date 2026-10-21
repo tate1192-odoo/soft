@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_ekap_tender_tracking_form" model="ir.ui.view">
+        <field name="name">ekap.tender.tracking.form</field>
+        <field name="model">ekap.tender</field>
+        <field name="inherit_id" ref="soft_ekap_ihale.view_ekap_tender_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='notes']" position="after">
+                <page string="Tracking" name="tracking">
+                    <group string="Outcome and Learning">
+                        <group>
+                            <field name="our_rank"/>
+                            <field name="winning_bid_amount"/>
+                            <field name="result_date"/>
+                            <field name="price_gap"/>
+                            <field name="price_gap_percent"/>
+                        </group>
+                        <group>
+                            <field name="loss_reason" invisible="state != 'lost'"/>
+                            <field name="next_bid_note"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_ekap_tender_tracking_list" model="ir.ui.view">
+        <field name="name">ekap.tender.tracking.list</field>
+        <field name="model">ekap.tender</field>
+        <field name="inherit_id" ref="soft_ekap_ihale.view_ekap_tender_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='valid_bid_count']" position="after">
+                <field name="our_rank" optional="hide"/>
+                <field name="loss_reason" optional="hide"/>
+                <field name="price_gap" optional="hide"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_ekap_tender_tracking_search" model="ir.ui.view">
+        <field name="name">ekap.tender.tracking.search</field>
+        <field name="model">ekap.tender</field>
+        <field name="inherit_id" ref="soft_ekap_ihale.view_ekap_tender_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_single_bid']" position="after">
+                <filter name="filter_lost_price" string="Lost on Price" domain="[('loss_reason', '=', 'price')]"/>
+                <filter name="filter_lost_technical" string="Lost on Technical Score" domain="[('loss_reason', '=', 'technical')]"/>
+                <filter name="filter_lost_document" string="Document / Qualification Loss" domain="[('loss_reason', '=', 'document')]"/>
+            </xpath>
+            <xpath expr="//filter[@name='group_authority']" position="after">
+                <filter name="group_loss_reason" string="Loss Reason" context="{'group_by': 'loss_reason'}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
