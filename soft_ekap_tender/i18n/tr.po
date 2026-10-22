@@ -1,0 +1,2034 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* soft_ekap_tender
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-10-14 10:58+0000\n"
+"PO-Revision-Date: 2026-10-14 10:58+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+msgid "%(considered)s recorded results, none with a published contract price."
+msgstr "%(considered)s kayıtlı sonuç var; hiçbirinde sözleşme bedeli yok."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/labor.py:0
+msgid "%(rate)s · %(workers)s worker(s) · %(months)s month(s)"
+msgstr "%(rate)s · %(workers)s işçi · %(months)s ay"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+msgid "%(used)s of %(considered)s recorded results · mean discount %(discount)s"
+msgstr "%(considered)s kayıtlı sonuçtan %(used)s tanesi · ortalama kırım %(discount)s"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+msgid "%(used)s of %(considered)s recorded results · mean discount %(discount)s · mean %(bid)s valid bids"
+msgstr "%(considered)s kayıtlı sonuçtan %(used)s tanesi · ortalama kırım %(discount)s · ortalama %(bid)s geçerli teklif"
+
+#. module: soft_ekap_tender
+#: model:ir.actions.report,print_report_name:soft_ekap_tender.action_report_ekap_bid_schedule
+msgid "'Bid Schedule - %s' % (object.name)"
+msgstr "'Teklif Cetveli - %s' % (object.name)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__discount_rate
+msgid "(Approximate cost − contract price) / approximate cost. It can be negative (a contract signed above the estimate). 0 means the figure could not be computed because one of the two amounts is not entered: the module does not guess, and the authority history says how many results a mean is based on."
+msgstr "(Yaklaşık maliyet − sözleşme bedeli) / yaklaşık maliyet. Negatif olabilir (yaklaşık maliyetin üstünde imzalanan sözleşme). 0 ise iki tutardan biri girilmediği için hesaplanamadı: modül tahmin etmez; ortalamanın kaç sonuca dayandığını idare geçmişi söyler."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__employer_ss_reduction
+msgid "5-Point Reduction"
+msgstr "5 Puanlık İndirim"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_limit_value_wizard_form
+msgid "<em class=\"text-muted ms-3\">The calculation follows Kamu İhale Genel Tebliği 45.1.1 (works) /\n                        79.1.2 (services); the N and R coefficients are read from\n                        the parameter table.</em>"
+msgstr "<em class=\\"text-muted ms-3\\">Hesap, Kamu İhale Genel Tebliği 45.1.1 (yapım) /\n                        79.1.2 (hizmet) kurallarına göre yapılır; N ve R katsayıları\n                        parametre tablosundan okunur.</em>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_kanban
+msgid "<span class=\"me-1\">Approximate cost:</span>"
+msgstr "<span class=\\"me-1\\">Yaklaşık maliyet:</span>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_kanban
+msgid "<span class=\"me-1\">Limit value:</span>"
+msgstr "<span class=\\"me-1\\">Sınır değer:</span>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_kanban
+msgid "<span class=\"me-1\">Tender:</span>"
+msgstr "<span class=\\"me-1\\">İhale:</span>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Approximate Cost:</strong>"
+msgstr "<strong>Yaklaşık Maliyet:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Authority:</strong>"
+msgstr "<strong>İdare:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Award Stamp Duty:</strong>"
+msgstr "<strong>İhale Kararı Damga:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Bid No:</strong>"
+msgstr "<strong>Teklif No:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Company:</strong>"
+msgstr "<strong>Firma:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Contract Stamp Duty:</strong>"
+msgstr "<strong>Sözleşme Damga:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Final Security:</strong>"
+msgstr "<strong>Kesin Teminat:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Limit Value:</strong>"
+msgstr "<strong>Sınır Değer:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Provisional Security:</strong>"
+msgstr "<strong>Geçici Teminat:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Ref:</strong>"
+msgstr "<strong>İKN:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Tender Date:</strong>"
+msgstr "<strong>İhale Tarihi:</strong>"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "<strong>Tender:</strong>"
+msgstr "<strong>İhale:</strong>"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__explanation_ready
+msgid "A bid below the limit value does not count as submitted before the explanation file is ready."
+msgstr "Sınır değerin altındaki teklifler için açıklama dosyası hazırlanmadan teklif verilmiş sayılmaz."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/bid.py:0
+msgid "A bid cannot be marked as submitted before its items exist."
+msgstr "Teklif kalemleri oluşturulmadan teklif verildi işaretlenemez."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/parameter.py:0
+msgid "A second value exists for this code over the same period: %s. Update the existing record or narrow the date range."
+msgstr "Bu kod için aynı tarih aralığında ikinci bir değer var: %s. Var olan kaydı güncelleyin ya da tarih aralığını daraltın."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__abnormally_low
+msgid "Abnormally Low Bid"
+msgstr "Aşırı Düşük Teklif"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_search
+msgid "Abnormally Low Risk"
+msgstr "Aşırı Düşük Riskli"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__abnormally_low_status
+msgid "Abnormally Low Status"
+msgstr "Aşırı Düşük Durumu"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_needaction
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_needaction
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_needaction
+msgid "Action Needed"
+msgstr "İşlem Gerekli"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__active
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__active
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__active
+msgid "Active"
+msgstr "Aktif"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_ids
+msgid "Activities"
+msgstr "Aktiviteler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_exception_decoration
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Aktivite İstisna Göstergesi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_state
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_state
+msgid "Activity State"
+msgstr "Aktivite Durumu"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_type_icon
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Aktivite Türü Simgesi"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.actions.act_window,help:soft_ekap_tender.action_ekap_tender
+msgid "Add your first tender"
+msgstr "İlk ihalenizi ekleyin"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__price_subtotal
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__price_subtotal
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Amount"
+msgstr "Tutar"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Amount not understood: %s"
+msgstr "Tutar okunamadı: %s"
+
+#. module: soft_ekap_tender
+#: model:ir.actions.act_window,name:soft_ekap_tender.action_ekap_analysis
+#: model:ir.ui.menu,name:soft_ekap_tender.menu_ekap_analysis
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_list
+msgid "Analyses"
+msgstr "Analizler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__analysis_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__analysis_id
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_form
+msgid "Analysis"
+msgstr "Analiz"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__code
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_form
+msgid "Analysis Code"
+msgstr "Analiz Kodu"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__total_amount
+msgid "Analysis amount"
+msgstr "Analiz tutarı"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_form
+msgid "Analysis description"
+msgstr "Analiz tanımı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__announcement_date
+msgid "Announcement Date"
+msgstr "İlan Tarihi"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Apply Discount"
+msgstr "İskontoyu Uygula"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__approximate_cost
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__approximate_cost
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__approximate_cost
+msgid "Approximate Cost"
+msgstr "Yaklaşık Maliyet"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Approximate cost"
+msgstr "Yaklaşık maliyet"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_attachment_count
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_attachment_count
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_attachment_count
+msgid "Attachment Count"
+msgstr "Ek Sayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__limit_value_source__contracting_authority
+msgid "Authority / EKAP announcement"
+msgstr "İdare / EKAP duyurusu"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__authority_total
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__authority_amount
+msgid "Authority Amount"
+msgstr "İdare Tutarı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__authority_history
+msgid "Authority History"
+msgstr "İdare Geçmişi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__authority_unit_price
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__authority_unit_price
+msgid "Authority Unit Price"
+msgstr "İdare Birim Fiyatı"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Award Result (after the tender)"
+msgstr "İhale Sonucu (ihale sonrası)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__award_stamp_duty
+msgid "Award Stamp Duty"
+msgstr "İhale Kararı Damga"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Awarded Above the Estimate"
+msgstr "Yaklaşık Maliyetin Üstünde Verilmiş"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Back to Draft"
+msgstr "Taslağa Dön"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__best_bid_id
+msgid "Best Bid"
+msgstr "Son Teklif"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__bid_id
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Bid"
+msgstr "Teklif"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__bid_total
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__price_subtotal
+msgid "Bid Amount"
+msgstr "Teklif Tutarı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__bid_text
+msgid "Bid Amounts"
+msgstr "Teklif Tutarları"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__check_message
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Bid Check"
+msgstr "Teklif Kontrolü"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__bid_count
+msgid "Bid Count"
+msgstr "Teklif Sayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__line_ids
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Bid Items"
+msgstr "Teklif Kalemleri"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__state__in_preparation
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Bid Preparation"
+msgstr "Teklif Hazırlığı"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Bid Total"
+msgstr "Teklif Toplamı"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Bid total"
+msgstr "Teklif toplamı"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+#: model:ir.actions.act_window,name:soft_ekap_tender.action_ekap_bid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__bid_ids
+#: model:ir.ui.menu,name:soft_ekap_tender.menu_ekap_bid
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_list
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Bids"
+msgstr "Teklifler"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_limit_value_wizard_form
+msgid "Bids Given in the Tender"
+msgstr "İhaleye Verilen Teklifler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__bulk_discount_rate
+msgid "Bulk discount applied to the public unit prices. The 'Apply discount' button rewrites the offer unit price of every line."
+msgstr "Kamu birim fiyatlarına uygulanacak toplu iskonto. 'İskontoyu uygula' butonu bütün kalemlerin teklif birim fiyatını yeniden yazar."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "C = Tort2 / YM"
+msgstr "C = Tort2 / YM"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_labor_calc_form
+msgid "Calculation (KGT 79.7 — including the 3% contract and overhead)"
+msgstr "Hesap (KGT 79.7 — yüzde 3 sözleşme ve genel gider dâhil)"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_limit_value_wizard_form
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Cancel"
+msgstr "Vazgeç"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_bid__state__cancelled
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__state__cancelled
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Cancelled"
+msgstr "İptal"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__check_status
+msgid "Check Status"
+msgstr "Kontrol Durumu"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__clothing_monthly
+msgid "Clothing (Monthly)"
+msgstr "Giyim (Aylık)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__clothing_yearly
+msgid "Clothing (Yearly)"
+msgstr "Giyim (Yıllık)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__code
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_parameter_search
+msgid "Code"
+msgstr "Kod"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__company_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__company_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__company_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__company_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__company_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__company_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__company_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__company_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__company_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__company_id
+msgid "Company"
+msgstr "Şirket"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_analysis__kind__company
+msgid "Company analysis"
+msgstr "Firma analizi"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Compute the Limit Value"
+msgstr "Sınır Değer Hesapla"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.actions.act_window,help:soft_ekap_tender.action_ekap_labor_calc
+msgid "Compute the labour minimum cost"
+msgstr "İşçilik asgari maliyetini hesaplayın"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__limit_value_source__computed
+msgid "Computed in this module"
+msgstr "Bu modülde hesaplandı"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Computed limit value"
+msgstr "Hesaplanan sınır değer"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Concluded"
+msgstr "Sonuçlanmış"
+
+#. module: soft_ekap_tender
+#: model:ir.ui.menu,name:soft_ekap_tender.menu_ekap_configuration
+msgid "Configuration"
+msgstr "Tanımlar"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__tender_type__works
+msgid "Construction Works"
+msgstr "Yapım İşi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__n_coefficient
+msgid "Construction works limit value coefficient (KGT 45.1.1.1): 1.00 for superstructure, electrical, mechanical installation and telecommunication works and their completion/repair; 1.20 for other works. The tender documents may state another value."
+msgstr "Yapım işleri sınır değer katsayısı (KGT 45.1.1.1): üstyapı, elektrik, mekanik tesisat, telekomünikasyon ve bunların tamamlama/onarım işlerinde 1,00; diğer yapım işlerinde 1,20. İhale dokümanında farklı değer yazılabilir."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__works_n_other
+msgid "Construction works limit value coefficient (other works)"
+msgstr "Yapım işleri sınır değer katsayısı (diğer işler)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__works_n_superstructure
+msgid "Construction works limit value coefficient (superstructure/installations)"
+msgstr "Yapım işleri sınır değer katsayısı (üstyapı/tesisat)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__tender_type__consultancy
+msgid "Consultancy"
+msgstr "Danışmanlık"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__contract_overhead
+msgid "Contract + Overhead (3%)"
+msgstr "Sözleşme + Genel Gider (yüzde 3)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__contract_price
+msgid "Contract Price"
+msgstr "Sözleşme Bedeli"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__contract_stamp_duty
+msgid "Contract Stamp Duty"
+msgstr "Sözleşme Damga"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__contract_overhead
+msgid "Contract and overhead rate (in the labour calculation)"
+msgstr "Sözleşme ve genel gider oranı (işçilik hesabında)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__contracting_authority
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Contracting Authority"
+msgstr "İdare"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Cost and Checks"
+msgstr "Maliyet ve Kontroller"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Create Bid"
+msgstr "Teklif Oluştur"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__create_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__create_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__create_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__create_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__create_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__create_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__create_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__create_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__create_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__create_uid
+msgid "Created by"
+msgstr "Oluşturan"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__create_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__create_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__create_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__create_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__create_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__create_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__create_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__create_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__create_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__create_date
+msgid "Created on"
+msgstr "Oluşturma Tarihi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__currency_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__currency_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__currency_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__currency_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__currency_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__currency_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__currency_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__currency_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__currency_id
+msgid "Currency"
+msgstr "Para Birimi"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Date"
+msgstr "Tarih"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__date_from
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__date_from
+msgid "Date From"
+msgstr "Başlangıç Tarihi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__date_to
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__date_to
+msgid "Date To"
+msgstr "Bitiş Tarihi"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Deadline Approaching"
+msgstr "İhalesi Yaklaşan"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__name
+msgid "Description"
+msgstr "Tanım"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__method__direct
+msgid "Direct Procurement"
+msgstr "Doğrudan Temin"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_bid__submission_method__direct
+msgid "Direct procurement / other"
+msgstr "Doğrudan temin / diğer"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__discount_rate
+msgid "Discount (%)"
+msgstr "İndirim (%)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__bulk_discount_rate
+msgid "Discount Rate (%)"
+msgstr "İskonto Oranı (%)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__display_name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__display_name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__display_name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__display_name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__display_name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__display_name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__display_name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__display_name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__display_name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__display_name
+msgid "Display Name"
+msgstr "Görünen Ad"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Documents"
+msgstr "Dokümanlar"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__state__draft
+msgid "Draft"
+msgstr "Taslak"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__month_count
+msgid "Duration (Months)"
+msgstr "Süre (Ay)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_bid__submission_method__ekap_client
+msgid "EKAP client + e-signature"
+msgstr "EKAP istemcisi + e-imza"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__employee_social_security
+msgid "Employee social security share"
+msgstr "İşçi SGK payı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__employee_unemployment
+msgid "Employee unemployment insurance share"
+msgstr "İşçi işsizlik sigortası payı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__employer_social_security
+msgid "Employer Social Security"
+msgstr "İşveren SGK"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__employer_ss_reduced
+msgid "Employer social security share (5-point reduction)"
+msgstr "İşveren SGK payı (5 puan indirimli)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__employer_ss_full
+msgid "Employer social security share (no reduction)"
+msgstr "İşveren SGK payı (indirimsiz)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__employer_unemployment
+msgid "Employer unemployment insurance share"
+msgstr "İşveren işsizlik sigortası payı"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Enter at least one bid amount."
+msgstr "En az bir teklif tutarı girin."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_limit_value_wizard__bid_text
+msgid "Enter the bids of the tender, one amount per line. Local notation (12.345,67) and dotted notation (12345.67) are both accepted."
+msgstr "İhaleye verilen teklifleri her satıra bir tutar olacak şekilde girin. Türkçe biçim (12.345,67) ve noktalı biçim (12345.67) kabul edilir."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+msgid "Enter the contracting authority to see its history."
+msgstr "İdare geçmişini görmek için idareyi girin."
+
+#. module: soft_ekap_tender
+#: model_terms:ir.actions.act_window,help:soft_ekap_tender.action_ekap_analysis
+msgid "Enter the public analyses (or your own company analyses); every input\n               is classified as material, labour, machine, transport or other."
+msgstr "Kamu analizlerini (ya da firma analizlerinizi) girin; her girdi\n               malzeme, işçilik, makine, nakliye veya diğer olarak sınıflanır."
+
+#. module: soft_ekap_tender
+#: model_terms:ir.actions.act_window,help:soft_ekap_tender.action_ekap_tender
+msgid "Enter the public tenders you follow; run the work items, the bids and the\n               limit value / abnormally low checks from this record."
+msgstr "Takip ettiğiniz kamu ihalelerini girin; iş kalemlerini, teklifleri ve\n               sınır değer/aşırı düşük kontrollerini bu kayıt üzerinden yürütün."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__explanation_ready
+msgid "Explanation Ready"
+msgstr "Aşırı Düşük Açıklaması Hazır"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_labor_calc_form
+msgid "Extra Items"
+msgstr "Ek Kalemler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__final_security
+msgid "Final Security"
+msgstr "Kesin Teminat"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__final_security_basis
+msgid "Final Security Basis"
+msgstr "Kesin Teminat Dayanağı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__final_security
+msgid "Final security rate"
+msgstr "Kesin teminat oranı"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Floor (AC × 40%)"
+msgstr "Taban (YM × %40)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_follower_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_follower_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_follower_ids
+msgid "Followers"
+msgstr "Takipçiler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_partner_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_partner_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Takipçiler (İş Ortakları)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__state__following
+msgid "Following"
+msgstr "Takip Ediliyor"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Following / Preparation"
+msgstr "Takip / Hazırlık"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__activity_type_icon
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome simgesi, örn. fa-tasks"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Generate Items"
+msgstr "Kalemleri Oluştur"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__tender_type__goods
+msgid "Goods Purchase"
+msgstr "Mal Alımı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__gross_minimum_wage
+msgid "Gross Minimum Wage"
+msgstr "Brüt Asgari Ücret"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__has_message
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__has_message
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__has_message
+msgid "Has Message"
+msgstr "Mesajı Var"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__valid_bid_count
+msgid "How many valid bids the authority evaluated. One valid bid means there was no real competition — the flag procurement watchdogs look for."
+msgstr "İdarenin değerlendirdiği geçerli teklif sayısı. Tek geçerli teklif, gerçek rekabet olmadığının işaretidir."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__id
+msgid "ID"
+msgstr "Kimlik"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_exception_icon
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_exception_icon
+msgid "Icon"
+msgstr "Simge"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__activity_exception_icon
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "İstisna aktivitesini gösteren simge."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_analysis__message_needaction
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__message_needaction
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "İşaretliyse yeni mesajlar dikkatinizi gerektirir."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_analysis__message_has_error
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_analysis__message_has_sms_error
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__message_has_error
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__message_has_sms_error
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__message_has_error
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "İşaretliyse bazı mesajlarda gönderim hatası vardır."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_bid__state__draft
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_search
+msgid "In Preparation"
+msgstr "Hazırlanıyor"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.actions.act_window,help:soft_ekap_tender.action_ekap_labor_calc
+msgid "In personnel-based service procurements a bid cannot be below this\n               calculation (KGT 79.5)."
+msgstr "Personel çalıştırılmasına dayalı hizmet alımlarında teklif, bu hesabın\n               altında olamaz (KGT 79.5)."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__name
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_search
+msgid "Input"
+msgstr "Girdi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__line_type
+msgid "Input Type"
+msgstr "Girdi Türü"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_form
+msgid "Input total"
+msgstr "Girdi toplamı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__line_ids
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_form
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_labor_calc_form
+msgid "Inputs"
+msgstr "Girdiler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_is_follower
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_is_follower
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_is_follower
+msgid "Is Follower"
+msgstr "Takipçi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__reference
+msgid "Item / Reference"
+msgstr "Poz / Rayiç"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__item_count
+msgid "Item Count"
+msgstr "Kalem Sayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__item_no
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__item_no
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Item No"
+msgstr "Poz No"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "K"
+msgstr "K"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__kind
+msgid "Kind"
+msgstr "Tür"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_analysis_line__line_type__labour
+msgid "Labour"
+msgstr "İşçilik"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__labor_calc_id
+msgid "Labour Calculation"
+msgstr "İşçilik Hesabı"
+
+#. module: soft_ekap_tender
+#: model:ir.actions.act_window,name:soft_ekap_tender.action_ekap_labor_calc
+#: model:ir.ui.menu,name:soft_ekap_tender.menu_ekap_labor_calc
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_labor_calc_list
+msgid "Labour Calculations"
+msgstr "İşçilik Hesapları"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__labor_warning
+msgid "Labour Check"
+msgstr "İşçilik Kontrolü"
+
+#. module: soft_ekap_tender
+#: model:ir.model,name:soft_ekap_tender.model_ekap_labor_calc
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_labor_calc_form
+msgid "Labour Minimum Cost Calculation"
+msgstr "İşçilik Asgari Maliyet Hesabı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__write_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__write_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__write_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__write_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__write_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__write_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__write_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__write_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__write_uid
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__write_uid
+msgid "Last Updated by"
+msgstr "Son Güncelleyen"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__write_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__write_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__write_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__write_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__write_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__write_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__write_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__write_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__write_date
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__write_date
+msgid "Last Updated on"
+msgstr "Son Güncelleme Tarihi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__reject_without_explanation
+msgid "Law 4734 art.38, last paragraph: for works whose approximate cost is up to half of the threshold and for some service kinds, a bid below the limit value is rejected without an explanation."
+msgstr "4734 m.38 son fıkra: yaklaşık maliyeti eşik değerin yarısına kadar olan işler ile bazı hizmet türlerinde sınır değerin altındaki teklif açıklama istenmeksizin reddedilir."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_labor_calc__employer_ss_reduction
+msgid "Law 5510: a 5-point reduction applies to the employer social security share."
+msgstr "5510 s. Kanun: işveren SGK payında 5 puan indirim uygulanır."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_parameter__company_id
+msgid "Leave empty for the value that applies to every company."
+msgstr "Her şirket için geçerli olan değerde boş bırakın."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__limit_value
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__limit_value
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__limit_value
+msgid "Limit Value"
+msgstr "Sınır Değer"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+#: model:ir.model,name:soft_ekap_tender.model_ekap_limit_value_wizard
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_limit_value_wizard_form
+msgid "Limit Value Calculation"
+msgstr "Sınır Değer Hesabı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__limit_value_source
+msgid "Limit Value Source"
+msgstr "Sınır Değer Kaynağı"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Limit value"
+msgstr "Sınır değer"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.actions.act_window,help:soft_ekap_tender.action_ekap_parameter
+msgid "Limit value coefficients (N, R), security/stamp duty rates, social security\n               shares and labour rates live here with their effective date. The calculation\n               engine reads this table only."
+msgstr "Sınır değer katsayıları (N, R), teminat/damga oranları, SGK payları ve\n               işçilik oranları burada yürürlük tarihiyle tutulur. Hesap motoru\n               yalnız bu tablodan okur."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Limit value computed and written on the tender: %s"
+msgstr "Sınır değer hesaplandı ve ihaleye yazıldı: %s"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_bid__state__lost
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__state__lost
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Lost"
+msgstr "Kaybedildi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_analysis_line__line_type__machine
+msgid "Machine / Vehicle"
+msgstr "Makine / Araç"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_analysis_line__line_type__material
+msgid "Material"
+msgstr "Malzeme"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__meal
+msgid "Meal"
+msgstr "Yemek"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__meal_rate
+msgid "Meal rate (on the daily gross wage)"
+msgstr "Yemek bedeli oranı (günlük brüt ücret üzerinden)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_has_error
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_has_error
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_has_error
+msgid "Message Delivery error"
+msgstr "Mesaj Gönderim Hatası"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_ids
+msgid "Messages"
+msgstr "Mesajlar"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__minimum_hourly_cost
+msgid "Minimum Hourly Cost"
+msgstr "Asgari Saatlik Maliyet"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__minimum_unit_cost
+msgid "Minimum Monthly Cost (worker/month)"
+msgstr "Asgari Aylık Maliyet (kişi/ay)"
+
+#. module: soft_ekap_tender
+#: model:ir.model,name:soft_ekap_tender.model_ekap_labor_rate
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__rate_id
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_labor_rate_form
+msgid "Minimum Wage Period"
+msgstr "Asgari Ücret Dönemi"
+
+#. module: soft_ekap_tender
+#: model:ir.actions.act_window,name:soft_ekap_tender.action_ekap_labor_rate
+#: model:ir.ui.menu,name:soft_ekap_tender.menu_ekap_labor_rate
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_labor_rate_list
+msgid "Minimum Wage Periods"
+msgstr "Asgari Ücret Dönemleri"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__monthly_working_hours
+msgid "Monthly Working Hours"
+msgstr "Aylık Çalışma Saati"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__my_activity_date_deadline
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Aktivitemin Tarihi"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "My Tenders"
+msgstr "Benim İhalelerim"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__n_coefficient
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__n_coefficient
+msgid "N Coefficient"
+msgstr "N Katsayısı"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "N coefficient"
+msgstr "N katsayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__name
+msgid "Name"
+msgstr "Ad"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__method__negotiated
+msgid "Negotiated Procedure"
+msgstr "Pazarlık"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_search
+msgid "New Unit Price"
+msgstr "Yeni Birim Fiyat"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_analysis__kind__new_unit_price
+msgid "New unit price"
+msgstr "Yeni birim fiyat"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_calendar_event_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Sonraki Aktivite Takvim Etkinliği"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_date_deadline
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Sonraki Aktivite Tarihi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_summary
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_summary
+msgid "Next Activity Summary"
+msgstr "Sonraki Aktivite Özeti"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_type_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_type_id
+msgid "Next Activity Type"
+msgstr "Sonraki Aktivite Türü"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+msgid "No analysis is linked to this item."
+msgstr "Bu kaleme analiz bağlanmamış."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+msgid "No bid has been created yet."
+msgstr "Henüz teklif oluşturulmadı."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+msgid "No concluded tender of this authority is recorded yet."
+msgstr "Bu idarenin sonuçlanmış ihaleleri henüz kayıtlı değil."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/bid.py:0
+msgid "No labour calculation; the minimum cost could not be checked."
+msgstr "İşçilik hesabı yapılmadı; asgari maliyet kontrol edilemedi."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+msgid "No limit value is entered."
+msgstr "Sınır değer girilmedi."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/labor.py:0
+msgid "No minimum wage period is defined (%s). The labour calculation cannot run."
+msgstr "Asgari ücret dönemi tanımlı değil (%s). İşçilik hesabı yapılamaz."
+
+#. module: soft_ekap_tender
+#: model_terms:ir.actions.act_window,help:soft_ekap_tender.action_ekap_parameter
+msgid "No rate or coefficient is defined"
+msgstr "Oran ve katsayılar tanımlı değil"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__limit_value_source__not_entered
+msgid "Not entered"
+msgstr "Girilmedi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__note
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__note
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__note
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__note
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__note
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__note
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__note
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__note
+msgid "Note"
+msgstr "Not"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__note
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_form
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Notes"
+msgstr "Notlar"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_needaction_counter
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_needaction_counter
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_needaction_counter
+msgid "Number of Actions"
+msgstr "İşlem Sayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_has_error_counter
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_has_error_counter
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_has_error_counter
+msgid "Number of errors"
+msgstr "Hata Sayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_analysis__message_needaction_counter
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__message_needaction_counter
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "İşlem gerektiren mesaj sayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_analysis__message_has_error_counter
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__message_has_error_counter
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Gönderim hatası olan mesaj sayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__check_status__ok
+msgid "OK"
+msgstr "Uygun"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__okas_code
+msgid "OKAS Code"
+msgstr "OKAS Kodu"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__offer_unit_price
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__offer_unit_price
+msgid "Offer Unit Price"
+msgstr "Teklif Birim Fiyatı"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_limit_value_wizard_form
+msgid "One bid amount per line\ne.g. 12,345,678.90"
+msgstr "Her satıra bir teklif tutarı\nörn. 12.345.678,90"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__method__open
+msgid "Open Procedure"
+msgstr "Açık İhale"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_analysis_line__line_type__other
+msgid "Other"
+msgstr "Diğer"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__new_unit_price_overhead
+msgid "Overhead rate of a new unit price (YİGŞ art.22)"
+msgstr "Yeni birim fiyatta genel gider oranı (YİGŞ m.22)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__overtime
+msgid "Overtime"
+msgstr "Fazla Mesai"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__overtime_hours_monthly
+msgid "Overtime (Hours/Month)"
+msgstr "Fazla Mesai (Saat/Ay)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__overtime_coefficient
+msgid "Overtime Coefficient"
+msgstr "Fazla Mesai Katsayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.actions.act_window,name:soft_ekap_tender.action_ekap_parameter
+#: model:ir.ui.menu,name:soft_ekap_tender.menu_ekap_parameter
+msgid "Parameters"
+msgstr "Parametreler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__partial_bid_allowed
+msgid "Partial Bids Allowed"
+msgstr "Kısmi Teklife Açık"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__personnel_based
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__personnel_based
+msgid "Personnel Based"
+msgstr "Personel Dayalı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__method
+msgid "Procedure"
+msgstr "Usul"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__profit_overhead_rate
+msgid "Profit and overhead"
+msgstr "Kâr ve genel gider"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__analysis_profit_overhead
+msgid "Profit and overhead rate of public analyses"
+msgstr "Kamu analizlerinde kâr ve genel gider oranı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__new_unit_price_profit
+msgid "Profit rate of a new unit price (YİGŞ art.22)"
+msgstr "Yeni birim fiyatta kâr oranı (YİGŞ m.22)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__province_id
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Province"
+msgstr "İl"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__provisional_security
+msgid "Provisional Security"
+msgstr "Geçici Teminat"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__provisional_security
+msgid "Provisional security rate"
+msgstr "Geçici teminat oranı"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_search
+msgid "Public Analyses"
+msgstr "Kamu Analizleri"
+
+#. module: soft_ekap_tender
+#: model:ir.model,name:soft_ekap_tender.model_ekap_tender
+msgid "Public Tender"
+msgstr "Kamu İhalesi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_analysis__kind__public
+msgid "Public analysis"
+msgstr "Kamu analizi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_analysis_line__reference
+msgid "Public item number or company reference."
+msgstr "Kamu rayiç numarası veya firma referansı."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__qa_date
+msgid "Q&A Date"
+msgstr "Soru-Cevap Tarihi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__quantity
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__quantity
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__quantity
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Quantity"
+msgstr "Miktar"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__r_coefficient
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__r_coefficient
+msgid "R Coefficient"
+msgstr "R Katsayısı"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "R coefficient"
+msgstr "R katsayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_analysis__profit_overhead_rate
+msgid "Rate added on top of the total of a public analysis (default: parameter ANALYSIS_PROFIT_OVERHEAD = 25%). New unit prices use the caps of YİGŞ art.22 instead."
+msgstr "Kamu analizlerinde toplamın üzerine eklenen oran (varsayılan: parametre ANALYSIS_PROFIT_OVERHEAD = %25). Yeni birim fiyatlarda bu oran yerine YİGŞ m.22 sınırları uygulanır."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__rating_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__rating_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__rating_ids
+msgid "Ratings"
+msgstr "Değerlendirmeler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_bid__state__ready
+msgid "Ready"
+msgstr "Hazır"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__name
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__name
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Reference"
+msgstr "Referans"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__reject_without_explanation
+msgid "Reject Without Explanation"
+msgstr "Açıklama İstenmeksizin Red"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__user_id
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Responsible"
+msgstr "Sorumlu"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__activity_user_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__activity_user_id
+msgid "Responsible User"
+msgstr "Sorumlu Kullanıcı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__method__restricted
+msgid "Restricted Procedure"
+msgstr "Belli İstekliler Arasında"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__result_html
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_limit_value_wizard_form
+msgid "Result"
+msgstr "Sonuç"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__check_status__risk
+msgid "Risk"
+msgstr "Risk"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__message_has_sms_error
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__message_has_sms_error
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS Gönderim Hatası"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_search
+msgid "Search Analysis"
+msgstr "Analiz Ara"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_search
+msgid "Search Bids"
+msgstr "Teklif Ara"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_parameter_search
+msgid "Search Parameters"
+msgstr "Parametre Ara"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Search Tenders"
+msgstr "İhale Ara"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Securities and Taxes"
+msgstr "Teminat ve Vergiler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__sequence
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__sequence
+msgid "Sequence"
+msgstr "Sıra"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__tender_type__services
+msgid "Service Procurement"
+msgstr "Hizmet Alımı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__r_coefficient
+msgid "Service procurement limit value coefficient (KGT 79.1.2), set yearly by a KİK decision and read from the parameter table."
+msgstr "Hizmet alımı sınır değer tespit katsayısı (KGT 79.1.2); yıllık olarak KİK kararıyla belirlenir, parametre tablosundan gelir."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__service_r_catering
+msgid "Service: catering with material limit value coefficient (R)"
+msgstr "Hizmet: malzemeli yemek sınır değer katsayısı (R)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__service_r_engineering
+msgid "Service: engineering limit value coefficient (R)"
+msgstr "Hizmet: mühendislik sınır değer katsayısı (R)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__service_r_information_systems
+msgid "Service: information systems limit value coefficient (R)"
+msgstr "Hizmet: bilgi sistemleri sınır değer katsayısı (R)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__service_r_insurance
+msgid "Service: insurance limit value coefficient (R)"
+msgstr "Hizmet: sigorta sınır değer katsayısı (R)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__service_r_other
+msgid "Service: other limit value coefficient (R)"
+msgstr "Hizmet: diğer sınır değer katsayısı (R)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__service_r_transport
+msgid "Service: transport limit value coefficient (R)"
+msgstr "Hizmet: taşıma sınır değer katsayısı (R)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__service_r_vehicle_rental
+msgid "Service: vehicle rental limit value coefficient (R)"
+msgstr "Hizmet: araç kiralama sınır değer katsayısı (R)"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Single Valid Bid"
+msgstr "Tek Geçerli Teklif"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_rate__source
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__source
+msgid "Source"
+msgstr "Kaynak"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Specification notes, points to watch…"
+msgstr "Şartname notları, dikkat edilecekler…"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Stamp / Signature"
+msgstr "Kaşe / İmza"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__stamp_duty_award
+msgid "Stamp duty rate of the award decision"
+msgstr "İhale kararı damga vergisi oranı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__stamp_duty_contract
+msgid "Stamp duty rate of the contract"
+msgstr "Sözleşme damga vergisi oranı"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Standard deviation (σ)"
+msgstr "Standart sapma (σ)"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Start Following"
+msgstr "Takibe Al"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__state
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__state
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_search
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "State"
+msgstr "Durum"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__activity_state
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__activity_state
+msgid "Status based on activities\nOverdue: Due date is already passed\nToday: Activity date is today\nPlanned: Future activities."
+msgstr "Aktivitelere göre durum\nGecikmiş: Teslim tarihi geçti\nBugün: Aktivite tarihi bugün\nPlanlanmış: Gelecek aktiviteler."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__submitted_on
+msgid "Submission Date"
+msgstr "Gönderim Tarihi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__submission_method
+msgid "Submission Method"
+msgstr "Teslim Yöntemi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_bid__state__submitted
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__state__submitted
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_search
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Submitted"
+msgstr "Verildi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__tender_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__tender_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__tender_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__tender_id
+#: model:ir.ui.menu,name:soft_ekap_tender.menu_ekap_root
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Tender"
+msgstr "İhale"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__bid_deadline
+msgid "Tender (Bid Deadline) Date"
+msgstr "İhale (Teklif Son) Tarihi"
+
+#. module: soft_ekap_tender
+#: model:ir.module.category,name:soft_ekap_tender.ekap_module_category
+msgid "Tender / Bid"
+msgstr "İhale / Teklif"
+
+#. module: soft_ekap_tender
+#: model:ir.model,name:soft_ekap_tender.model_ekap_analysis
+msgid "Tender Analysis"
+msgstr "İhale Analizi"
+
+#. module: soft_ekap_tender
+#: model:ir.model,name:soft_ekap_tender.model_ekap_analysis_line
+msgid "Tender Analysis Input"
+msgstr "İhale Analizi Girdisi"
+
+#. module: soft_ekap_tender
+#: model:ir.model,name:soft_ekap_tender.model_ekap_bid
+msgid "Tender Bid"
+msgstr "İhale Teklifi"
+
+#. module: soft_ekap_tender
+#: model:ir.model,name:soft_ekap_tender.model_ekap_bid_line
+msgid "Tender Bid Item"
+msgstr "İhale Teklif Kalemi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__document_ids
+msgid "Tender Documents"
+msgstr "İhale Dokümanları"
+
+#. module: soft_ekap_tender
+#: model:res.groups,name:soft_ekap_tender.group_ekap_manager
+#: model:res.groups.privilege,name:soft_ekap_tender.privilege_ekap_manager
+msgid "Tender Manager"
+msgstr "İhale Yöneticisi"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_parameter_form
+msgid "Tender Parameter"
+msgstr "İhale Parametresi"
+
+#. module: soft_ekap_tender
+#: model:ir.model,name:soft_ekap_tender.model_ekap_parameter
+msgid "Tender Parameter (rate / coefficient)"
+msgstr "İhale Parametresi (oran / katsayı)"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_parameter_list
+msgid "Tender Parameters"
+msgstr "İhale Parametreleri"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__tender_no
+msgid "Tender Reference Number"
+msgstr "İKN"
+
+#. module: soft_ekap_tender
+#: model:res.groups,name:soft_ekap_tender.group_ekap_user
+#: model:res.groups.privilege,name:soft_ekap_tender.privilege_ekap_user
+msgid "Tender User"
+msgstr "İhale Kullanıcısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model,name:soft_ekap_tender.model_ekap_tender_item
+msgid "Tender Work Item"
+msgstr "İhale İş Kalemi"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/parameter.py:0
+msgid "Tender parameter not found: %(code)s (%(date)s). A bid is never priced with a default rate; define the parameter."
+msgstr "İhale parametresi bulunamadı: %(code)s (%(date)s). Teklif hesabı varsayılan bir oranla yapılmaz; parametreyi tanımlayın."
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Tender ref (2026/123456)"
+msgstr "İKN (2026/123456)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__tender_no
+msgid "Tender reference number: year/province/authority/sequence, e.g. 2026/123456."
+msgstr "İhale Kayıt Numarası: yıl/il numarası/idare kodu/sıra, örn. 2026/123456."
+
+#. module: soft_ekap_tender
+#: model:ir.actions.act_window,name:soft_ekap_tender.action_ekap_tender
+#: model:ir.ui.menu,name:soft_ekap_tender.menu_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_list
+msgid "Tenders"
+msgstr "İhaleler"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.actions.act_window,help:soft_ekap_tender.action_ekap_analysis
+msgid "The analysis catalogue is empty"
+msgstr "Analiz kataloğu boş"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/tender.py:0
+msgid "The bid checks are OK."
+msgstr "Teklif kontrolleri uygun."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/bid.py:0
+msgid "The bid is below the limit value. It cannot be marked as submitted before the abnormally low explanation is ready."
+msgstr "Teklif sınır değerin altında. Aşırı düşük teklif açıklaması hazırlanmadan teklif verildi işaretlenemez."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__contract_price
+msgid "The contract price of the result notice. Together with the approximate cost it gives the discount the authority actually awarded."
+msgstr "Sonuç ilanındaki sözleşme bedeli. Yaklaşık maliyetle birlikte idarenin gerçekleştirdiği kırımı verir."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__winning_firm
+msgid "The firm the contract was awarded to, as printed in the result notice (EKAP result notice). Our own company is filled in automatically when our bid wins."
+msgstr "Sözleşmenin verildiği firma (EKAP sonuç ilanındaki şekliyle). Kendi teklifimiz kazanırsa şirketimiz otomatik yazılır."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/bid.py:0
+msgid "The items of this bid are already generated."
+msgstr "Bu teklifin kalemleri zaten oluşturulmuş."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__bid_deadline
+msgid "The last moment a bid can be given; the e-key deadline uses the same time."
+msgstr "Teklif verilebilecek son an. e-anahtar için de bu saat esas alınır."
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "The limit value and labour checks are OK."
+msgstr "Sınır değer ve işçilik kontrolleri uygun."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "The limit value has not been computed."
+msgstr "Sınır değer hesaplanmadı."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__limit_value
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__limit_value
+msgid "The limit value published by the authority/EKAP or computed in this module. Left empty, the abnormally low bid check is skipped."
+msgstr "İdarenin/EKAP'ın açıkladığı ya da bu modülde hesaplanan sınır değer. Boş bırakılırsa aşırı düşük teklif kontrolü yapılmaz."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid_line__quantity
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender_item__quantity
+msgid "The quantity stated in the tender documents."
+msgstr "İhale dokümanındaki metraj."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/bid.py:0
+msgid "The tender has no work item; add them first."
+msgstr "İhalede iş kalemi yok; önce kalemleri girin."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/bid.py:0
+msgid "The unit price of %(items)s item(s) is below the labour minimum (%(minimum)s)."
+msgstr "%(items)s kalemin birim fiyatı asgari işçilik maliyetinin (%(minimum)s) altında."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid_line__authority_unit_price
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender_item__authority_unit_price
+msgid "The unit price of the authority's schedule, when there is one."
+msgstr "İdarenin cetvelindeki (varsa) birim fiyat."
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "This output is the preparation schedule of the bid; it is\n                            not uploaded to EKAP. The bid itself is given in the EKAP\n                            desktop application with the e-signature of the authorised\n                            signatory, and the e-key is sent to EKAP before the bid\n                            opening time."
+msgstr "Bu çıktı teklifin hazırlık dökümüdür; EKAP'a yüklenmez. Teklif,\n                            EKAP masaüstü uygulamasında imza yetkilisinin e-imzası ile\n                            verilir ve e-anahtar, teklif açma saatinden önce EKAP'a gönderilir."
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Tort1"
+msgstr "Tort1"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Tort2"
+msgstr "Tort2"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__total_minimum_cost
+msgid "Total Minimum Cost"
+msgstr "Toplam Asgari Maliyet"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__total_without_profit
+msgid "Total Without Profit"
+msgstr "Kârsız Toplam"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Total quantity"
+msgstr "Toplam miktar"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__total_without_profit
+msgid "Total without profit"
+msgstr "Kârsız toplam"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_analysis_line__line_type__transport
+msgid "Transport"
+msgstr "Nakliye"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__transport_monthly
+msgid "Transport (Monthly)"
+msgstr "Yol (Aylık)"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__tender_type
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_limit_value_wizard__tender_type
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__tender_type
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_analysis_search
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_search
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_search
+msgid "Type"
+msgstr "Tür"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__activity_exception_decoration
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Kayıttaki istisna aktivitesinin türü."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__uom_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__uom_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__uom_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__uom_id
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Unit"
+msgstr "Birim"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis_line__unit_price
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Unit Price"
+msgstr "Birim Fiyat"
+
+#. module: soft_ekap_tender
+#: model:ir.actions.report,name:soft_ekap_tender.action_report_ekap_bid_schedule
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+msgid "Unit Price Bid Schedule"
+msgstr "Birim Fiyat Teklif Cetveli"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__valid_bid_count
+msgid "Valid Bids"
+msgstr "Geçerli Teklif Sayısı"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_parameter_search
+msgid "Valid Today"
+msgstr "Bugün Geçerli"
+
+#. module: soft_ekap_tender
+#. odoo-python
+#: code:addons/soft_ekap_tender/models/limit_value_wizard.py:0
+msgid "Valid bids"
+msgstr "Geçerli teklifler"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_parameter__value
+msgid "Value"
+msgstr "Değer"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__vat
+msgid "Value added tax rate"
+msgstr "Katma değer vergisi oranı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__check_status__warning
+msgid "Warning"
+msgstr "Uyarı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_analysis__website_message_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__website_message_ids
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__website_message_ids
+msgid "Website Messages"
+msgstr "Web Sitesi Mesajları"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_analysis__website_message_ids
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__website_message_ids
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__website_message_ids
+msgid "Website communication history"
+msgstr "Web sitesi iletişim geçmişi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__authority_history
+msgid "What the tenders recorded in this database say about the same authority and the same tender kind: how many results exist, their mean discount and the mean number of valid bids. It grows with every result you record."
+msgstr "Bu veritabanındaki ihalelerin aynı idare ve aynı ihale türü için söyledikleri: kaç sonuç var, ortalama kırım ve ortalama geçerli teklif sayısı. Her girdiğiniz sonuçla büyür."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_bid__personnel_based
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_tender__personnel_based
+msgid "When set, the bid cannot be below the labour minimum cost (KGT 79.7/79.5)."
+msgstr "İşaretliyse teklif, işçilik asgari maliyetinin altında olamaz (KGT 79.7/79.5)."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_parameter__source
+msgid "Where the value comes from (legislation article / KİK announcement / SGK)."
+msgstr "Where the value comes from (mevzuat maddesi / KİK duyurusu / SGK)."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__winning_firm
+msgid "Winning Firm"
+msgstr "Kazanan Firma"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_bid__state__won
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_tender__state__won
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Won"
+msgstr "Kazanıldı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid_line__item_id
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender_item__name
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.report_ekap_bid_schedule
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_item_form
+msgid "Work Item"
+msgstr "İş Kalemi"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_tender__item_ids
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "Work Items"
+msgstr "İş Kalemleri"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_labor_calc__worker_count
+msgid "Worker Count"
+msgstr "İşçi Sayısı"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields.selection,name:soft_ekap_tender.selection__ekap_parameter__code__final_security_below_limit
+msgid "Works: final security rate of a bid below the limit value (on the approximate cost)"
+msgstr "Yapım: sınır değer altı teklifte kesin teminat oranı (yaklaşık maliyet üzerinden)"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_limit_value_wizard_form
+msgid "Write the Limit Value on the Tender"
+msgstr "Sınır Değeri İhaleye Yaz"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_bid_form
+msgid "Write the prices on the tender"
+msgstr "Fiyatları ihaleye yaz"
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,field_description:soft_ekap_tender.field_ekap_bid__ekey_sent
+msgid "e-Key Sent"
+msgstr "e-Anahtar Gönderildi"
+
+#. module: soft_ekap_tender
+#: model_terms:ir.ui.view,arch_db:soft_ekap_tender.view_ekap_tender_form
+msgid "e.g. ABC İnşaat Ltd. Şti."
+msgstr "örn. ABC İnşaat Ltd. Şti."
+
+#. module: soft_ekap_tender
+#: model:ir.model.fields,help:soft_ekap_tender.field_ekap_labor_rate__source
+msgid "e.g. Minimum Wage Fixing Commission decision / Official Gazette."
+msgstr "Örn. Asgari Ücret Tespit Komisyonu kararı / RG."
