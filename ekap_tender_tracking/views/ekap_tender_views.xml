@@ -4,7 +4,7 @@
     <record id="view_ekap_tender_tracking_form" model="ir.ui.view">
         <field name="name">ekap.tender.tracking.form</field>
         <field name="model">ekap.tender</field>
-        <field name="inherit_id" ref="soft_ekap_ihale.view_ekap_tender_form"/>
+        <field name="inherit_id" ref="soft_ekap_tender.view_ekap_tender_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='notes']" position="after">
                 <page string="Tracking" name="tracking">
@@ -29,7 +29,7 @@
     <record id="view_ekap_tender_tracking_list" model="ir.ui.view">
         <field name="name">ekap.tender.tracking.list</field>
         <field name="model">ekap.tender</field>
-        <field name="inherit_id" ref="soft_ekap_ihale.view_ekap_tender_list"/>
+        <field name="inherit_id" ref="soft_ekap_tender.view_ekap_tender_list"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='valid_bid_count']" position="after">
                 <field name="our_rank" optional="hide"/>
@@ -42,7 +42,7 @@
     <record id="view_ekap_tender_tracking_search" model="ir.ui.view">
         <field name="name">ekap.tender.tracking.search</field>
         <field name="model">ekap.tender</field>
-        <field name="inherit_id" ref="soft_ekap_ihale.view_ekap_tender_search"/>
+        <field name="inherit_id" ref="soft_ekap_tender.view_ekap_tender_search"/>
         <field name="arch" type="xml">
             <xpath expr="//filter[@name='filter_single_bid']" position="after">
                 <filter name="filter_lost_price" string="Lost on Price" domain="[('loss_reason', '=', 'price')]"/>

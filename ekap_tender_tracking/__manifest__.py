@@ -8,7 +8,7 @@
     "category": "Services",
     "sequence": 61,
     "depends": [
-        "soft_ekap_ihale",
+        "soft_ekap_tender",
     ],
     "data": [
         "views/ekap_tender_views.xml",

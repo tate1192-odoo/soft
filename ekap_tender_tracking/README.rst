@@ -4,7 +4,7 @@ EKAP Tender Tracking
 EKAP tender outcome tracking on top of the **Soft EKAP Tender** engine.
 
 This is a separate add-on: it does not duplicate the tender, bid or calculation
-models. It depends on ``soft_ekap_ihale`` and keeps the old module installable.
+models. It depends on ``soft_ekap_tender`` and keeps the old module installable.
 
 What it adds
 ------------
@@ -24,7 +24,7 @@ tender list, and as search filters/group-by on the loss reason.
 Installation
 ------------
 
-Install ``ekap_tender_tracking``; ``soft_ekap_ihale`` is installed
+Install ``ekap_tender_tracking``; ``soft_ekap_tender`` is installed
 automatically.
 
 Tests
