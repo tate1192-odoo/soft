@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--    Extended sale_order_form_view-->
+    <record id="view_order_form" model="ir.ui.view">
+        <field name="name">
+            sale.order.view.form.inherit.sale.product.image
+        </field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            <!-- optional="show": the column is on by default and each user
+                 turns it off/on from the list header. No global switch, no
+                 helper field. -->
+            <xpath expr="//field[@name='order_line']//list//field[@name='product_template_id']"
+                   position="after">
+                <field name="order_line_image" widget="image"
+                       options="{'size': [100, 100]}" readonly="1"
+                       optional="show"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>
