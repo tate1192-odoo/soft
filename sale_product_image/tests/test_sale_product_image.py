@@ -67,6 +67,19 @@ class TestSaleProductImage(TransactionCase):
             'sale.report_saleorder', order.ids)
         return html.decode() if isinstance(html, bytes) else html
 
+    def test_settings_row_exposes_the_switch(self):
+        """A <setting> only renders its toggle when the first child is the field.
+
+        The form compiler wires fieldName/fieldSlot from the first <field>
+        child; without it the settings screen would show a label and no switch.
+        """
+        arch = etree.fromstring(
+            self.env['res.config.settings'].get_view(view_type='form')['arch'])
+        fields = arch.xpath(
+            "//setting[@id='show_image_in_report']"
+            "/field[@name='show_image_in_report']")
+        self.assertEqual(len(fields), 1)
+
     def test_line_column_is_user_toggleable(self):
         """The line column carries optional="show": each user hides it himself."""
         arch = etree.fromstring(

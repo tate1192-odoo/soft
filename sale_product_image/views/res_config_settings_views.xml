@@ -10,7 +10,9 @@
                    position="inside">
                 <setting id="show_image_in_report"
                          string="Show Product Image in PDF Reports"
-                         help="Print a product image column in quotation and sale order reports. The column is left out when no line carries an image. The order line column itself is toggled per user from the list header."/>
+                         help="Print a product image column in quotation and sale order reports. The column is left out when no line carries an image. The order line column itself is toggled per user from the list header.">
+                    <field name="show_image_in_report"/>
+                </setting>
             </xpath>
         </field>
     </record>
