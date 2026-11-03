@@ -8,18 +8,9 @@
         <field name="arch" type="xml">
             <xpath expr="//block[@name='quotation_order_setting_container']"
                    position="inside">
-                <div class="col-12 col-lg-6 o_setting_box">
-                    <div class="o_setting_left_pane">
-                        <field name="show_image_in_report"/>
-                    </div>
-                    <div class="o_setting_right_pane">
-                        <!-- Label comes from the field's own string. -->
-                        <label for="show_image_in_report"/>
-                        <div class="text-muted">
-                            An image column in quotation and sale order reports, hidden automatically when no line has an image. The order line column is toggled per user from the list header.
-                        </div>
-                    </div>
-                </div>
+                <setting id="show_image_in_report"
+                         string="Show Product Image in PDF Reports"
+                         help="Print a product image column in quotation and sale order reports. The column is left out when no line carries an image. The order line column itself is toggled per user from the list header."/>
             </xpath>
         </field>
     </record>

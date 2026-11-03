@@ -5,7 +5,6 @@
 
 import base64
 import io
-import re
 
 from lxml import etree
 
@@ -111,19 +110,33 @@ class TestSaleProductImage(TransactionCase):
         self.assertNotIn('name="th_image"', html)
         self.assertNotIn('name="td_image"', html)
 
-    def test_report_header_colspan_with_image_column(self):
-        """The extra header cell bumps colspan_count: section rows stay aligned."""
+    def test_report_header_and_rows_keep_the_same_width(self):
+        """The extra header cell bumps colspan_count: no column drifts.
+
+        DB independent on purpose: the tax column depends on the company setup,
+        so the header count is measured, never hardcoded.
+        """
         self._save_settings(True)
         self.order.write({'order_line': [(0, 0, {
             'display_type': 'line_section',
             'name': 'Consumables',
         })]})
-        html = self._render_quotation_html()
-        self.assertIn('name="th_image"', html)
-        self.assertIn('name="td_image"', html)
-        header_cells = len(re.findall(r'<th name="th_', html))
-        self.assertEqual(header_cells, 6)  # description, image, qty, price, taxes, amount
-        colspans = {int(value) for value in re.findall(r'colspan="(\d+)"', html)}
+        doc = etree.fromstring(self._render_quotation_html().encode())
+        table = doc.xpath("//table[contains(@class,'o_main_table')]")[0]
+        header_names = [th.get('name') for th in table.xpath(".//thead//th")]
+        self.assertIn('th_image', header_names)
+        self.assertIn('td_image', [td.get('name') for td in table.xpath(".//tbody//td")])
+        header_cells = len(header_names)
+        row_widths = {
+            sum(int(td.get('colspan') or 1) for td in row.xpath("./td"))
+            for row in table.xpath(".//tbody//tr")
+        }
+        self.assertEqual(row_widths, {header_cells})
+        colspans = {
+            int(td.get('colspan'))
+            for td in table.xpath(".//tbody//td[@colspan]")
+            if int(td.get('colspan')) < 90  # 99 is the note row's own span
+        }
         self.assertEqual(colspans, {header_cells - 1})
 
     def test_order_line_image_comes_from_product(self):
