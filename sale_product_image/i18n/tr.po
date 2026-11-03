@@ -1,0 +1,84 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* sale_product_image
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-03 20:23+0000\n"
+"PO-Revision-Date: 2026-11-03 20:23+0000\n"
+"Last-Translator: Softteknik Bilişim <softteknik@softteknik.com>\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: sale_product_image
+#: model_terms:ir.ui.view,arch_db:sale_product_image.report_saleorder_inherit
+msgid "<strong>Image</strong>"
+msgstr "<strong>Görsel</strong>"
+
+#. module: sale_product_image
+#: model_terms:ir.ui.view,arch_db:sale_product_image.res_config_settings_view_form
+msgid "An image column in quotation and sale order reports, hidden automatically when no line has an image. The order line column is toggled per user from the list header."
+msgstr "Teklif ve satış siparişi raporlarında görsel kolonu; hiçbir satırda görsel yoksa kolon otomatik gizlenir. Sipariş satırındaki kolon kullanıcı bazında liste başlığından açılıp kapatılır."
+
+#. module: sale_product_image
+#: model:ir.model,name:sale_product_image.model_res_config_settings
+msgid "Config Settings"
+msgstr "Yapılandırma Ayarları"
+
+#. module: sale_product_image
+#: model:ir.model.fields,field_description:sale_product_image.field_res_config_settings__display_name
+#: model:ir.model.fields,field_description:sale_product_image.field_sale_order_line__display_name
+msgid "Display Name"
+msgstr "Görünen Ad"
+
+#. module: sale_product_image
+#: model:ir.model.fields,field_description:sale_product_image.field_res_config_settings__id
+#: model:ir.model.fields,field_description:sale_product_image.field_sale_order_line__id
+msgid "ID"
+msgstr "Kimlik"
+
+#. module: sale_product_image
+#: model:ir.model.fields,field_description:sale_product_image.field_sale_order_line__order_line_image
+msgid "Image"
+msgstr "Görsel"
+
+#. module: sale_product_image
+#: model:ir.model.fields,help:sale_product_image.field_res_config_settings__show_image_in_report
+msgid "Print a product image column in the quotation and sale order reports. The column is left out when no line carries an image."
+msgstr "Teklif ve satış siparişi raporlarında ürün görseli kolonu yazdırır. Hiçbir satırda görsel yoksa kolon yazdırılmaz."
+
+#. module: sale_product_image
+#: model_terms:ir.ui.view,arch_db:sale_product_image.report_saleorder_inherit
+msgid "Product Image"
+msgstr "Ürün Görseli"
+
+#. module: sale_product_image
+#: model:ir.model.fields,help:sale_product_image.field_sale_order_line__image_for_report
+msgid "Product image converted to JPEG on a white background, so the PDF report prints it without transparency artefacts."
+msgstr "PDF raporunda saydamlık sorunu çıkarmaması için ürün görselini beyaz zemin üzerinde JPEG'e dönüştürür."
+
+#. module: sale_product_image
+#: model:ir.model.fields,help:sale_product_image.field_sale_order_line__order_line_image
+msgid "Product image shown in the sale order line list."
+msgstr "Satış siparişi satır listesinde gösterilen ürün görseli."
+
+#. module: sale_product_image
+#: model:ir.model.fields,field_description:sale_product_image.field_sale_order_line__image_for_report
+msgid "Report Image"
+msgstr "Rapor Görseli"
+
+#. module: sale_product_image
+#: model:ir.model,name:sale_product_image.model_sale_order_line
+msgid "Sales Order Line"
+msgstr "Satış Siparişi Satırı"
+
+#. module: sale_product_image
+#: model:ir.model.fields,field_description:sale_product_image.field_res_config_settings__show_image_in_report
+msgid "Show Product Image in PDF Reports"
+msgstr "PDF Raporlarında Ürün Görselini Göster"

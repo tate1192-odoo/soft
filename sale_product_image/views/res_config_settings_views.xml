@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--        Extended res_config_settings form view-->
+    <record id="res_config_settings_view_form" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.sale.product.image</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="sale.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//block[@name='quotation_order_setting_container']"
+                   position="inside">
+                <setting id="show_image_in_report"
+                         string="Show Product Image in PDF Reports"
+                         help="Print a product image column in quotation and sale order reports. The column is left out when no line carries an image. The order line column itself is toggled per user from the list header.">
+                    <field name="show_image_in_report"/>
+                </setting>
+            </xpath>
+        </field>
+    </record>
+</odoo>

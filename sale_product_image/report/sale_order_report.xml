@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<odoo>
+    <template id='report_saleorder_inherit' inherit_id="sale.report_saleorder_document">
+        <!-- The flag lives with core's other display flags (display_discount,
+             hide_taxes_details, display_taxes): same block, same place, before
+             the editable oe_structure zone and the table. One decision for the
+             header and the cells: the switch AND at least one reported line that
+             actually carries an image, so a quotation without pictures never
+             prints an empty column. -->
+        <xpath expr="//t[@t-set='display_taxes']" position="after">
+            <!-- Same key as res.config.settings.show_image_in_report. The
+                 settings checkbox stores the string 'True' and unchecking
+                 deletes the row, so 'True'/'1' covers the on state while a
+                 stray 'False' stays off. -->
+            <t t-set="show_report_image"
+               t-value="doc.env['ir.config_parameter'].sudo().get_param('sale_product_image.show_image_in_report') in ('True', '1') and any(l.order_line_image for l in lines_to_report)"/>
+        </xpath>
+        <xpath expr="//th[@name='th_description']" position="after">
+            <th t-if="show_report_image" name="th_image" class="text-center" style="width: 80px;">
+                <t t-set="colspan_count" t-value="colspan_count + 1"/>
+                <strong>Image</strong>
+            </th>
+        </xpath>
+        <xpath expr="//t[@t-foreach='lines_to_report']//td[@name='td_product_name']" position="after">
+            <td t-if="show_report_image" name="td_image" class="text-center" style="width: 80px; padding: 4px; vertical-align: middle;">
+                <img t-if="line.image_for_report"
+                     t-att-src="image_data_uri(line.image_for_report)"
+                     style="max-height: 70px; max-width: 70px; object-fit: contain; display: inline-block;"
+                     alt="Product Image"/>
+                <img t-elif="line.order_line_image"
+                     t-att-src="image_data_uri(line.order_line_image)"
+                     style="max-height: 70px; max-width: 70px; object-fit: contain; display: inline-block;"
+                     alt="Product Image"/>
+            </td>
+        </xpath>
+    </template>
+</odoo>
