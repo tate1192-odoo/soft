@@ -417,6 +417,31 @@ export function windowRange(reference, range = "month") {
 }
 
 /**
+ * The reference date a view without a saved state opens on.
+ *
+ * A Gantt is a planning screen: it has to open on work that is still ahead. The
+ * window of a `week` range is the calendar week holding the reference, so on
+ * Sunday (the last day of the week) "today's week" has no day left to plan and
+ * the view opens on the **next** week instead. Monday to Saturday keep the
+ * current week: those days still hold the rest of the week (Saturday is a
+ * working day in the reference data: 150 operations over eight weeks, against
+ * 19 on Sunday).
+ *
+ * The other ranges keep `now`: a day window is today by definition, and month /
+ * quarter / year are not the periods a planning screen opens on.
+ *
+ * @param {string} range one of `WINDOW_RANGES`
+ * @param {number} [now] the instant to open around, `Date.now()` by default
+ * @returns {number} a timestamp inside the window to open on
+ */
+export function defaultWindowReference(range, now = Date.now()) {
+    if (range === "week" && dateTimeInUserZone(now).weekday === 7) {
+        return addLocalDays(now, 1);
+    }
+    return now;
+}
+
+/**
  * Move a reference date by whole windows, for the previous / next buttons.
  *
  * @param {number} reference a timestamp inside the current window

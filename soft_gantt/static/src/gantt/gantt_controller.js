@@ -23,6 +23,7 @@ import {
     buildCsv,
     clampResize,
     dateTimeInUserZone,
+    defaultWindowReference,
     downloadTextFile,
     fieldText,
     fitWindow,
@@ -116,21 +117,22 @@ export class GanttSoftController extends Component {
         const scale = archInfo.scales.includes(this.props.state?.scale)
             ? this.props.state.scale
             : archInfo.scale;
-        // The window is kept as a reference date: which calendar unit it covers
-        // depends on the range, and that is derived from it everywhere else.
-        const windowStart = Number.isFinite(this.props.state?.windowStart)
-            ? this.props.state.windowStart
-            : Date.now();
         // `range` is the length of the window: the view opens on the one its
         // arch asks for, and picking a scale zooms to that scale's own window.
         // A restored "fit" keeps the window it computed, since it is not a
         // calendar unit that could be derived again.
         const restoringFit = this.props.state?.range === "fit" && this.props.state?.fitWindow;
-        const range = restoringFit
-            ? "fit"
-            : WINDOW_RANGES.includes(this.props.state?.range)
+        const defaultRange = WINDOW_RANGES.includes(this.props.state?.range)
             ? this.props.state.range
             : archInfo.range || "month";
+        const range = restoringFit ? "fit" : defaultRange;
+        // The window is kept as a reference date: which calendar unit it covers
+        // depends on the range, and that is derived from it everywhere else. A
+        // view without a saved state opens on the period being planned, which
+        // is not always the one holding today (see `defaultWindowReference`).
+        const windowStart = Number.isFinite(this.props.state?.windowStart)
+            ? this.props.state.windowStart
+            : defaultWindowReference(defaultRange);
         // `collapsedGroups` folds grouped rows away and survives re-renders:
         // its keys are the stable group keys computed by the renderer (an id
         // for a many2one, the raw value otherwise, empty string for "Not set").

@@ -123,12 +123,15 @@ Behaviour
 * **A window, not a table.** The view reads one *calendar unit* at a time (the
   month holding today by default, or whatever ``default_range`` asks for) and
   the records that overlap it. The arrows around the period in the control panel
-  move that window, and the middle button comes back to today. This is what
-  makes the view usable on a table holding years of history: a hundred thousand
-  operations cost the same one month of reading as a hundred, and paging is a
-  click instead of a scrollbar. ``limit`` stays as a safety net for a window
-  that is genuinely crowded; if a window holds more records than that, only the
-  first ones are drawn.
+  move that window, and the middle button comes back to today. A view without a
+  saved state opens on the period being **planned**, not always on the one
+  holding today: with ``default_range="week"`` that is the current week, except
+  on Sunday, when the current week has no day left ahead and the next week opens
+  instead. This is what makes the view usable on a table holding years of
+  history: a hundred thousand operations cost the same one month of reading as
+  a hundred, and paging is a click instead of a scrollbar. ``limit`` stays as a
+  safety net for a window that is genuinely crowded; if a window holds more
+  records than that, only the first ones are drawn.
 * **A scale is a zoom, and the header has two levels.** The control panel
   buttons zoom in and out: ``Day`` shows the *hours* of one day, ``Week`` the
   days of one week, ``Month`` the days of one month, ``Quarter`` the weeks of a

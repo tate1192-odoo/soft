@@ -6,12 +6,14 @@ import {
     buildCsv,
     clampResize,
     csvEscape,
+    defaultWindowReference,
     fieldText,
     fitWindow,
     formatWindowLabel,
     parseOdooFieldDate,
     relationIds,
     serializeOdooDate,
+    windowRange,
 } from "@soft_gantt/gantt/gantt_utils";
 
 const ORIGINAL_ZONE = luxon.Settings.defaultZone;
@@ -246,5 +248,36 @@ describe("clampResize", () => {
     test("a record carrying no anchor is left alone", () => {
         const newValue = value("2026-03-07 10:00:00");
         expect(clampResize(newValue, null, true, "datetime")).toBe(newValue);
+    });
+});
+
+describe("defaultWindowReference", () => {
+    // 2026-11-08 is a Sunday, the last day of its week; 2026-11-02 a Monday.
+    const sunday = Date.parse("2026-11-08T20:41:00Z");
+    const monday = Date.parse("2026-11-02T08:00:00Z");
+    const wednesday = Date.parse("2026-11-04T12:00:00Z");
+    const saturday = Date.parse("2026-11-07T12:00:00Z");
+
+    test("a week view opens on the next week on Sunday", () => {
+        const reference = defaultWindowReference("week", sunday);
+        // The window of the reference is the week starting the next Monday.
+        expect(windowRange(reference, "week").start).toBe(
+            Date.parse("2026-11-09T00:00:00Z")
+        );
+    });
+
+    test("a week view keeps the current week on any other day", () => {
+        for (const day of [monday, wednesday, saturday]) {
+            expect(defaultWindowReference("week", day)).toBe(day);
+            expect(windowRange(defaultWindowReference("week", day), "week").start).toBe(
+                Date.parse("2026-11-02T00:00:00Z")
+            );
+        }
+    });
+
+    test("the other ranges keep today, Sunday included", () => {
+        for (const range of ["day", "month", "quarter", "year"]) {
+            expect(defaultWindowReference(range, sunday)).toBe(sunday);
+        }
     });
 });
