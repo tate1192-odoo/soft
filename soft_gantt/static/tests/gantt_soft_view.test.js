@@ -1,6 +1,6 @@
 import { after, beforeEach, describe, expect, getFixture, test } from "@odoo/hoot";
 import { click, queryAll, queryOne } from "@odoo/hoot-dom";
-import { animationFrame } from "@odoo/hoot-mock";
+import { animationFrame, mockDate } from "@odoo/hoot-mock";
 import { user } from "@web/core/user";
 import {
     defineModels,
@@ -220,4 +220,31 @@ test("a day window is labelled as a day", async () => {
         arch: `<gantt_soft date_start="date_start" date_stop="date_deadline" default_range="day"/>`,
     });
     expect(queryOne(".o_gantt_soft_window_label").textContent.trim()).toBe("05 Mar 2026");
+});
+
+test("a week view opens on the next week when today is the last day", async () => {
+    // 2026-11-08 is a Sunday: the current week (02-08 Nov) has no day left to
+    // plan, so a planning view opens on the week that starts the next morning.
+    mockDate("2026-11-08T20:41:00Z");
+    await mountGanttView({
+        type: "gantt_soft",
+        resModel: "project.task",
+        arch: `<gantt_soft date_start="date_start" date_stop="date_deadline" default_range="week" mode="week"/>`,
+    });
+    expect(queryOne(".o_gantt_soft_window_label").textContent.trim()).toBe(
+        "09 Nov - 15 Nov 2026"
+    );
+});
+
+test("a week view still opens on the current week on a working day", async () => {
+    // 2026-11-04 is a Wednesday: the rest of the week is still ahead.
+    mockDate("2026-11-04T12:00:00Z");
+    await mountGanttView({
+        type: "gantt_soft",
+        resModel: "project.task",
+        arch: `<gantt_soft date_start="date_start" date_stop="date_deadline" default_range="week" mode="week"/>`,
+    });
+    expect(queryOne(".o_gantt_soft_window_label").textContent.trim()).toBe(
+        "02 Nov - 08 Nov 2026"
+    );
 });
