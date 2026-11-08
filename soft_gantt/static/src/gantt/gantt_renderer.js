@@ -1,6 +1,8 @@
 import { Component, onMounted, onWillRender, useRef } from "@odoo/owl";
 import { formatDate } from "@web/core/l10n/dates";
 import { _t } from "@web/core/l10n/translation";
+import { evaluateBooleanExpr } from "@web/core/py_js/py";
+import { formatFloat, formatInteger } from "@web/views/fields/formatters";
 import { useVirtualGrid } from "@web/core/virtual_grid_hook";
 
 import {
@@ -70,6 +72,7 @@ export class GanttSoftRenderer extends Component {
     static template = "soft_gantt.GanttRenderer";
     static props = {
         archInfo: Object,
+        fields: { type: Object, optional: true },
         records: Array,
         scale: String,
         window: { type: Object, optional: true },
@@ -81,6 +84,12 @@ export class GanttSoftRenderer extends Component {
         onResize: { type: Function, optional: true },
         collapsed: { type: Object, optional: true },
         onToggleGroup: { type: Function, optional: true },
+        // Opening the form on an empty cell / a group row, and starting with
+        // every group folded: both are optional, so a bare renderer still
+        // mounts without them.
+        defaultCollapsed: { type: Boolean, optional: true },
+        canCellCreate: { type: Boolean, optional: true },
+        onCreateAt: { type: Function, optional: true },
     };
 
     setup() {
@@ -299,6 +308,8 @@ export class GanttSoftRenderer extends Component {
             bandUnit,
             columns: cells.map((cell) => ({
                 ...place(cell),
+                start: cell.start,
+                end: cell.end,
                 label: this._cellLabel(cell.start, unit),
                 isWeekend: cell.isWeekend,
             })),
@@ -429,8 +440,13 @@ export class GanttSoftRenderer extends Component {
         return [...groups.values()]
             .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }))
             .map(({ key, label, bars: groupBars }) => {
-                if (this.props.collapsed && this.props.collapsed[key]) {
-                    return this._buildCollapsedGroup(key, label, groupBars, range);
+                // The row counts its records and, when the view asks for it,
+                // sums a numeric field over them: the summary that makes a
+                // folded or expanded group readable at a glance.
+                const summary = this._groupSummaryLabel(label, groupBars);
+                const avatarUrl = this._groupAvatarUrl(key);
+                if (this._isGroupCollapsed(key)) {
+                    return this._buildCollapsedGroup(key, summary, groupBars, range, avatarUrl);
                 }
                 // The lanes describe what the reader sees, so they are packed on
                 // the intervals the bars are *drawn* with, not on the record's
@@ -448,7 +464,8 @@ export class GanttSoftRenderer extends Component {
                 return {
                     id: `group:${key}`,
                     key,
-                    label,
+                    label: summary,
+                    avatarUrl,
                     height: laneCount * LANE_HEIGHT,
                     bars: packed.map(({ row, lane }) => {
                         // The original bar, not the copy the lanes were packed
@@ -476,6 +493,128 @@ export class GanttSoftRenderer extends Component {
      * raw value identifies a selection, a char or a number; an unset value is
      * one group of its own (empty key).
      */
+    /** Whether a group starts folded: an explicit toggle wins over the default. */
+    _isGroupCollapsed(key) {
+        const { collapsed, defaultCollapsed } = this.props;
+        if (collapsed && Object.prototype.hasOwnProperty.call(collapsed, key)) {
+            return Boolean(collapsed[key]);
+        }
+        return Boolean(defaultCollapsed);
+    }
+
+    /**
+     * The row label of a group: its name, the number of records it holds and,
+     * when the view declares `group_total`, the sum of that field over them.
+     * The count is part of the label so a reader knows how much a row stands
+     * for without looking at the bars.
+     */
+    _groupSummaryLabel(label, groupBars) {
+        let summary = _t("%s (%s)", label, groupBars.length);
+        const fieldName = this.props.archInfo.groupTotalField;
+        if (!fieldName) {
+            return summary;
+        }
+        const total = groupBars.reduce(
+            (sum, bar) => sum + (Number(bar.record[fieldName]) || 0),
+            0
+        );
+        const field = (this.props.fields || {})[fieldName];
+        summary = `${summary} · ${field?.string || fieldName}: ${this._formatTotal(total, field)}`;
+        return summary;
+    }
+
+    /**
+     * A group total, formatted like the field it sums.
+     *
+     * The formatters read the user's language (grouping, decimal separator),
+     * which a renderer mounted outside the web client (a test, another view)
+     * does not have: the number is then shown as read, instead of the whole
+     * group row failing.
+     */
+    _formatTotal(total, field) {
+        try {
+            return field?.type === "integer"
+                ? formatInteger(total)
+                : formatFloat(total, { field: field || undefined });
+        } catch {
+            if (field?.type === "integer") {
+                return String(total);
+            }
+            const digits = field?.digits?.[1] ?? 2;
+            return String(Number(total.toFixed(digits)));
+        }
+    }
+
+    /** The avatar of a group row, from the image field the arch names. */
+    _groupAvatarUrl(key) {
+        const { groupByField, groupAvatarField } = this.props.archInfo;
+        if (!groupByField || !groupAvatarField || !key) {
+            return null;
+        }
+        const field = (this.props.fields || {})[groupByField];
+        if (!field?.relation) {
+            return null;
+        }
+        return `/web/image/${field.relation}/${key}/${groupAvatarField}`;
+    }
+
+    /**
+     * The classes of the decorations whose expression matches a record.
+     *
+     * The expressions are evaluated on the record the bar stands for, like the
+     * `decoration-*` attributes of a list row. An expression the record cannot
+     * evaluate (a field that was not read) decorates nothing instead of
+     * breaking the timeline.
+     */
+    _decorationClasses(record) {
+        const classes = [];
+        for (const { name, condition } of this.props.archInfo.decorations || []) {
+            let matches = false;
+            try {
+                matches = evaluateBooleanExpr(condition, record);
+            } catch {
+                matches = false;
+            }
+            if (matches) {
+                classes.push(`o_gantt_soft_decoration_${name}`);
+            }
+        }
+        return classes;
+    }
+
+    /** Double click on an empty cell: open the form with that cell's dates. */
+    onTimelineRowDblClick(ev, row) {
+        if (!this.props.canCellCreate || !this.props.onCreateAt) {
+            return;
+        }
+        // A bar has its own gestures (click opens the card, drag reschedules):
+        // creating a record under a double clicked bar would be a surprise.
+        if (ev.target.closest(".o_gantt_soft_bar")) {
+            return;
+        }
+        const rect = ev.currentTarget.getBoundingClientRect();
+        if (!rect.width) {
+            return;
+        }
+        const percent = ((ev.clientX - rect.left) / rect.width) * 100;
+        const column =
+            this.columns.find((candidate) => percent >= candidate.left && percent < candidate.left + candidate.width) ||
+            this.columns[this.columns.length - 1];
+        if (!column) {
+            return;
+        }
+        ev.stopPropagation();
+        this.props.onCreateAt({ row, start: column.start, stop: column.end });
+    }
+
+    /** The "+" of a group row: open the form with the group defaulted. */
+    onGroupAddClick(ev, row) {
+        ev.stopPropagation();
+        if (this.props.onCreateAt) {
+            this.props.onCreateAt({ row, start: null, stop: null });
+        }
+    }
+
     _groupKey(record, fieldName) {
         const value = record[fieldName];
         if (value === false || value === null || value === undefined || value === "") {
@@ -530,7 +669,7 @@ export class GanttSoftRenderer extends Component {
      * The bar stands for no single record: it cannot be moved or resized, and
      * clicking it unfolds the group again instead of opening a record.
      */
-    _buildCollapsedGroup(key, label, groupBars, range) {
+    _buildCollapsedGroup(key, label, groupBars, range, avatarUrl = null) {
         let start = groupBars[0].laneStart;
         let stop = groupBars[0].laneStop;
         for (const bar of groupBars) {
@@ -545,7 +684,8 @@ export class GanttSoftRenderer extends Component {
             id: `group:${key}`,
             key,
             collapsed: true,
-            label: _t("%s (%s)", label, count),
+            label,
+            avatarUrl,
             height: LANE_HEIGHT,
             bars: [
                 {
@@ -553,7 +693,7 @@ export class GanttSoftRenderer extends Component {
                     collapsedGroup: true,
                     groupKey: key,
                     label: _t("%s record(s)", count),
-                    title: `${label} (${count})\n${this._formatRange(start, stop)}`,
+                    title: `${label}\n${this._formatRange(start, stop)}`,
                     geometry: barGeometry(start, stop, range.start, range.end),
                     barClass: [template.colorClass, "o_gantt_soft_bar_collapsed"]
                         .filter(Boolean)
@@ -597,6 +737,7 @@ export class GanttSoftRenderer extends Component {
             colorClass,
             this.props.canEdit && "o_gantt_soft_bar_draggable",
             row.milestone && "o_gantt_soft_bar_milestone",
+            ...this._decorationClasses(row.record),
         ]
             .filter(Boolean)
             .join(" ");
@@ -751,6 +892,11 @@ export class GanttSoftRenderer extends Component {
         if (this.props.onToggleGroup) {
             this.props.onToggleGroup(key);
         }
+    }
+
+    /** Tooltip of the "+" that creates a record in a group. */
+    get newRecordTitle() {
+        return _t("New record in this group");
     }
 
     /** Tooltip of a group toggle, read before and after the fold. */

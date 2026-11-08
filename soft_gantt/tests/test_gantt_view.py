@@ -279,6 +279,87 @@ class TestSoftGanttView(TransactionCase):
         )
         self.assertEqual(view.type, 'gantt_soft')
 
+
+    # ------------------------------------------------------------------
+    # Decorations, group summaries, avatars and grid creation
+    # ------------------------------------------------------------------
+
+    def test_decorations_are_accepted_on_the_root_node(self):
+        view = self._create_view(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'decoration-danger="is_company" decoration-success="name == \'Acme\'"/>'
+        )
+        self.assertEqual(view.type, 'gantt_soft')
+
+    def test_an_unknown_decoration_is_refused(self):
+        self._assert_arch_is_refused(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'decoration-whatever="true"/>'
+        )
+
+    def test_an_empty_decoration_expression_is_refused(self):
+        self._assert_arch_is_refused(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'decoration-danger=""/>'
+        )
+
+    def test_a_decoration_reading_an_unknown_field_is_refused(self):
+        # Base's generic decoration processing resolves the identifiers and
+        # refuses a field the model does not have, like a list view would.
+        self._assert_arch_is_refused(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'decoration-danger="not_a_field == 1"/>'
+        )
+
+    def test_group_total_must_be_numeric(self):
+        view = self._create_view(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="company_id" group_total="color"/>'
+        )
+        self.assertEqual(view.type, 'gantt_soft')
+        self._assert_arch_is_refused(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="company_id" group_total="name"/>'
+        )
+
+    def test_group_avatar_requires_a_many2one_group_with_an_image_field(self):
+        # ``res.partner.image_1920`` is the image field, ``parent_id`` a
+        # many2one to another partner.
+        view = self._create_view(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="parent_id" group_avatar="image_1920"/>'
+        )
+        self.assertEqual(view.type, 'gantt_soft')
+        for arch in (
+            # The field exists on the group's model but is not binary.
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="parent_id" group_avatar="name"/>',
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="parent_id" group_avatar="no_such_field"/>',
+            # No group row to draw it on.
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_avatar="image_1920"/>',
+            # The group is not a many2one.
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="color" group_avatar="image_1920"/>',
+        ):
+            self._assert_arch_is_refused(arch)
+
+    def test_collapse_first_level_and_cell_create_are_booleans(self):
+        view = self._create_view(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="company_id" collapse_first_level="1" cell_create="1"/>'
+        )
+        self.assertEqual(view.type, 'gantt_soft')
+        self._assert_arch_is_refused(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'cell_create="sometimes"/>'
+        )
+        self._assert_arch_is_refused(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'collapse_first_level="maybe"/>'
+        )
+
     # ------------------------------------------------------------------
     # The module is a view type, not a business module
     # ------------------------------------------------------------------

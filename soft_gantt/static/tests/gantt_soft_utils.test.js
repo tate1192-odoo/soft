@@ -5,6 +5,7 @@ import {
     addFieldDays,
     buildCsv,
     clampResize,
+    createContextDefaults,
     csvEscape,
     defaultWindowReference,
     fieldText,
@@ -279,5 +280,76 @@ describe("defaultWindowReference", () => {
         for (const range of ["day", "month", "quarter", "year"]) {
             expect(defaultWindowReference(range, sunday)).toBe(sunday);
         }
+    });
+});
+
+describe("createContextDefaults", () => {
+    const archInfo = {
+        dateStart: "date_start",
+        dateStartType: "datetime",
+        dateStop: "date_deadline",
+        dateStopType: "datetime",
+        groupByField: "team_id",
+    };
+    const fields = {
+        team_id: { type: "many2one", relation: "project.team" },
+        active: { type: "boolean" },
+        label: { type: "char" },
+        sequence: { type: "integer" },
+    };
+
+    test("defaults the many2one group with the id the row stands for", () => {
+        const context = createContextDefaults(archInfo, fields, "7", null, null, {
+            default_company_id: 3,
+        });
+        expect(context.default_team_id).toBe(7);
+        // The view context is kept: the action may already set defaults.
+        expect(context.default_company_id).toBe(3);
+    });
+
+    test("defaults the clicked cell's dates in UTC", () => {
+        const start = Date.UTC(2026, 2, 3, 8, 0);
+        const stop = Date.UTC(2026, 2, 3, 9, 0);
+        const context = createContextDefaults(archInfo, fields, "", start, stop);
+        expect(context.default_date_start).toBe("2026-03-03 08:00:00");
+        expect(context.default_date_deadline).toBe("2026-03-03 09:00:00");
+    });
+
+    test("a date field defaults its date part", () => {
+        const context = createContextDefaults(
+            { ...archInfo, dateStartType: "date", dateStopType: "date" },
+            fields,
+            "",
+            Date.UTC(2026, 2, 3),
+            Date.UTC(2026, 2, 4)
+        );
+        expect(context.default_date_start).toBe("2026-03-03");
+        expect(context.default_date_deadline).toBe("2026-03-04");
+    });
+
+    test("converts a boolean group key and keeps a char one", () => {
+        const boolean = createContextDefaults(
+            { ...archInfo, groupByField: "active" },
+            fields,
+            "true",
+            null,
+            null
+        );
+        expect(boolean.default_active).toBe(true);
+
+        const label = createContextDefaults(
+            { ...archInfo, groupByField: "label" },
+            fields,
+            "Acme",
+            null,
+            null
+        );
+        expect(label.default_label).toBe("Acme");
+    });
+
+    test("does not default a group that is not set", () => {
+        const context = createContextDefaults(archInfo, fields, "", null, null);
+        expect("default_team_id" in context).toBe(false);
+        expect("default_date_start" in context).toBe(false);
     });
 });

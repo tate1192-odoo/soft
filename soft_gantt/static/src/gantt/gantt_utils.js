@@ -692,6 +692,57 @@ export function relationIds(value) {
 }
 
 /**
+ * Context defaults for creating a record from the grid.
+ *
+ * A double click on an empty cell (or the "+" of a group row) opens the form of
+ * the model with the group and, when the click landed on a cell, the dates of
+ * that cell already set: that is what turns the view into a planning surface
+ * instead of a read-only chart. The keys are the `default_<field>` context keys
+ * a form understands; a datetime is written in UTC, the format the server's
+ * `default_get` reads.
+ *
+ * @param {Object} archInfo
+ * @param {Object} fields field descriptions of the view's model
+ * @param {string|undefined} groupValue the group key of the row, if grouped
+ * @param {number|null|undefined} start timestamp of the clicked cell
+ * @param {number|null|undefined} stop timestamp of the clicked cell
+ * @param {Object} context the view context, kept as-is
+ * @returns {Object}
+ */
+export function createContextDefaults(archInfo, fields, groupValue, start, stop, context = {}) {
+    const defaults = {};
+    const groupField = archInfo.groupByField && fields[archInfo.groupByField];
+    if (groupField && groupValue !== undefined && groupValue !== null && groupValue !== "") {
+        let value = groupValue;
+        if (groupField.type === "many2one") {
+            value = Number(groupValue);
+        } else if (groupField.type === "boolean") {
+            value = groupValue === "true";
+        } else if (groupField.type === "integer") {
+            value = Number(groupValue);
+        }
+        const valid =
+            (groupField.type === "many2one" && Number.isInteger(value) && value > 0) ||
+            (groupField.type === "integer" && Number.isInteger(value)) ||
+            (groupField.type === "boolean" && typeof value === "boolean") ||
+            ["char", "text", "selection"].includes(groupField.type);
+        if (valid) {
+            defaults[`default_${archInfo.groupByField}`] = value;
+        }
+    }
+    if (start !== null && start !== undefined) {
+        defaults[`default_${archInfo.dateStart}`] = serializeOdooDate(
+            start,
+            archInfo.dateStartType
+        );
+    }
+    if (stop !== null && stop !== undefined) {
+        defaults[`default_${archInfo.dateStop}`] = serializeOdooDate(stop, archInfo.dateStopType);
+    }
+    return { ...context, ...defaults };
+}
+
+/**
  * The window covering every record, padded to whole days.
  *
  * Every available date participates, so a record carrying only a start or only

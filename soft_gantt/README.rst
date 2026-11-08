@@ -109,6 +109,23 @@ Arch attributes
 ``group_by``           optional field the rows are grouped by: one row per
                        value (a team, a customer), the records of that group
                        drawn along the timeline
+``group_total``        optional Float/Integer field summed over the records of
+                       a group and shown on its row ("Alpha (3) · Total work:
+                       17.5")
+``group_avatar``       optional binary image field of the group's record, read
+                       on the group's comodel and drawn as an avatar on its
+                       row; requires a many2one ``group_by``
+``collapse_first_level``  ``1`` starts with every group folded, which is how a
+                       long plan is read before opening the groups one by one
+``cell_create``        ``1`` turns the grid into a planning surface: a double
+                       click on an empty cell opens the form with that cell's
+                       dates defaulted, the ``+`` of a group row with the group
+                       defaulted
+``decoration-danger``  expression evaluated on the record; a matching bar is
+``decoration-info``    drawn with a ring in that colour. The names are the list
+``decoration-secondary`` view decorations: ``danger``, ``info``, ``secondary``,
+``decoration-success``   ``success`` and ``warning``
+``decoration-warning``
 ``limit``              maximum number of records read per window (default 500)
 ``default_order``      ordering of the rows
 ``open_form_view``     ``1`` opens the record from a bar instead of showing the
@@ -124,8 +141,12 @@ view is installed: a misspelled field name, a Char field used as a date, a date
 field the ORM cannot search (the window is read with a domain on it), an
 unknown attribute, a bad ``mode`` or ``scales``, a non-positive ``limit``, a
 read-only field used as a group, a ``milestone`` field that is not a Boolean, a
-``dependencies`` list that points at another model, or a declared ``<field>`` of
-an unrenderable type refuses the view with a message that names the problem. The
+``dependencies`` list that points at another model, an unknown ``decoration-*``
+name or an empty decoration expression, a ``group_total`` that is not numeric, a
+``group_avatar`` that names no binary field (or a non-many2one ``group_by``), a
+``cell_create``/``collapse_first_level`` that is not a boolean, or a declared
+``<field>`` of an unrenderable type refuses the view with a message that names
+the problem. The
 client parser runs the same checks on views built at runtime, so a broken view
 never shows an empty schedule instead of an error.
 
@@ -165,6 +186,24 @@ Behaviour
   sharing a name stay apart. A milestone keeps a lane of its own from a bar
   starting at the same instant: its diamond is drawn around that point, so
   sharing the lane would put the bar's edge under it.
+* **The grid creates records too.** With ``cell_create="1"`` the empty cells
+  are a planning surface, not wallpaper: a double click opens the form of the
+  model with the clicked cell's dates defaulted (in the format each date field
+  reads), and the ``+`` on a group row opens it with that group defaulted. The
+  view type stays generic: the form is the one the action already offers, so a
+  consumer keeps its own defaults and its own access rights.
+* **A group row says what it holds.** A grouped row reads as *name (count)* and,
+  with ``group_total``, adds the sum of that field over the records of the group
+  ("Alpha (3) · Total work: 17.5"). ``group_avatar`` puts the image of the group
+  record (a team leader, a customer logo) next to the name, and
+  ``collapse_first_level="1"`` starts with every group folded, which is how a
+  plan of a year is read before opening the groups one by one.
+* **Decorations are a second reading.** ``decoration-danger="status == 'cancel'"``
+  (and the other four decoration names) evaluates the expression on the record
+  and draws a ring inside the matching bars: the bar colour still says what the
+  ``color`` field says, while the ring flags a second fact (late, priority,
+  cancellation) without a new field for it. The fields an expression reads are
+  requested with the window even when the arch does not declare them.
 * **A bar carries its details.** Clicking a bar opens a card with the two dates
   and every ``<field>`` the arch declares (dates, booleans, selection labels and
   many2one names resolved), and an *Open* button that goes to the form. Moving

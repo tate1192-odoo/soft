@@ -64,6 +64,10 @@ function makeArchInfo(overrides = {}) {
         milestoneField: "",
         dependenciesField: "",
         fieldNodes: {},
+        groupTotalField: "",
+        groupAvatarField: "",
+        decorations: [],
+        expressionFields: [],
         ...overrides,
     };
 }
@@ -95,15 +99,19 @@ function day(offset) {
  */
 async function mountRenderer({
     records,
+    fields = {},
     scale = "day",
     archInfo = makeArchInfo(),
     window = undefined,
     canEdit = true,
     collapsed = undefined,
+    defaultCollapsed = false,
+    canCellCreate = false,
     onBarClick = () => {},
     onReschedule = () => {},
     onResize = () => {},
     onToggleGroup = () => {},
+    onCreateAt = () => {},
 }) {
     const target = document.createElement("div");
     // The fixture is where the assertions look: it is the root node hoot
@@ -116,15 +124,19 @@ async function mountRenderer({
     const app = new App(GanttSoftRenderer, {
         props: {
             archInfo,
+            fields,
             records,
             scale,
             window,
             canEdit,
             collapsed,
+            defaultCollapsed,
+            canCellCreate,
             onBarClick,
             onReschedule,
             onResize,
             onToggleGroup,
+            onCreateAt,
         },
         // Odoo keeps its templates (static XML files, view extensions) in its
         // own registry, and hands them to Owl through this hook: `env.js`
@@ -420,7 +432,7 @@ describe("GanttSoftRenderer", () => {
         // The team vertically, its dates horizontally: one row, two bars.
         expect(".o_gantt_soft_row").toHaveCount(1);
         expect(".o_gantt_soft_bar").toHaveCount(2);
-        expect(queryOne(".o_gantt_soft_label").textContent).toBe("Alpha");
+        expect(queryOne(".o_gantt_soft_label").textContent).toBe("Alpha (2)");
         // The two services overlap, so the second one drops to the next lane
         // instead of being drawn on top of the first.
         expect(queryAll(".o_gantt_soft_bar").map((el) => el.style.top)).toEqual(["2px", "32px"]);
@@ -473,8 +485,8 @@ describe("GanttSoftRenderer", () => {
 
         expect(".o_gantt_soft_row").toHaveCount(2);
         expect(queryAll(".o_gantt_soft_label").map((el) => el.textContent)).toEqual([
-            "Alpha",
-            "Beta",
+            "Alpha (1)",
+            "Beta (1)",
         ]);
         // One service each: both rows are a single lane tall.
         expect(queryAll(".o_gantt_soft_row").map((el) => el.style.height)).toEqual([
@@ -490,7 +502,7 @@ describe("GanttSoftRenderer", () => {
         });
 
         expect(".o_gantt_soft_row").toHaveCount(1);
-        expect(queryOne(".o_gantt_soft_label").textContent).toBe("Not set");
+        expect(queryOne(".o_gantt_soft_label").textContent).toBe("Not set (1)");
     });
 
     test("groups by id, so two teams sharing a name stay apart", async () => {
@@ -508,8 +520,8 @@ describe("GanttSoftRenderer", () => {
 
         expect(".o_gantt_soft_row").toHaveCount(2);
         expect(queryAll(".o_gantt_soft_label").map((el) => el.textContent)).toEqual([
-            "Alpha",
-            "Alpha",
+            "Alpha (1)",
+            "Alpha (1)",
         ]);
     });
 
@@ -523,7 +535,7 @@ describe("GanttSoftRenderer", () => {
             ],
         });
 
-        expect(queryOne(".o_gantt_soft_label").textContent).toBe("Alpha");
+        expect(queryOne(".o_gantt_soft_label").textContent).toBe("Alpha (1)");
     });
 
     test("counts the undated records, not the groups, when grouping", async () => {
@@ -1065,6 +1077,264 @@ describe("dependencies", () => {
         await animationFrame();
         const afterMove = queryOne(".o_gantt_soft_dependency").getAttribute("d");
         expect(afterMove).not.toBe(beforeMove);
+    });
+
+
+    // ------------------------------------------------------------------
+    // Decoration expressions
+    // ------------------------------------------------------------------
+
+    test("decorates a bar whose record matches a decoration expression", async () => {
+        await mountRenderer({
+            archInfo: makeArchInfo({
+                decorations: [
+                    { name: "danger", condition: "is_late" },
+                    { name: "success", condition: "state == 'done'" },
+                ],
+            }),
+            records: [
+                makeRecord(1, "2026-03-02 08:00:00", "2026-03-03 08:00:00", {
+                    is_late: true,
+                    state: "draft",
+                }),
+                makeRecord(2, "2026-03-03 08:00:00", "2026-03-04 08:00:00", {
+                    is_late: false,
+                    state: "done",
+                }),
+            ],
+        });
+
+        const bars = queryAll(".o_gantt_soft_bar");
+        expect(bars[0].classList.contains("o_gantt_soft_decoration_danger")).toBe(true);
+        expect(bars[0].classList.contains("o_gantt_soft_decoration_success")).toBe(false);
+        expect(bars[1].classList.contains("o_gantt_soft_decoration_danger")).toBe(false);
+        expect(bars[1].classList.contains("o_gantt_soft_decoration_success")).toBe(true);
+    });
+
+    test("an expression the record cannot evaluate decorates nothing", async () => {
+        await mountRenderer({
+            archInfo: makeArchInfo({
+                decorations: [{ name: "warning", condition: "not_a_loaded_field == 1" }],
+            }),
+            records: [makeRecord(1, "2026-03-02 08:00:00", "2026-03-03 08:00:00")],
+        });
+
+        // The timeline still paints, the broken expression decorates nothing.
+        expect(".o_gantt_soft_bar").toHaveCount(1);
+        expect(queryOne(".o_gantt_soft_bar").classList.contains("o_gantt_soft_decoration_warning")).toBe(false);
+    });
+
+    // ------------------------------------------------------------------
+    // Group summaries, folding and avatars
+    // ------------------------------------------------------------------
+
+    test("names the number of records on a group row", async () => {
+        const team = { id: 7, display_name: "Alpha" };
+        await mountRenderer({
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", { team_id: team }),
+                makeRecord(2, "2026-03-04 00:00:00", "2026-03-06 00:00:00", { team_id: team }),
+            ],
+        });
+
+        expect(queryOne(".o_gantt_soft_label").textContent).toBe("Alpha (2)");
+    });
+
+    test("adds the group_total sum to the group row", async () => {
+        const team = { id: 7, display_name: "Alpha" };
+        await mountRenderer({
+            fields: { amount: { type: "float", string: "Amount", digits: [16, 2] } },
+            archInfo: makeArchInfo({ groupByField: "team_id", groupTotalField: "amount" }),
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", {
+                    team_id: team,
+                    amount: 1.5,
+                }),
+                makeRecord(2, "2026-03-04 00:00:00", "2026-03-06 00:00:00", {
+                    team_id: team,
+                    amount: 2.5,
+                }),
+            ],
+        });
+
+        const label = queryOne(".o_gantt_soft_label").textContent;
+        expect(label.startsWith("Alpha (2) · Amount: ")).toBe(true);
+        expect(label.includes("4")).toBe(true);
+    });
+
+    test("starts with every group folded when the view asks for it", async () => {
+        const team = { id: 7, display_name: "Alpha" };
+        await mountRenderer({
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            defaultCollapsed: true,
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", { team_id: team }),
+                makeRecord(2, "2026-03-04 00:00:00", "2026-03-06 00:00:00", { team_id: team }),
+            ],
+        });
+
+        expect(".o_gantt_soft_bar_collapsed").toHaveCount(1);
+        expect(queryOne(".o_gantt_soft_bar_label").textContent).toBe("2 record(s)");
+        expect(queryOne(".o_gantt_soft_label").textContent).toBe("Alpha (2)");
+    });
+
+    test("an explicit fold state wins over the default", async () => {
+        const team = { id: 7, display_name: "Alpha" };
+        await mountRenderer({
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            defaultCollapsed: true,
+            collapsed: { 7: false },
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", { team_id: team }),
+                makeRecord(2, "2026-03-04 00:00:00", "2026-03-06 00:00:00", { team_id: team }),
+            ],
+        });
+
+        expect(".o_gantt_soft_bar_collapsed").toHaveCount(0);
+        expect(".o_gantt_soft_bar").toHaveCount(2);
+    });
+
+    test("the group toggle hands the group key to the controller", async () => {
+        const team = { id: 7, display_name: "Alpha" };
+        const toggled = [];
+        await mountRenderer({
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            defaultCollapsed: true,
+            onToggleGroup: (key) => toggled.push(key),
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", { team_id: team }),
+            ],
+        });
+
+        queryOne(".o_gantt_soft_group_toggle").dispatchEvent(
+            new MouseEvent("click", { bubbles: true })
+        );
+        await animationFrame();
+        expect(toggled.length).toBe(1);
+        expect(toggled[0]).toBe("7");
+    });
+
+    test("shows the avatar the arch names on a group row", async () => {
+        await mountRenderer({
+            fields: { team_id: { type: "many2one", relation: "project.team" } },
+            archInfo: makeArchInfo({
+                groupByField: "team_id",
+                groupAvatarField: "image_128",
+            }),
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", {
+                    team_id: { id: 7, display_name: "Alpha" },
+                }),
+            ],
+        });
+
+        // Hoot rewrites the src of an image to a placeholder so a test never
+        // hits the server: the URL the template carries is kept in data-src.
+        const avatar = queryOne(".o_gantt_soft_row_avatar");
+        const url = avatar.getAttribute("data-src") || avatar.getAttribute("src");
+        expect(url).toBe("/web/image/project.team/7/image_128");
+    });
+
+    test("no avatar without the attribute", async () => {
+        await mountRenderer({
+            fields: { team_id: { type: "many2one", relation: "project.team" } },
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", {
+                    team_id: { id: 7, display_name: "Alpha" },
+                }),
+            ],
+        });
+
+        expect(".o_gantt_soft_row_avatar").toHaveCount(0);
+    });
+
+    // ------------------------------------------------------------------
+    // Creating from the grid
+    // ------------------------------------------------------------------
+
+    test("a double click on an empty cell asks for a record with the cell dates", async () => {
+        const calls = [];
+        await mountRenderer({
+            archInfo: makeArchInfo(),
+            window: { start: Date.UTC(2026, 2, 2), end: Date.UTC(2026, 2, 6) },
+            canCellCreate: true,
+            onCreateAt: (data) => calls.push(data),
+            records: [makeRecord(1, "2026-03-04 08:00:00", "2026-03-04 09:00:00")],
+        });
+
+        const row = queryOne(".o_gantt_soft_row");
+        row.getBoundingClientRect = () => ({ left: 0, width: 400, right: 400 });
+        // 101 / 400 = 25.25% of a four day window: inside the first hour of
+        // 03-03 (the day scale is read in hours, so a cell is one hour).
+        row.dispatchEvent(new MouseEvent("dblclick", { bubbles: true, clientX: 101 }));
+        await animationFrame();
+
+        expect(calls.length).toBe(1);
+        expect(calls[0].start).toBe(Date.UTC(2026, 2, 3, 0, 0));
+        expect(calls[0].stop).toBe(Date.UTC(2026, 2, 3, 1, 0));
+    });
+
+    test("a double click on a bar does not create a record", async () => {
+        const calls = [];
+        await mountRenderer({
+            archInfo: makeArchInfo(),
+            window: { start: Date.UTC(2026, 2, 2), end: Date.UTC(2026, 2, 6) },
+            canCellCreate: true,
+            onCreateAt: (data) => calls.push(data),
+            records: [makeRecord(1, "2026-03-04 08:00:00", "2026-03-04 09:00:00")],
+        });
+
+        const row = queryOne(".o_gantt_soft_row");
+        row.getBoundingClientRect = () => ({ left: 0, width: 400, right: 400 });
+        queryOne(".o_gantt_soft_bar").dispatchEvent(
+            new MouseEvent("dblclick", { bubbles: true, clientX: 100 })
+        );
+        await animationFrame();
+
+        expect(calls.length).toBe(0);
+    });
+
+    test("the + of a group row asks for a record defaulted to the group", async () => {
+        const calls = [];
+        await mountRenderer({
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            canCellCreate: true,
+            onCreateAt: (data) => calls.push(data),
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", {
+                    team_id: { id: 7, display_name: "Alpha" },
+                }),
+            ],
+        });
+
+        queryOne(".o_gantt_soft_group_add").dispatchEvent(
+            new MouseEvent("click", { bubbles: true })
+        );
+        await animationFrame();
+
+        expect(calls.length).toBe(1);
+        expect(calls[0].start).toBe(null);
+        expect(calls[0].stop).toBe(null);
+        expect(calls[0].row.key).toBe("7");
+    });
+
+    test("no create gesture without cell_create", async () => {
+        const calls = [];
+        await mountRenderer({
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            canCellCreate: false,
+            onCreateAt: (data) => calls.push(data),
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", {
+                    team_id: { id: 7, display_name: "Alpha" },
+                }),
+            ],
+        });
+
+        expect(".o_gantt_soft_group_add").toHaveCount(0);
+        expect(calls.length).toBe(0);
     });
 
     test("a view without a dependencies field has no arrow layer", async () => {
