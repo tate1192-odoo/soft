@@ -87,6 +87,16 @@ export class GanttSoftArchParser {
                 throw new Error(`The "${attribute}" attribute is required in a gantt_soft view.`);
             }
             this._validateField(fields, modelName, fieldName, FIELD_ATTRIBUTES[attribute], attribute);
+            // The window is read with a domain on the two dates, so a field the
+            // server cannot filter on would make the view fail when it is
+            // opened. `searchable` is computed by the server as "stored or has a
+            // search method"; the metadata is absent on a bare test arch, which
+            // is why the check is on an explicit `false`.
+            if (fields[fieldName].searchable === false) {
+                throw new Error(
+                    `Field "${fieldName}" used as ${attribute} must be stored or searchable: the window is read with a domain on it.`
+                );
+            }
             if (attribute === "date_start") {
                 archInfo.dateStart = fieldName;
                 archInfo.dateStartType = fields[fieldName].type === "date" ? "date" : "datetime";

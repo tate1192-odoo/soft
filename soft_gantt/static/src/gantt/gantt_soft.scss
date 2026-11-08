@@ -8,17 +8,19 @@
 // surface depends on a Bootstrap / Odoo CSS variable: in this deployment
 // `--bs-*` and `--o-cc-*` are undefined, and a `var(--bs-x, <literal>)`
 // silently resolves to the literal, which is why the view used to stay light.
-// The palette is eh_board's, taken verbatim from
-// `eh_account/eh_board/static/src/board.scss`.
 //
-// This file carries the LIGHT values (its `:root` / `.eh_board_app` block). The
-// DARK values live in `gantt_soft.dark.scss`, which belongs to the
-// `web.assets_web_dark` bundle: the server serves that bundle only when
-// `ir_http.color_scheme()` is dark (the reader's colour-scheme cookie or the
-// `res.users.settings.color_scheme` field, as implemented by
-// `ica_web_responsive`), and the bundle inserts the dark file BEFORE this one so
-// its variable values win over the `!default`s here. There is no media query and
-// no theme attribute involved; a file in the dark bundle simply *is* dark mode.
+// The values follow the house palette the client's dashboards use; only plain
+// colour literals are reused from it, no code. The variables are this module's
+// own, so a house palette change is applied here, not imported.
+//
+// This file carries the LIGHT values. The DARK values live in
+// `gantt_soft.dark.scss`, which belongs to the `web.assets_web_dark` bundle:
+// the server serves that bundle only when `ir_http.color_scheme()` is dark (the
+// reader's colour-scheme cookie or the `res.users.settings.color_scheme` field,
+// as implemented by `ica_web_responsive`), and the bundle inserts the dark file
+// BEFORE this one so its variable values win over the `!default`s here. There is
+// no media query and no theme attribute involved; a file in the dark bundle
+// simply *is* dark mode.
 //
 // Everything is scoped under `.o_gantt_soft_*` so installing the module cannot
 // restyle another view, and the popover is scoped with a class of its own so it
@@ -35,13 +37,13 @@ $o-gantt-soft-lane-height: 30px;
 // ---------------------------------------------------------------------------
 // Design tokens
 // ---------------------------------------------------------------------------
-// The palette is eh_board's, taken verbatim from
-// `eh_account/eh_board/static/src/board.scss`: the `!default` values below are
-// its light block (`:root` / `.eh_board_app`), and `gantt_soft.dark.scss`
-// redefines the same variables with its dark block. The dark bundle inserts
-// that file BEFORE this one (`web.assets_web_dark`, `('before', ...)`), so Sass
-// keeps the dark value and skips every `!default` here -- the house mechanism
-// ("variables overrides only"), no media query and no theme attribute.
+// The `!default` values below are the light step of the house palette, and
+// `gantt_soft.dark.scss` redefines the same variables with its dark step. The
+// dark bundle inserts that file BEFORE this one (`web.assets_web_dark`,
+// `('before', ...)`), so Sass keeps the dark value and skips every `!default`
+// here -- the house mechanism ("variables overrides only"), no media query and
+// no theme attribute. The values are plain colour literals, not code from
+// another module.
 //
 // The surface / border / text values below are plain compiled literals: no
 // Bootstrap / Odoo variable is read (in this deployment `--bs-*` and `--o-cc-*`
@@ -55,8 +57,8 @@ $o-gantt-soft-lane-height: 30px;
 $o-gantt-soft-bg: #f3f5f6 !default;
 $o-gantt-soft-surface: #ffffff !default;
 
-// Lines: the lane separator and the gridline come from eh_board's border /
-// grid-line.
+// Lines: the lane separator and the gridline are the house border /
+// grid-line values.
 $o-gantt-soft-border: #e4e8ea !default;
 $o-gantt-soft-gridline: #e6e9ea !default;
 $o-gantt-soft-lane-separator: #e4e8ea !default;
@@ -65,7 +67,7 @@ $o-gantt-soft-lane-separator: #e4e8ea !default;
 $o-gantt-soft-text: #14181a !default;
 $o-gantt-soft-muted: #667075 !default;
 
-// eh_board's accent, kept for the palette (it is not a gantt semantic).
+// The house accent, kept for the palette (it is not a gantt semantic).
 $o-gantt-soft-accent: #087f5b !default;
 
 // ---------------------------------------------------------------------------
@@ -641,5 +643,14 @@ $o-gantt-soft-palette: (
     .o_gantt_soft_color_#{$index} {
         background-color: $color;
         color: o-gantt-soft-on-bar($color);
+    }
+
+    // A milestone's diamond is its bar: the palette class is painted on the
+    // element (whose own background is cleared by the milestone rule above), so
+    // the diamond has to be given the record's colour explicitly. Without this
+    // the record's `color` field was ignored and every milestone was drawn in
+    // the default bar colour.
+    .o_gantt_soft_bar_milestone.o_gantt_soft_color_#{$index}::before {
+        background-color: $color;
     }
 }

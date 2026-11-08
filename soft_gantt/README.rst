@@ -108,13 +108,14 @@ Arch attributes
 ====================== ======================================================
 
 Every attribute that can be checked without a browser is validated when the
-view is installed: a misspelled field name, a Char field used as a date, an
+view is installed: a misspelled field name, a Char field used as a date, a date
+field the ORM cannot search (the window is read with a domain on it), an
 unknown attribute, a bad ``mode`` or ``scales``, a non-positive ``limit``, a
 read-only field used as a group, a ``milestone`` field that is not a Boolean, a
 ``dependencies`` list that points at another model, or a declared ``<field>`` of
-an unrenderable type refuses the view with a message that names the problem. The client parser
-runs the same checks on views built at runtime, so a broken view never shows an
-empty schedule instead of an error.
+an unrenderable type refuses the view with a message that names the problem. The
+client parser runs the same checks on views built at runtime, so a broken view
+never shows an empty schedule instead of an error.
 
 Behaviour
 =========
@@ -141,13 +142,14 @@ Behaviour
 * **One row per record, or one row per group.** By default every record is a
   row. With ``group_by`` the rows are the values of that field (one per team,
   per customer) and the records of a group are drawn along it: the group
-  vertically, its dates horizontally. Two services of the same team overlapping
-  in time are given a lane each, so the row grows instead of hiding one behind
-  the other. Records whose group is unset keep a row of their own ("Not set").
-  A many2one group is identified by its id, so two records sharing a name stay
-  apart. A milestone keeps a lane of its own from a bar starting at the same
-  instant: its diamond is drawn around that point, so sharing the lane would put
-  the bar's edge under it.
+  vertically, its dates horizontally. Two bars that overlap *on screen* are
+  given a lane each, so the row grows instead of hiding one behind the other: at
+  a day scale that includes two services of the same team on the same day, whose
+  times of day need not overlap. Records whose group is unset keep a row of
+  their own ("Not set"). A many2one group is identified by its id, so two records
+  sharing a name stay apart. A milestone keeps a lane of its own from a bar
+  starting at the same instant: its diamond is drawn around that point, so
+  sharing the lane would put the bar's edge under it.
 * **A bar carries its details.** Clicking a bar opens a card with the two dates
   and every ``<field>`` the arch declares (dates, booleans, selection labels and
   many2one names resolved), and an *Open* button that goes to the form. Moving
@@ -170,12 +172,16 @@ Behaviour
   5th in Turkey and in New York.
 * **Drag to reschedule.** Dragging a bar moves both dates by the same whole
   number of days; dragging one of its edges changes only that end and keeps at
-  least one day. The value written back is computed for the field's own type, so
-  a task is never shifted by a day in a UTC+ timezone.
+  least one day. The value written back is computed for the field's own type, and
+  the other end (the anchor) is read for *its* own type, so a view mixing a
+  ``date`` end with a ``datetime`` one is resized in the right calendar and a task
+  is never shifted by a day in a UTC+ timezone.
 * **One date is enough, and a missing end is a duration.** A record carrying
   only a start (or whose end equals its start) is given a real duration before it
-  is drawn: one hour when the timeline is read in hours, and a whole day
-  otherwise. A record with neither date is counted and reported under the
+  is drawn: one hour when the timeline is read in hours, and the rest of the day
+  cell it starts in otherwise. That is what makes the bar exactly one column wide
+  at a day scale, instead of spilling into the next cell. A record with neither
+  date is counted and reported under the
   timeline; when no record carries a date at all, the view says so instead of
   drawing an empty grid.
 * **A folded group is one bar.** Clicking the group toggle folds a team away;

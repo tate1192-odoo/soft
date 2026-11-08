@@ -432,20 +432,38 @@ export class GanttSoftRenderer extends Component {
                 if (this.props.collapsed && this.props.collapsed[key]) {
                     return this._buildCollapsedGroup(key, label, groupBars, range);
                 }
-                const { packed, laneCount } = packLanes(groupBars);
+                // The lanes describe what the reader sees, so they are packed on
+                // the intervals the bars are *drawn* with, not on the record's
+                // raw times. At a day unit two services of one team on the same
+                // day are two bars on the same day cell even when their times of
+                // day do not overlap; packing the raw times put them on one lane
+                // and the second bar hid the first.
+                const barsById = new Map(groupBars.map((bar) => [bar.id, bar]));
+                const packable = groupBars.map((bar) => ({
+                    ...bar,
+                    start: bar.laneStart,
+                    stop: bar.laneStop,
+                }));
+                const { packed, laneCount } = packLanes(packable);
                 return {
                     id: `group:${key}`,
                     key,
                     label,
                     height: laneCount * LANE_HEIGHT,
-                    bars: packed.map(({ row, lane }) => ({
-                        ...row,
-                        // The row already names the group, so the bar names the
-                        // record itself.
-                        label: row.record.display_name || row.label,
-                        title: this._barTitle(row, true),
-                        top: lane * LANE_HEIGHT + LANE_TOP,
-                    })),
+                    bars: packed.map(({ row, lane }) => {
+                        // The original bar, not the copy the lanes were packed
+                        // on: the tooltip and the card describe the record, the
+                        // card's dates being formatted from its own interval.
+                        const bar = barsById.get(row.id);
+                        return {
+                            ...bar,
+                            // The row already names the group, so the bar names
+                            // the record itself.
+                            label: bar.record.display_name || bar.label,
+                            title: this._barTitle(bar, true),
+                            top: lane * LANE_HEIGHT + LANE_TOP,
+                        };
+                    }),
                 };
             });
     }
@@ -513,13 +531,12 @@ export class GanttSoftRenderer extends Component {
      * clicking it unfolds the group again instead of opening a record.
      */
     _buildCollapsedGroup(key, label, groupBars, range) {
-        let start = groupBars[0].start;
-        let stop = groupBars[0].stop;
+        let start = groupBars[0].laneStart;
+        let stop = groupBars[0].laneStop;
         for (const bar of groupBars) {
-            start = Math.min(start, bar.start);
-            stop = Math.max(stop, bar.stop);
+            start = Math.min(start, bar.laneStart);
+            stop = Math.max(stop, bar.laneStop);
         }
-        const snapped = snapToUnit(start, stop, this.timeline.unit);
         // The first bar lends its colour: a folded group keeps the look of its
         // records. It lends nothing else, so the bar cannot be dragged.
         const template = groupBars[0];
@@ -536,8 +553,8 @@ export class GanttSoftRenderer extends Component {
                     collapsedGroup: true,
                     groupKey: key,
                     label: _t("%s record(s)", count),
-                    title: `${label} (${count})\n${this._formatRange(snapped.start, snapped.stop)}`,
-                    geometry: barGeometry(snapped.start, snapped.stop, range.start, range.end),
+                    title: `${label} (${count})\n${this._formatRange(start, stop)}`,
+                    geometry: barGeometry(start, stop, range.start, range.end),
                     barClass: [template.colorClass, "o_gantt_soft_bar_collapsed"]
                         .filter(Boolean)
                         .join(" "),
@@ -586,6 +603,12 @@ export class GanttSoftRenderer extends Component {
         return {
             ...row,
             geometry,
+            // The interval the bar actually paints. The lanes of a grouped row
+            // are packed on it (two records whose bars overlap on screen must
+            // not share a lane, even when their raw times do not); a milestone
+            // is a point and holds its instant, never a snapped day.
+            laneStart: row.milestone ? duration.start : start,
+            laneStop: row.milestone ? duration.start : stop,
             progress,
             colorClass,
             barClass,
@@ -707,12 +730,16 @@ export class GanttSoftRenderer extends Component {
     // ------------------------------------------------------------------
 
     /**
-     * Clicking the name on the left shows the record it stands for. A row
-     * holding a group stands for several records: nothing single to open, the
-     * bars are the way in.
+     * Clicking the name on the left shows the record it stands for. Only a row
+     * holding one record can do that: a grouped row stands for a group, even
+     * when the group happens to hold a single record, and the bars are the way
+     * in.
      */
     onRowLabelClick(ev, row) {
-        if (row.bars.length === 1) {
+        // A click on a row label never follows a bar drag: whatever a previous
+        // gesture left behind must not be swallowed here.
+        this.suppressClick = false;
+        if (row.key === undefined && row.bars.length === 1) {
             this.onBarClick(ev, row.bars[0]);
         }
     }
@@ -783,6 +810,10 @@ export class GanttSoftRenderer extends Component {
      * the bar where it was, with no write and no click swallowed.
      */
     onBarPointerDown(ev, row) {
+        // A new gesture starts, so a click suppression left over by a previous
+        // drag that ended away from the bar (no click was fired to consume it)
+        // must not swallow this interaction.
+        this.suppressClick = false;
         if (!this.props.canEdit || ev.button !== 0 || row.collapsedGroup) {
             return;
         }
@@ -832,6 +863,8 @@ export class GanttSoftRenderer extends Component {
      * kept, which is also what the controller clamps on.
      */
     onResizePointerDown(ev, row, edge) {
+        // As in `onBarPointerDown`: a fresh gesture clears a stale suppression.
+        this.suppressClick = false;
         if (!this.props.canEdit || ev.button !== 0) {
             return;
         }
@@ -941,7 +974,10 @@ export class GanttSoftRenderer extends Component {
             case "day":
                 return formatDate(date, { format: "dd MMM yyyy" });
             case "quarter":
-                return formatDate(date, { format: "QQQ yyyy" });
+                // Odoo's date formatter does not expand luxon's `QQQ` macro (it
+                // prints it literally), so the quarter is written from its
+                // number, exactly as the window label is.
+                return `Q${date.quarter} ${date.year}`;
             case "year":
                 return formatDate(date, { format: "yyyy" });
             default:

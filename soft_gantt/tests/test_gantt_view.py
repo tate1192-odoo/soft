@@ -15,6 +15,8 @@ depending on ``web`` alone: each model brings its own view through a consumer
 module (``field_operation_gantt`` is the reference, see the README).
 """
 
+from types import SimpleNamespace
+
 from lxml import etree
 
 from odoo.exceptions import ValidationError
@@ -47,6 +49,20 @@ class TestSoftGanttView(TransactionCase):
     def _assert_arch_is_refused(self, arch):
         with self.assertRaises(ValidationError):
             self._create_view(arch)
+
+    def _validate_gantt_root(self, arch, extra_fields=None):
+        """Run the ``<gantt_soft>`` validator on a field set with extras.
+
+        The base models carry no non-stored, non-searchable date field, so the
+        field set is built for the check: the validator reads a field's ``type``,
+        ``store`` and ``search`` only, which a field description provides.
+        """
+        fields = dict(self.env['res.partner']._fields)
+        fields.update(extra_fields or {})
+        model = SimpleNamespace(_name='res.partner', _fields=fields)
+        self.View._validate_tag_gantt_soft(
+            etree.fromstring(arch), SimpleNamespace(model=model), {'validate': True}
+        )
 
     # ------------------------------------------------------------------
     # The view type is registered
@@ -99,6 +115,34 @@ class TestSoftGanttView(TransactionCase):
         """A Char field cannot be used as a date."""
         self._assert_arch_is_refused(
             '<gantt_soft date_start="name" date_stop="write_date"/>'
+        )
+
+    def test_non_searchable_date_field_is_refused(self):
+        """The window is read with a domain, so the date must be filterable.
+
+        A computed date without a search method would install and then fail when
+        the view is opened. No field of the base models is a non-stored,
+        non-searchable date, so a field description is injected into the field
+        set for the check.
+        """
+        fake = SimpleNamespace(type='datetime', store=False, search=False)
+        for arch in (
+            '<gantt_soft date_start="x_gantt_date" date_stop="write_date"/>',
+            '<gantt_soft date_start="create_date" date_stop="x_gantt_date"/>',
+        ):
+            # The tag validator raises a view error (`ValueError`); the view
+            # machinery turns it into the `ValidationError` of a refused view.
+            with self.assertRaises(ValueError):
+                self._validate_gantt_root(arch, {'x_gantt_date': fake})
+
+    def test_searchable_non_stored_date_field_is_accepted(self):
+        """A computed date with a search method is filterable: it is accepted."""
+        fake = SimpleNamespace(
+            type='datetime', store=False, search='_search_x_gantt_date'
+        )
+        self._validate_gantt_root(
+            '<gantt_soft date_start="create_date" date_stop="x_gantt_date"/>',
+            {'x_gantt_date': fake},
         )
 
     def test_unknown_attribute_is_refused(self):

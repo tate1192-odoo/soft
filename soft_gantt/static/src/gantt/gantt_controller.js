@@ -21,6 +21,7 @@ import {
     DAY_MS,
     addFieldDays,
     buildCsv,
+    clampResize,
     dateTimeInUserZone,
     downloadTextFile,
     fieldText,
@@ -502,7 +503,10 @@ export class GanttSoftController extends Component {
      * Only the date on the edge being dragged moves; the other one anchors the
      * interval, so a resize can never invert it: when the new value would pass
      * the anchor, it is clamped to leave the record one day long. The value is
-     * read and serialised for the field's own type.
+     * read and serialised for the field's own type, and the anchor is read for
+     * *its* own type: a view may mix a `date` end with a `datetime` one, and
+     * parsing the anchor as the dragged field's type would compare the two ends
+     * in the wrong calendar.
      *
      * @param {number} recordId
      * @param {string} edge `start` or `end`
@@ -521,20 +525,18 @@ export class GanttSoftController extends Component {
         const fieldName = isStart ? archInfo.dateStart : archInfo.dateStop;
         const fieldType = isStart ? archInfo.dateStartType : archInfo.dateStopType;
         const anchorName = isStart ? archInfo.dateStop : archInfo.dateStart;
+        const anchorType = isStart ? archInfo.dateStopType : archInfo.dateStartType;
         const timestamp = parseOdooFieldDate(record[fieldName], fieldType);
         if (timestamp === null) {
             return;
         }
-        let value = addFieldDays(timestamp, days, fieldType);
-        const anchor = parseOdooFieldDate(record[anchorName], fieldType);
-        if (anchor !== null) {
-            // One day is the shortest interval a resize may leave behind.
-            if (isStart && value > anchor) {
-                value = addFieldDays(anchor, -1, fieldType);
-            } else if (!isStart && value < anchor) {
-                value = addFieldDays(anchor, 1, fieldType);
-            }
-        }
+        const anchor = parseOdooFieldDate(record[anchorName], anchorType);
+        const value = clampResize(
+            addFieldDays(timestamp, days, fieldType),
+            anchor,
+            isStart,
+            anchorType
+        );
         try {
             await this.orm.write(
                 this.props.resModel,

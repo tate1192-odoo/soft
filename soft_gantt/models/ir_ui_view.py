@@ -152,6 +152,13 @@ class IrUiView(models.Model):
                     node,
                 )
 
+        # The window is read with a domain on the two dates, so a field the ORM
+        # cannot filter on would install and then fail when the view is opened.
+        # ``store or search`` is exactly what the server advertises as
+        # ``searchable`` in ``fields_get``; the client parser checks the same
+        # flag for views it builds at runtime.
+        self._validate_gantt_soft_searchable_dates(node, model_fields)
+
         # The dependencies list must point back at the view's own model: an
         # arrow can only join two bars that this view draws.
         dependencies = node.get('dependencies')
@@ -272,6 +279,31 @@ class IrUiView(models.Model):
                         type=field.type,
                     ),
                     child,
+                )
+
+    def _validate_gantt_soft_searchable_dates(self, node, model_fields):
+        """Refuse a date field the window domain could not be built on.
+
+        The window is read with a domain on ``date_start``/``date_stop``, so a
+        field the ORM cannot filter on (a computed field without a search
+        method) would install and then fail when the view is opened.
+        ``store or search`` is exactly what the server advertises as
+        ``searchable`` in ``fields_get``; the client parser checks the same flag
+        for views it builds at runtime.
+        """
+        for attribute in ('date_start', 'date_stop'):
+            field_name = node.get(attribute)
+            field = model_fields.get(field_name) if field_name else None
+            if field is not None and not (field.store or field.search):
+                self._raise_view_error(
+                    _(
+                        "Field %(field)r used as %(attribute)s in a gantt_soft "
+                        "view must be stored or searchable: the window is read "
+                        "with a domain on it.",
+                        field=field_name,
+                        attribute=attribute,
+                    ),
+                    node,
                 )
 
     def _get_view_info(self):

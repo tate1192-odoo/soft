@@ -323,6 +323,33 @@ describe("GanttSoftRenderer", () => {
         expect(clicked).toEqual([1]);
     });
 
+    test("a drag that ends without a click does not swallow the next one", async () => {
+        // The browser only fires a click when the pointer went down and up on
+        // the same element chain. Dropping a bar away from it therefore leaves
+        // the suppression armed: the next genuine click must clear it and open
+        // the record.
+        const clicked = [];
+        await mountRenderer({
+            records: [makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00")],
+            onBarClick: (row) => clicked.push(row.id),
+        });
+
+        queryFirst(".o_gantt_soft_row").style.width = "300px";
+        const bar = queryFirst(".o_gantt_soft_bar");
+        bar.dispatchEvent(new PointerEvent("pointerdown", { clientX: 0, button: 0, bubbles: true }));
+        window.dispatchEvent(new PointerEvent("pointermove", { clientX: 75, bubbles: true }));
+        window.dispatchEvent(new PointerEvent("pointerup", { clientX: 75, bubbles: true }));
+        await animationFrame();
+
+        // A real click: pointer down and up on the bar, then the click event.
+        bar.dispatchEvent(new PointerEvent("pointerdown", { clientX: 0, button: 0, bubbles: true }));
+        window.dispatchEvent(new PointerEvent("pointerup", { clientX: 0, bubbles: true }));
+        await clickBar();
+        await animationFrame();
+
+        expect(clicked).toEqual([1]);
+    });
+
     test("a read only view does not move the bars", async () => {
         const rescheduled = [];
         await mountRenderer({
@@ -402,6 +429,33 @@ describe("GanttSoftRenderer", () => {
             "Task 1",
             "Task 2",
         ]);
+    });
+
+    test("two services of one team on the same day take two lanes at a day scale", async () => {
+        // At a day unit the bars are drawn on whole day cells, so two services
+        // whose *times* do not overlap still overlap on screen: the lanes have
+        // to be packed on the drawn interval, or the second bar hides the first.
+        const team = { id: 7, display_name: "Alpha" };
+        await mountRenderer({
+            scale: "week",
+            window: { start: Date.UTC(2026, 2, 2), end: Date.UTC(2026, 2, 9) },
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            records: [
+                makeRecord(1, "2026-03-03 09:00:00", "2026-03-03 10:00:00", { team_id: team }),
+                makeRecord(2, "2026-03-03 14:00:00", "2026-03-03 15:00:00", { team_id: team }),
+            ],
+        });
+
+        expect(".o_gantt_soft_row").toHaveCount(1);
+        expect(queryFirst(".o_gantt_soft_row").style.height).toBe("60px");
+        // A lane each, in start-time order.
+        expect(queryAll(".o_gantt_soft_bar").map((el) => el.style.top)).toEqual(["2px", "32px"]);
+        // Both cover exactly the 03-03 day cell: the lane is what separates them.
+        const cells = queryAll(".o_gantt_soft_cell");
+        for (const bar of queryAll(".o_gantt_soft_bar")) {
+            expect(floatPercentage(bar)).toBe(floatPercentage(cells[1]));
+            expect(floatPercentage(bar, "width")).toBe(floatPercentage(cells[1], "width"));
+        }
     });
 
     test("gives every group a row of its own, sorted", async () => {
@@ -524,6 +578,26 @@ describe("GanttSoftRenderer", () => {
         expect(clicked).toEqual([]);
     });
 
+    test("a one-record group still opens nothing from its name", async () => {
+        // A grouped row is a group, not a record, even when the group happens to
+        // hold a single record: the bar is the way in, like for any group.
+        const clicked = [];
+        await mountRenderer({
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", {
+                    team_id: { id: 7, display_name: "Alpha" },
+                }),
+            ],
+            onBarClick: (row) => clicked.push(row.id),
+        });
+
+        queryFirst(".o_gantt_soft_label").dispatchEvent(new MouseEvent("click", { bubbles: true }));
+        await animationFrame();
+
+        expect(clicked).toEqual([]);
+    });
+
     test("draws a two level header: the bands over the cells of the scale", async () => {
         // A week at the week scale: seven day cells under one week band.
         await mountRenderer({
@@ -554,6 +628,24 @@ describe("GanttSoftRenderer", () => {
         expect(queryFirst(".o_gantt_soft_cell").textContent).toBe("00:00");
         expect(".o_gantt_soft_band").toHaveCount(1);
         expect(queryOne(".o_gantt_soft_band").textContent).toBe("03 Mar 2026");
+    });
+
+    test("names a quarter band from its number", async () => {
+        // Luxon's `QQQ` token is left literal by Odoo's date formatter, so the
+        // band used to read "QQQ 2026". A quarter scale is read by its weeks,
+        // and the band above them names the quarter. The window starts on the
+        // first of the quarter, which is in the middle of a week: the week cell
+        // that holds it belongs to the previous quarter and gets its own band.
+        await mountRenderer({
+            scale: "quarter",
+            window: windowRange(Date.parse("2026-04-15T00:00:00Z"), "quarter"),
+            records: [makeRecord(1, "2026-04-15 08:00:00", "2026-04-16 08:00:00")],
+        });
+
+        expect(queryAll(".o_gantt_soft_band").map((el) => el.textContent)).toEqual([
+            "Q1 2026",
+            "Q2 2026",
+        ]);
     });
 
     test("marks today when the window holds it", async () => {
@@ -722,6 +814,30 @@ describe("GanttSoftRenderer", () => {
         expect(floatPercentage(bar, "width")).toBe(floatPercentage(cells[1], "width"));
     });
 
+    test("a record with no end covers one day cell at a day scale", async () => {
+        // The regression: the invented end used to be "the same time tomorrow",
+        // which the day snap rounds up to the end of the next day, so a record
+        // with no end (more than half of the operations in the reference data)
+        // was drawn two cells wide.
+        await mountRenderer({
+            scale: "week",
+            window: { start: Date.UTC(2026, 2, 2), end: Date.UTC(2026, 2, 9) },
+            records: [
+                makeRecord(1, "2026-03-03 08:00:00", false),
+                makeRecord(2, "2026-03-04 08:00:00", "2026-03-04 08:00:00"),
+            ],
+        });
+
+        const cells = queryAll(".o_gantt_soft_cell");
+        const bars = queryAll(".o_gantt_soft_bar");
+        expect(bars).toHaveLength(2);
+        for (const [index, bar] of bars.entries()) {
+            const cell = cells[index + 1];
+            expect(floatPercentage(bar)).toBe(floatPercentage(cell));
+            expect(floatPercentage(bar, "width")).toBe(floatPercentage(cell, "width"));
+        }
+    });
+
     test("places a record in its local hour, not the UTC one", async () => {
         // The user is in Turkey (+03): the day they read is the local day of
         // 2026-03-04, which starts at 21:00Z on the 3rd. This record starts at
@@ -825,6 +941,25 @@ describe("milestones", () => {
         expect(queryAll(".o_gantt_soft_bar_handle")).toHaveLength(0);
         expect(queryAll(".o_gantt_soft_bar_label")).toHaveLength(0);
         expect(bar.title).toInclude("Milestone");
+    });
+
+    test("a milestone carries the record's colour", async () => {
+        // The diamond is the milestone's bar: its colour comes from the same
+        // palette class the bar uses, which the stylesheet paints on the
+        // diamond itself (a milestone element has no background of its own).
+        await mountRenderer({
+            records: [
+                makeRecord(1, "2026-03-02 08:00:00", "2026-03-05 08:00:00", {
+                    is_milestone: true,
+                    color_index: 3,
+                }),
+            ],
+            archInfo: makeArchInfo({ milestoneField: "is_milestone", colorField: "color_index" }),
+        });
+
+        const bar = queryOne(".o_gantt_soft_bar");
+        expect(bar.classList.contains("o_gantt_soft_bar_milestone")).toBe(true);
+        expect(bar.classList.contains("o_gantt_soft_color_3")).toBe(true);
     });
 
     test("a record that is not flagged stays a bar", async () => {
