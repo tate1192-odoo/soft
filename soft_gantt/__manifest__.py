@@ -1,6 +1,6 @@
 {
     'name': 'Soft Gantt',
-    'version': '19.0.1.2.2',
+    'version': '19.0.1.2.3',
     'summary': 'Native Gantt / timeline view type for Odoo 19 Community: bars '
                'read their dates from the view itself, search and filters drive '
                'the records, bars can be dragged to reschedule, milestones, '
