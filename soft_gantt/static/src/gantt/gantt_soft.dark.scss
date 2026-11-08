@@ -14,9 +14,9 @@
 // `ica_web_responsive`; `color-scheme` itself is set there too, so nothing else
 // is needed here.
 //
-// Values are eh_board's dark block (`html[data-eh-board-theme="dark"]` in
-// `eh_account/eh_board/static/src/board.scss`); the derived values are the same
-// ones the light file marks as derived.
+// Values are the dark step of the house palette; only plain colour literals are
+// reused, no code from another module. The derived values are the same ones the
+// light file marks as derived.
 //
 // This file lists ONLY that app-matching palette (surfaces, lines, text, bars,
 // popover) plus the one semantic value that genuinely differs between the two
@@ -44,7 +44,7 @@ $o-gantt-soft-lane-separator: #3a4147 !default;
 $o-gantt-soft-text: #f7f9fa !default;
 $o-gantt-soft-muted: #b4bdc3 !default;
 
-// eh_board's accent, kept for the palette (it is not a gantt semantic).
+// The house accent, kept for the palette (it is not a gantt semantic).
 $o-gantt-soft-accent: #52d6a4 !default;
 
 // The today day-column band reads weaker over these very dark surfaces than

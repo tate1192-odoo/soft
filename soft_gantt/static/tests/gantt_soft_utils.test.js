@@ -4,6 +4,7 @@ import { user } from "@web/core/user";
 import {
     addFieldDays,
     buildCsv,
+    clampResize,
     csvEscape,
     fieldText,
     fitWindow,
@@ -200,5 +201,50 @@ describe("CSV export", () => {
         // Without the BOM Excel reads a UTF-8 file as the local code page.
         expect(csv.startsWith("\ufeff")).toBe(true);
         expect(csv.split("\r\n")).toEqual(["\ufeffName;Start", "Bakım;02 Mar 2026"]);
+    });
+});
+
+describe("clampResize", () => {
+    const value = (text, type = "datetime") => parseOdooFieldDate(text, type);
+
+    test("a value that leaves the interval alone is kept", () => {
+        const anchor = value("2026-03-05 09:00:00");
+        // A start before the end and an end after the start: nothing to clamp.
+        expect(clampResize(value("2026-03-03 10:00:00"), anchor, true, "datetime")).toBe(
+            value("2026-03-03 10:00:00")
+        );
+        expect(clampResize(value("2026-03-07 10:00:00"), anchor, false, "datetime")).toBe(
+            value("2026-03-07 10:00:00")
+        );
+    });
+
+    test("a start dragged past the end stops one day before it", () => {
+        const anchor = value("2026-03-05 09:00:00");
+        expect(clampResize(value("2026-03-07 10:00:00"), anchor, true, "datetime")).toBe(
+            addFieldDays(anchor, -1, "datetime")
+        );
+    });
+
+    test("an end dragged before the start stops one day after it", () => {
+        const anchor = value("2026-03-05 09:00:00");
+        expect(clampResize(value("2026-03-05 08:00:00"), anchor, false, "datetime")).toBe(
+            addFieldDays(anchor, 1, "datetime")
+        );
+    });
+
+    test("the day to step is taken in the anchor's own calendar", () => {
+        // A `date` anchor is a local calendar day: stepping it is done with the
+        // local-day arithmetic, not the UTC one a datetime edge uses. The two
+        // ends of a view may be of different types, and the clamp must not
+        // compare or step them in the wrong calendar.
+        const anchor = value("2026-03-05", "date");
+        expect(clampResize(value("2026-03-07 10:00:00"), anchor, true, "date")).toBe(
+            addFieldDays(anchor, -1, "date")
+        );
+    });
+
+    test("a record carrying no anchor is left alone", () => {
+        const newValue = value("2026-03-07 10:00:00");
+        expect(clampResize(newValue, null, true, "datetime")).toBe(newValue);
     });
 });

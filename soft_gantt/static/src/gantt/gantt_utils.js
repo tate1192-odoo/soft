@@ -185,6 +185,36 @@ export function addFieldDays(timestamp, days, fieldType) {
     return fieldType === "date" ? addLocalDays(timestamp, days) : addUtcDays(timestamp, days);
 }
 
+/**
+ * Keep a resized edge on the right side of the edge that anchors the interval.
+ *
+ * A resize may never invert a record: when the dragged edge would pass the one
+ * that stays put, it is clamped to leave the record one day long. Both ends are
+ * compared as absolute instants, so a `date` end and a `datetime` end of the
+ * same record can be compared, but the day to step is taken in the calendar of
+ * the *anchor's* own field type: a `date` anchor is a local day, a `datetime`
+ * anchor an UTC day, which is exactly the arithmetic the two fields are written
+ * with (see `serializeOdooDate`).
+ *
+ * @param {number} value new timestamp of the dragged edge
+ * @param {number|null} anchor timestamp of the edge that stays put
+ * @param {boolean} isStart whether the dragged edge is the start of the record
+ * @param {string} anchorType `date` or `datetime`, the anchor field's type
+ * @returns {number} the value to write, or the unchanged one when it fits
+ */
+export function clampResize(value, anchor, isStart, anchorType) {
+    if (anchor === null || anchor === undefined) {
+        return value;
+    }
+    if (isStart && value > anchor) {
+        return addFieldDays(anchor, -1, anchorType);
+    }
+    if (!isStart && value < anchor) {
+        return addFieldDays(anchor, 1, anchorType);
+    }
+    return value;
+}
+
 // ---------------------------------------------------------------------
 // The user's calendar
 //
@@ -284,6 +314,10 @@ function addLocalUnit(timestamp, unit, step = 1) {
 function buildUnitCells(unit, rangeStart, rangeEnd) {
     const cells = [];
     let cursor = startOfLocalUnit(rangeStart, unit);
+    // One cell past MAX_COLUMNS is built on purpose: `buildTimeline` reads a
+    // count above MAX_COLUMNS as "this unit is too fine for the window" and
+    // coarsens one step. Stopping at MAX_COLUMNS would instead leave the last
+    // cells of the window undrawn, silently.
     while (cursor < rangeEnd && cells.length <= MAX_COLUMNS) {
         const end = addLocalUnit(cursor, unit);
         cells.push({
@@ -545,8 +579,15 @@ export function snapToUnit(start, stop, unit) {
  * to the start. Drawn as they come they would be a zero-width sliver or, worse,
  * the whole day the bar geometry invents to keep them visible. A service is a
  * duration, not a point, so a start with no believable end is extended by one
- * hour when the timeline is read in hours, and by one day otherwise (the day
- * snap right after this turns that into the record's whole day cell anyway).
+ * hour when the timeline is read in hours, and by the *end of the local day it
+ * starts in* otherwise.
+ *
+ * The end of the day, and not "the same time tomorrow", is what makes the day
+ * snap right after this turn the record into exactly one cell: 08:00 + 1 day is
+ * 08:00 the next morning, which the snap then rounds up to the end of the next
+ * day, i.e. a bar two days wide. The snap gives a record ending on a boundary
+ * exactly the days before it, so a stop on the next midnight keeps the bar on
+ * the start's own day.
  *
  * Nulls are left alone: a record with no start has nothing to extend from.
  *
@@ -562,7 +603,8 @@ export function ensureDuration(start, stop, unit) {
     if (stop === null || stop === undefined || stop <= start) {
         return {
             start,
-            stop: unit === "hour" ? start + HOUR_MS : addLocalDays(start, 1),
+            stop:
+                unit === "hour" ? start + HOUR_MS : addLocalDays(startOfLocalDay(start), 1),
         };
     }
     return { start, stop };

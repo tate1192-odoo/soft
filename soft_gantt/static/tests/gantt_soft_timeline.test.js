@@ -238,7 +238,23 @@ describe("ensureDuration", () => {
 
     test("a start with no end becomes one whole day in the day view", () => {
         const start = at("2026-03-03") + 8 * HOUR;
-        expect(ensureDuration(start, null, "day")).toEqual({ start, stop: start + DAY });
+        // The end is the next local midnight, not "the same time tomorrow": the
+        // day snap gives a record ending on a boundary the days before it, so
+        // this is exactly one cell. A same-time-tomorrow end would be rounded up
+        // to the end of the next day and draw the record two cells wide.
+        expect(ensureDuration(start, null, "day")).toEqual({ start, stop: at("2026-03-04") });
+        expect(snapToUnit(start, at("2026-03-04"), "day")).toEqual({
+            start: at("2026-03-03"),
+            stop: at("2026-03-04"),
+        });
+    });
+
+    test("an end equal to the start is still one whole day in the day view", () => {
+        const start = at("2026-03-03") + 8 * HOUR;
+        expect(ensureDuration(start, start, "day")).toEqual({
+            start,
+            stop: at("2026-03-04"),
+        });
     });
 
     test("a missing end is one local day across a DST switch", () => {

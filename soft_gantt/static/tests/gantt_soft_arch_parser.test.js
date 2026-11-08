@@ -15,6 +15,12 @@ const MODELS = {
             date_start: { type: "datetime" },
             date_deadline: { type: "datetime" },
             planned_date: { type: "date" },
+            // The metadata the server sends with a view: the two date fields are
+            // also read with a domain, so the parser refuses one the ORM cannot
+            // filter on (`searchable` is the server's `store or search`).
+            stored_date: { type: "datetime", store: true, searchable: true },
+            computed_date: { type: "datetime", store: false, searchable: false },
+            searched_date: { type: "datetime", store: false, searchable: true },
             progress: { type: "float" },
             color_index: { type: "integer" },
             user_id: { type: "many2one", relation: "res.users" },
@@ -68,6 +74,30 @@ describe("GanttSoftArchParser", () => {
     test("refuses a field of the wrong type", () => {
         expect(() => parse('<gantt_soft date_start="user_id" date_stop="date_deadline"/>')).toThrow(
             /must be of type date\/datetime/
+        );
+    });
+
+    test("refuses a date field the window cannot be filtered on", () => {
+        // A computed field without a search method: the server cannot read the
+        // window with a domain on it, so the view must be refused instead of
+        // installing and failing when it is opened.
+        expect(() =>
+            parse('<gantt_soft date_start="computed_date" date_stop="date_deadline"/>')
+        ).toThrow(/must be stored or searchable/);
+        expect(() =>
+            parse('<gantt_soft date_start="date_start" date_stop="computed_date"/>')
+        ).toThrow(/must be stored or searchable/);
+    });
+
+    test("accepts a searchable date field that is not stored", () => {
+        const archInfo = parse(
+            '<gantt_soft date_start="searched_date" date_stop="date_deadline"/>'
+        );
+        expect(archInfo.dateStart).toBe("searched_date");
+        // A stored field carries no explicit metadata in a bare arch, and it is
+        // accepted as before.
+        expect(parse('<gantt_soft date_start="stored_date" date_stop="date_deadline"/>').dateStart).toBe(
+            "stored_date"
         );
     });
 
