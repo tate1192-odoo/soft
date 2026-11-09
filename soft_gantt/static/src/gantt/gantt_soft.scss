@@ -648,10 +648,14 @@ $o-gantt-soft-popover-close-filter: none !default;
     }
 
     .popover-footer {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
         padding: 0.5rem 0.75rem;
         border-top: 1px solid $o-gantt-soft-popover-border;
         color: $o-gantt-soft-popover-text;
     }
+
 
     // The arrow's two halves are coloured by Bootstrap from `--popover-bg` and
     // `--popover-border-color` (declared above), so it follows the tokens

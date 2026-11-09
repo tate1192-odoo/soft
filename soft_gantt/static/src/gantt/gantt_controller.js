@@ -4,6 +4,7 @@ import { useBus, useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
 import { formatDate, formatDateTime, parseDate, parseDateTime } from "@web/core/l10n/dates";
 import { usePopover } from "@web/core/popover/popover_hook";
+import { ConfirmationDialog } from "@web/core/confirmation_dialog/confirmation_dialog";
 import { useModel } from "@web/model/model";
 import {
     addFieldDependencies,
@@ -21,6 +22,7 @@ import {
     DAY_MS,
     addFieldDays,
     buildCsv,
+    buildPopoverButtons,
     clampResize,
     createContextDefaults,
     dateTimeInUserZone,
@@ -79,6 +81,7 @@ export class GanttSoftController extends Component {
         this.orm = useService("orm");
         this.notification = useService("notification");
         this.actionService = useService("action");
+        this.dialogService = useService("dialog");
         // The card is anchored on the bar it belongs to, and escapes the view
         // when a click would otherwise take the reader to another screen. Its
         // own container class is what lets the stylesheet theme the card (and
@@ -405,6 +408,7 @@ export class GanttSoftController extends Component {
         this.popover.open(element, {
             title: row.label,
             fields: this._popoverFields(row.record),
+            buttons: this._popoverButtons(row.record),
             open: () => {
                 this.popover.close();
                 if (this.props.selectRecord) {
@@ -486,6 +490,43 @@ export class GanttSoftController extends Component {
             add(fieldInfo.name, this._fieldValue(fieldInfo.name, record[fieldInfo.name]));
         }
         return rows;
+    }
+
+    /**
+     * The actions the arch declares, bound to the record of the clicked bar.
+     *
+     * The card is a place to act without leaving the chart: a button calls a
+     * method on this very record (``type="object"``) or opens an action
+     * (``type="action"``), and a ``confirm`` opens the client's confirmation
+     * dialog first, like a button of a form view.
+     */
+    _popoverButtons(record) {
+        return buildPopoverButtons(this.props.archInfo, record, (button, rec) =>
+            this._runPopoverButton(button, rec)
+        );
+    }
+
+    async _runPopoverButton(button, record) {
+        const execute = async () => {
+            this.popover.close();
+            await this.actionService.doActionButton({
+                type: button.type,
+                name: button.name,
+                resModel: this.props.resModel,
+                resId: record.id,
+                context: this.props.context,
+                onClose: () => this.model.reload(),
+            });
+        };
+        if (button.confirm) {
+            this.dialogService.add(ConfirmationDialog, {
+                body: button.confirm,
+                confirm: () => execute(),
+                cancel: () => {},
+            });
+        } else {
+            await execute();
+        }
     }
 
     /** A record value as text: dates, booleans, selections and many2ones included. */

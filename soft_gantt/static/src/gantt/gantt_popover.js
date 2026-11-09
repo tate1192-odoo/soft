@@ -13,6 +13,7 @@ export class GanttSoftPopover extends Component {
     static props = {
         title: String,
         fields: Array,
+        buttons: { type: Array, optional: true },
         open: { type: Function, optional: true },
         close: Function,
     };
@@ -22,5 +23,10 @@ export class GanttSoftPopover extends Component {
         return this.props.fields.filter(
             (field) => field.value || field.value === 0
         );
+    }
+
+    /** The actions the view declared, in arch order. */
+    get buttons() {
+        return this.props.buttons || [];
     }
 }

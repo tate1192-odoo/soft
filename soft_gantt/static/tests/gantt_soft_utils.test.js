@@ -4,6 +4,7 @@ import { user } from "@web/core/user";
 import {
     addFieldDays,
     buildCsv,
+    buildPopoverButtons,
     clampResize,
     createContextDefaults,
     csvEscape,
@@ -403,4 +404,53 @@ describe("createContextDefaults", () => {
         expect("default_team_id" in context).toBe(false);
         expect("default_date_start" in context).toBe(false);
     });
+
+describe("buildPopoverButtons", () => {
+    const archInfo = {
+        buttons: [
+            {
+                name: "action_done",
+                type: "object",
+                string: "Done",
+                icon: "fa fa-check",
+                confirm: "",
+                class: "btn-danger",
+            },
+            {
+                name: "base.action_partner_form",
+                type: "action",
+                string: "Open partner",
+                icon: "",
+                confirm: "",
+                class: "",
+            },
+        ],
+    };
+    const record = { id: 7, display_name: "FO/0007" };
+
+    test("maps the arch buttons, in order, with their label, icon and class", () => {
+        const buttons = buildPopoverButtons(archInfo, record, () => {});
+        expect(buttons.map((button) => button.key)).toEqual([
+            "0:object:action_done",
+            "1:action:base.action_partner_form",
+        ]);
+        expect(buttons.map((button) => button.label)).toEqual(["Done", "Open partner"]);
+        expect(buttons[0].icon).toBe("fa fa-check");
+        expect(buttons[0].className).toBe("btn-danger");
+        expect(buttons[1].className).toBe("");
+    });
+
+    test("a click hands the arch button and the record to the controller", () => {
+        const calls = [];
+        const buttons = buildPopoverButtons(archInfo, record, (button, rec) =>
+            calls.push([button.name, rec.id])
+        );
+        buttons[0].onClick();
+        expect(calls).toEqual([["action_done", 7]]);
+    });
+
+    test("a view without buttons offers none", () => {
+        expect(buildPopoverButtons({}, record, () => {})).toEqual([]);
+    });
+});
 });

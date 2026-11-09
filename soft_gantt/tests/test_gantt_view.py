@@ -392,6 +392,46 @@ class TestSoftGanttView(TransactionCase):
         )
 
     # ------------------------------------------------------------------
+    # Actions of the details card
+    # ------------------------------------------------------------------
+
+    def test_card_buttons_are_accepted(self):
+        """A view may offer actions on the record from the details card."""
+        view = self._create_view(
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
+            '<field name="name"/>'
+            '<button name="toggle_active" type="object" string="Archive" icon="fa fa-archive"/>'
+            '<button name="base.action_partner_form" type="action" string="Open"/>'
+            '<button name="toggle_active" type="object" icon="fa fa-check" confirm="Are you sure?" class="btn-danger"/>'
+            '</gantt_soft>'
+        )
+        self.assertEqual(view.type, 'gantt_soft')
+
+    def test_card_button_is_validated(self):
+        for arch in (
+            # No method / action named.
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
+            '<button type="object" string="Archive"/></gantt_soft>',
+            # Not a supported type.
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
+            '<button name="toggle_active" type="method" string="Archive"/></gantt_soft>',
+            # A method the model does not have.
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
+            '<button name="not_a_method" type="object" string="Archive"/></gantt_soft>',
+            # Private methods are not actions.
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
+            '<button name="_compute_display_name" type="object" string="Archive"/></gantt_soft>',
+            # Nothing would be drawn on the button.
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
+            '<button name="toggle_active" type="object"/></gantt_soft>',
+            # An attribute that is not a button attribute.
+            '<gantt_soft date_start="create_date" date_stop="write_date">'
+            '<button name="toggle_active" type="object" string="Archive" groups="base.group_user"/>'
+            '</gantt_soft>',
+        ):
+            self._assert_arch_is_refused(arch)
+
+    # ------------------------------------------------------------------
     # The module is a view type, not a business module
     # ------------------------------------------------------------------
 

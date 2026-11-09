@@ -14,6 +14,12 @@ const BOOLEAN_VALUES = ["0", "1", "true", "false"];
 /** Bar decorations, drawn as a ring on the bar whose record matches. */
 export const DECORATIONS = ["danger", "info", "secondary", "success", "warning"];
 
+/** The kinds of button the details card can offer. */
+const BUTTON_TYPES = ["object", "action"];
+
+/** Attributes a <button> child can carry (kept in sync with the server). */
+const BUTTON_ATTRIBUTES = ["name", "type", "string", "icon", "confirm", "class"];
+
 /** Arch attribute -> the field types it accepts (kept in sync with the server). */
 const FIELD_ATTRIBUTES = {
     date_start: ["date", "datetime"],
@@ -83,6 +89,7 @@ export class GanttSoftArchParser {
             cellCreate: false,
             decorations: [],
             expressionFields: [],
+            buttons: [],
             milestoneField: "",
             dependenciesField: "",
             selectionLabels: {},
@@ -309,6 +316,10 @@ export class GanttSoftArchParser {
         // shown in the bar tooltip and fetched in the same read.
         const fieldNextIds = {};
         visitXML(xmlDoc, (node) => {
+            if (node.tagName === "button") {
+                archInfo.buttons.push(this._parseButton(node));
+                return;
+            }
             if (node.tagName !== "field") {
                 return;
             }
@@ -374,6 +385,54 @@ export class GanttSoftArchParser {
             );
         }
         return normalized === "1" || normalized === "true";
+    }
+
+    /**
+     * Read a ``<button>`` child of the view: an action offered by the card.
+     *
+     * ``object`` calls a public method on the record, ``action`` opens an
+     * action; the server checks the method at install time, this pass covers a
+     * view built at runtime. Either a label or an icon is required, otherwise
+     * the card would draw an empty button.
+     */
+    _parseButton(node) {
+        for (const attribute of node.getAttributeNames()) {
+            if (!BUTTON_ATTRIBUTES.includes(attribute)) {
+                throw new Error(
+                    `Invalid attribute "${attribute}" on a <button> of a gantt_soft view (expected one of ${BUTTON_ATTRIBUTES.join(
+                        ", "
+                    )}).`
+                );
+            }
+        }
+        const name = (node.getAttribute("name") || "").trim();
+        if (!name) {
+            throw new Error(
+                `A <button> of a gantt_soft view must name a method or an action.`
+            );
+        }
+        const type = node.getAttribute("type");
+        if (!BUTTON_TYPES.includes(type)) {
+            throw new Error(
+                `The type of a <button> of a gantt_soft view must be one of ${BUTTON_TYPES.join(
+                    "/"
+                )}, got "${type}".`
+            );
+        }
+        const icon = node.getAttribute("icon") || "";
+        if (!node.getAttribute("string") && !icon) {
+            throw new Error(
+                `A <button> of a gantt_soft view needs a string or an icon: the card would draw an empty button otherwise.`
+            );
+        }
+        return {
+            name,
+            type,
+            string: node.getAttribute("string") || "",
+            icon,
+            confirm: node.getAttribute("confirm") || "",
+            class: node.getAttribute("class") || "",
+        };
     }
 
     /**
