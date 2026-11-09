@@ -405,9 +405,21 @@ describe("GanttSoftArchParser", () => {
         expect(defaults.cellCreate).toBe(false);
 
         const archInfo = parse(
-            '<gantt_soft date_start="date_start" date_stop="date_deadline" collapse_first_level="1" cell_create="1"/>'
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" collapse_first_level="true" cell_create="1"/>'
         );
         expect(archInfo.collapseFirstLevel).toBe(true);
         expect(archInfo.cellCreate).toBe(true);
+    });
+
+    test("refuses a boolean spelling the client would read differently", () => {
+        // `str2bool` accepts no/off as false while `exprToBoolean` reads them
+        // as true: only the values both sides read the same way are accepted.
+        for (const value of ["no", "off", "yes", "sometimes"]) {
+            expect(() =>
+                parse(
+                    `<gantt_soft date_start="date_start" date_stop="date_deadline" cell_create="${value}"/>`
+                )
+            ).toThrow(/must be a boolean/);
+        }
     });
 });

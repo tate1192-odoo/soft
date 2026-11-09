@@ -8,6 +8,9 @@ import { getActiveActions } from "@web/views/utils";
 
 const SCALES = ["day", "week", "month", "quarter", "year"];
 
+/** Values a boolean arch attribute can carry (kept in sync with the server). */
+const BOOLEAN_VALUES = ["0", "1", "true", "false"];
+
 /** Bar decorations, drawn as a ring on the bar whose record matches. */
 export const DECORATIONS = ["danger", "info", "secondary", "success", "warning"];
 
@@ -258,10 +261,8 @@ export class GanttSoftArchParser {
             }
         }
 
-        archInfo.collapseFirstLevel = exprToBoolean(
-            xmlDoc.getAttribute("collapse_first_level")
-        );
-        archInfo.cellCreate = exprToBoolean(xmlDoc.getAttribute("cell_create"));
+        archInfo.collapseFirstLevel = this._readBoolean(xmlDoc, "collapse_first_level");
+        archInfo.cellCreate = this._readBoolean(xmlDoc, "cell_create");
 
         const defaultRange = xmlDoc.getAttribute("default_range");
         if (defaultRange) {
@@ -332,6 +333,27 @@ export class GanttSoftArchParser {
         archInfo.expressionFields = [...expressionFields];
 
         return archInfo;
+    }
+
+    /**
+     * Read a boolean arch attribute.
+     *
+     * The server accepts the same values: ``str2bool``'s extra spellings
+     * (``no``/``off``) are refused there because the client's
+     * ``exprToBoolean`` would read them as true.
+     */
+    _readBoolean(xmlDoc, attribute) {
+        const value = xmlDoc.getAttribute(attribute);
+        if (value === null) {
+            return false;
+        }
+        const normalized = value.trim().toLowerCase();
+        if (!BOOLEAN_VALUES.includes(normalized)) {
+            throw new Error(
+                `The "${attribute}" attribute of a gantt_soft view must be a boolean (0, 1, true or false), got "${value}".`
+            );
+        }
+        return normalized === "1" || normalized === "true";
     }
 
     /**

@@ -1,5 +1,5 @@
 import { after, beforeEach, describe, expect, getFixture, test } from "@odoo/hoot";
-import { click, queryAll, queryOne } from "@odoo/hoot-dom";
+import { click, queryAll, queryFirst, queryOne } from "@odoo/hoot-dom";
 import { animationFrame, mockDate } from "@odoo/hoot-mock";
 import { user } from "@web/core/user";
 import {
@@ -60,7 +60,52 @@ class Task extends models.Model {
     };
 }
 
-defineModels([Task]);
+class FoldTask extends models.Model {
+    _name = "fold.task";
+
+    name = fields.Char();
+    date_start = fields.Datetime();
+    date_deadline = fields.Datetime();
+    team = fields.Char({ string: "Team" });
+
+    _records = [
+        {
+            id: 1,
+            name: "Alpha 1",
+            date_start: "2026-03-02 00:00:00",
+            date_deadline: "2026-03-03 00:00:00",
+            team: "Alpha",
+        },
+        {
+            id: 2,
+            name: "Beta 1",
+            date_start: "2026-03-04 00:00:00",
+            date_deadline: "2026-03-05 00:00:00",
+            team: "Beta",
+        },
+    ];
+
+    _views = {
+        gantt_soft: `
+            <gantt_soft
+                string="Folded"
+                date_start="date_start"
+                date_stop="date_deadline"
+                group_by="team"
+                collapse_first_level="1"
+                mode="month"
+                scales="day,week,month"
+            />
+        `,
+        search: `
+            <search>
+                <field name="name"/>
+            </search>
+        `,
+    };
+}
+
+defineModels([Task, FoldTask]);
 
 const ORIGINAL_TIMEZONE = user.tz;
 beforeEach(() => {
@@ -247,4 +292,25 @@ test("a week view still opens on the current week on a working day", async () =>
     expect(queryOne(".o_gantt_soft_window_label").textContent.trim()).toBe(
         "02 Nov - 08 Nov 2026"
     );
+});
+
+test("a default folded group opens on the first toggle click", async () => {
+    await mountGanttView({
+        type: "gantt_soft",
+        resModel: "fold.task",
+        state: { ...MARCH_STATE },
+    });
+
+    // Both teams are folded by `collapse_first_level`.
+    expect(".o_gantt_soft_bar_collapsed").toHaveCount(2);
+
+    // The first click must open the first team, not be swallowed by the
+    // default: the controller toggles the state the row is *drawn* in.
+    await click(queryFirst(".o_gantt_soft_group_toggle"));
+    await animationFrame();
+    expect(".o_gantt_soft_bar_collapsed").toHaveCount(1);
+
+    await click(queryFirst(".o_gantt_soft_group_toggle"));
+    await animationFrame();
+    expect(".o_gantt_soft_bar_collapsed").toHaveCount(2);
 });

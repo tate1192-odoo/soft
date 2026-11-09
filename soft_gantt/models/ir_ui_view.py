@@ -20,7 +20,6 @@ The view type itself is generic: the dates are named by the view's own
 """
 
 from odoo import _, fields, models
-from odoo.tools import str2bool
 
 #: Attributes accepted on a ``<gantt_soft>`` root node. The bounds are strict
 #: on purpose: an attribute that is not implemented must fail loudly rather
@@ -53,6 +52,12 @@ GANTT_SOFT_VALID_ATTRIBUTES = frozenset({
     'scales',
     'limit',
 })
+
+#: Values a boolean arch attribute can carry. The client reads them with
+#: ``exprToBoolean``, whose only false strings are ``"0"`` and ``"false"``:
+#: ``str2bool`` would also accept ``no``/``off`` as false while the client would
+#: read them as true, so only the values both sides read the same way pass.
+GANTT_SOFT_BOOLEAN_VALUES = frozenset({'0', '1', 'false', 'true'})
 
 #: Decorations a bar can carry. The expression next to the name is evaluated on
 #: the record, like the ``decoration-*`` attributes of a list view, and the bar
@@ -237,19 +242,16 @@ class IrUiView(models.Model):
         # silently turn the gesture off the way a falsy reading would.
         for attribute in ('collapse_first_level', 'cell_create'):
             value = node.get(attribute)
-            if value is not None:
-                try:
-                    str2bool(value)
-                except ValueError:
-                    self._raise_view_error(
-                        _(
-                            "The %(attribute)s attribute of a gantt_soft view must "
-                            "be a boolean, got %(value)r.",
-                            attribute=attribute,
-                            value=value,
-                        ),
-                        node,
-                    )
+            if value is not None and value.strip().lower() not in GANTT_SOFT_BOOLEAN_VALUES:
+                self._raise_view_error(
+                    _(
+                        "The %(attribute)s attribute of a gantt_soft view must "
+                        "be a boolean (0, 1, true or false), got %(value)r.",
+                        attribute=attribute,
+                        value=value,
+                    ),
+                    node,
+                )
 
         scales = list(GANTT_SOFT_SCALES)
         scales_attribute = node.get('scales')

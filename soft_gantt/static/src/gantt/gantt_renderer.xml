@@ -58,7 +58,7 @@
                                 <span t-if="row.key !== undefined"
                                       t-attf-class="o_gantt_soft_group_toggle {{ row.collapsed ? 'o_gantt_soft_group_toggle_collapsed' : '' }}"
                                       t-att-title="toggleTitle(row.collapsed)"
-                                      t-on-click="(ev) => this.onToggleGroupClick(ev, row.key)"/>
+                                      t-on-click="(ev) => this.onToggleGroupClick(ev, row)"/>
                                 <img t-if="row.avatarUrl" class="o_gantt_soft_row_avatar"
                                      t-att-src="row.avatarUrl" alt=""/>
                                 <span class="o_gantt_soft_row_label" t-esc="row.label"/>

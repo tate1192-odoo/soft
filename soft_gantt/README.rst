@@ -144,7 +144,8 @@ read-only field used as a group, a ``milestone`` field that is not a Boolean, a
 ``dependencies`` list that points at another model, an unknown ``decoration-*``
 name or an empty decoration expression, a ``group_total`` that is not numeric, a
 ``group_avatar`` that names no binary field (or a non-many2one ``group_by``), a
-``cell_create``/``collapse_first_level`` that is not a boolean, or a declared
+``cell_create``/``collapse_first_level`` that is not one of ``0``/``1``/``true``/
+``false`` (the only spellings the client reads the same way), or a declared
 ``<field>`` of an unrenderable type refuses the view with a message that names
 the problem. The
 client parser runs the same checks on views built at runtime, so a broken view

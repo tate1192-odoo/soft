@@ -359,6 +359,16 @@ class TestSoftGanttView(TransactionCase):
             '<gantt_soft date_start="create_date" date_stop="write_date" '
             'collapse_first_level="maybe"/>'
         )
+        # `str2bool` would accept these as false while the client reads them as
+        # true: only the values both sides read the same way are accepted.
+        self._assert_arch_is_refused(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'cell_create="off"/>'
+        )
+        self._assert_arch_is_refused(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'collapse_first_level="no"/>'
+        )
 
     # ------------------------------------------------------------------
     # The module is a view type, not a business module

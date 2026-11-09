@@ -1195,13 +1195,13 @@ describe("dependencies", () => {
         expect(".o_gantt_soft_bar").toHaveCount(2);
     });
 
-    test("the group toggle hands the group key to the controller", async () => {
+    test("the group toggle hands the group key and its drawn state to the controller", async () => {
         const team = { id: 7, display_name: "Alpha" };
         const toggled = [];
         await mountRenderer({
             archInfo: makeArchInfo({ groupByField: "team_id" }),
             defaultCollapsed: true,
-            onToggleGroup: (key) => toggled.push(key),
+            onToggleGroup: (key, collapsed) => toggled.push([key, collapsed]),
             records: [
                 makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", { team_id: team }),
             ],
@@ -1211,8 +1211,27 @@ describe("dependencies", () => {
             new MouseEvent("click", { bubbles: true })
         );
         await animationFrame();
-        expect(toggled.length).toBe(1);
-        expect(toggled[0]).toBe("7");
+        // Folded by the view's default: the map has no entry for the group, so
+        // the state the row is drawn in must travel with the toggle.
+        expect(toggled).toEqual([["7", true]]);
+    });
+
+    test("the toggle of an open group reports it as open", async () => {
+        const team = { id: 7, display_name: "Alpha" };
+        const toggled = [];
+        await mountRenderer({
+            archInfo: makeArchInfo({ groupByField: "team_id" }),
+            onToggleGroup: (key, collapsed) => toggled.push([key, collapsed]),
+            records: [
+                makeRecord(1, "2026-03-02 00:00:00", "2026-03-05 00:00:00", { team_id: team }),
+            ],
+        });
+
+        queryOne(".o_gantt_soft_group_toggle").dispatchEvent(
+            new MouseEvent("click", { bubbles: true })
+        );
+        await animationFrame();
+        expect(toggled).toEqual([["7", false]]);
     });
 
     test("shows the avatar the arch names on a group row", async () => {

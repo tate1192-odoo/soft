@@ -464,6 +464,10 @@ export class GanttSoftRenderer extends Component {
                 return {
                     id: `group:${key}`,
                     key,
+                    // The state the row is drawn in, handed back on a toggle: a
+                    // group folded by the view's default has no entry in the
+                    // collapsed map yet.
+                    collapsed: false,
                     label: summary,
                     avatarUrl,
                     height: laneCount * LANE_HEIGHT,
@@ -886,11 +890,11 @@ export class GanttSoftRenderer extends Component {
     }
 
     /** Fold or unfold a group: the toggle on the left of its row. */
-    onToggleGroupClick(ev, key) {
+    onToggleGroupClick(ev, row) {
         // The row's own click behaviour must not fire as well.
         ev.stopPropagation();
         if (this.props.onToggleGroup) {
-            this.props.onToggleGroup(key);
+            this.props.onToggleGroup(row.key, Boolean(row.collapsed));
         }
     }
 
@@ -940,7 +944,8 @@ export class GanttSoftRenderer extends Component {
         }
         if (row.collapsedGroup) {
             if (this.props.onToggleGroup) {
-                this.props.onToggleGroup(row.groupKey);
+                // A collapsed bar is drawn folded: the toggle opens it.
+                this.props.onToggleGroup(row.groupKey, true);
             }
             return;
         }

@@ -602,7 +602,17 @@ export class GanttSoftController extends Component {
      * and follows the reader through the scale and the window. A useState
      * object is reactive key by key, so writing straight into it is enough.
      */
-    onToggleGroup(key) {
-        this.state.collapsedGroups[key] = !this.state.collapsedGroups[key];
+    onToggleGroup(key, collapsed) {
+        // The renderer hands the state the row is *drawn* in, not the map entry:
+        // a group folded by `collapse_first_level` has no entry yet, and
+        // toggling the entry alone would write "folded" on the first click — a
+        // dead click for the reader — instead of opening the group. The map is
+        // replaced rather than mutated: a key that did not exist is a new
+        // object property, and replacing the value is what re-renders the
+        // renderer with the new state.
+        this.state.collapsedGroups = {
+            ...this.state.collapsedGroups,
+            [key]: !collapsed,
+        };
     }
 }
