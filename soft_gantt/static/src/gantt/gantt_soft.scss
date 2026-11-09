@@ -370,6 +370,25 @@ $o-gantt-soft-popover-close-filter: none !default;
     pointer-events: none;
 }
 
+// A precision subdivides every column into half or quarter cells: the marks
+// are lighter than the column lines so the headers stay read at a glance.
+.o_gantt_soft_subcell {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dashed $o-gantt-soft-gridline;
+    opacity: 0.35;
+    pointer-events: none;
+}
+
+.o_gantt_soft_subgridline {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    border-left: 1px dashed $o-gantt-soft-gridline;
+    opacity: 0.25;
+}
+
 // The columns are painted once for the whole timeline instead of once per row.
 .o_gantt_soft_gridline {
     position: absolute;

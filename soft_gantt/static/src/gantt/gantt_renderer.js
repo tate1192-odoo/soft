@@ -17,6 +17,7 @@ import {
     packLanes,
     parseOdooFieldDate,
     relationIds,
+    snapToPrecision,
     snapToUnit,
     startOfLocalDay,
     startOfLocalMonth,
@@ -303,16 +304,35 @@ export class GanttSoftRenderer extends Component {
             range.start,
             range.end
         );
+        const parts = this.props.archInfo.precision?.[this.props.scale]?.parts || 1;
+        const columns = cells.map((cell) => ({
+            ...place(cell),
+            start: cell.start,
+            end: cell.end,
+            label: this._cellLabel(cell.start, unit),
+            isWeekend: cell.isWeekend,
+        }));
+        // The subcells are a *reading* grid inside every column (a quarter hour
+        // of the day scale, half a day of the week scale): they do not change
+        // the columns, the labels or the window, only how fine the plan reads.
+        const subcolumns = [];
+        if (parts > 1) {
+            for (const column of columns) {
+                for (let index = 0; index < parts; index++) {
+                    subcolumns.push({
+                        key: `${column.key}:${index}`,
+                        left: column.left + (column.width * index) / parts,
+                        width: column.width / parts,
+                    });
+                }
+            }
+        }
         this._timeline = {
             unit,
             bandUnit,
-            columns: cells.map((cell) => ({
-                ...place(cell),
-                start: cell.start,
-                end: cell.end,
-                label: this._cellLabel(cell.start, unit),
-                isWeekend: cell.isWeekend,
-            })),
+            parts,
+            columns,
+            subcolumns,
             bands: bands.map((band) => ({
                 ...place(band),
                 label: this._bandLabel(band.start, bandUnit),
@@ -324,6 +344,16 @@ export class GanttSoftRenderer extends Component {
 
     get columns() {
         return this.timeline.columns;
+    }
+
+    /** The subdivisions of the cells, empty when the scale is read whole. */
+    get subcolumns() {
+        return this.timeline.subcolumns;
+    }
+
+    /** How many subdivisions a cell has (1 when the view does not ask for any). */
+    get cellParts() {
+        return this.timeline.parts;
     }
 
     /**
@@ -841,7 +871,12 @@ export class GanttSoftRenderer extends Component {
         // inside it. At the hour unit the times are the point of the view and
         // are kept as they are, which is what keeps the one-hour default.
         const duration = ensureDuration(row.start, row.stop, this.timeline.unit);
-        const { start, stop } = snapToUnit(duration.start, duration.stop, this.timeline.unit);
+        const { start, stop } = snapToPrecision(
+            duration.start,
+            duration.stop,
+            this.timeline.unit,
+            this.timeline.parts
+        );
         // A milestone is a point in time: it is placed on its date and holds no
         // width, so the bar's own box cannot describe a duration it does not
         // have. The diamond itself is drawn by the stylesheet.

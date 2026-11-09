@@ -68,6 +68,7 @@ function makeArchInfo(overrides = {}) {
         groupAvatarField: "",
         decorations: [],
         expressionFields: [],
+        precision: {},
         ...overrides,
     };
 }
@@ -1563,5 +1564,55 @@ describe("dependencies", () => {
             "Beta (1)",
             "Cleaning (1)",
         ]);
+    });
+
+    // ------------------------------------------------------------------
+    // Cell precision (subdivided cells)
+    // ------------------------------------------------------------------
+
+    test("subdivides the cells of a scale by its precision", async () => {
+        await mountRenderer({
+            archInfo: makeArchInfo({ precision: { day: { unit: "hour", parts: 4 } } }),
+            window: { start: Date.UTC(2026, 2, 2), end: Date.UTC(2026, 2, 3) },
+            records: [makeRecord(1, "2026-03-02 00:00:00", "2026-03-02 01:00:00")],
+        });
+
+        // A day window read in hours: 24 columns, each cut in four subcells.
+        expect(".o_gantt_soft_cell").toHaveCount(24);
+        expect(".o_gantt_soft_subcell").toHaveCount(96);
+        expect(".o_gantt_soft_subgridline").toHaveCount(96);
+        // The day scale already reads the real minutes: the subgrid does not
+        // move the bar off its stored time.
+        expect(percentage(queryOne(".o_gantt_soft_bar"), "width")).toBe(4.17);
+    });
+
+    test("snaps the bars of a day cell to its halves", async () => {
+        await mountRenderer({
+            scale: "week",
+            window: { start: Date.UTC(2026, 2, 2), end: Date.UTC(2026, 2, 9) },
+            archInfo: makeArchInfo({ precision: { week: { unit: "day", parts: 2 } } }),
+            records: [
+                makeRecord(1, "2026-03-03 14:00:00", "2026-03-04 05:00:00"),
+            ],
+        });
+
+        // Seven days, each cut in two subcells.
+        expect(".o_gantt_soft_cell").toHaveCount(7);
+        expect(".o_gantt_soft_subcell").toHaveCount(14);
+        // 03-03 14:00 snaps to the noon line of its day: 1.5 days into a 7
+        // day window; the stop snaps to the next midnight, twelve hours later.
+        const bar = queryOne(".o_gantt_soft_bar");
+        expect(percentage(bar)).toBe(21.43);
+        expect(percentage(bar, "width")).toBe(7.14);
+    });
+
+    test("without precision the cells are whole", async () => {
+        await mountRenderer({
+            window: { start: Date.UTC(2026, 2, 2), end: Date.UTC(2026, 2, 3) },
+            records: [makeRecord(1, "2026-03-02 00:00:00", "2026-03-02 01:00:00")],
+        });
+
+        expect(".o_gantt_soft_subcell").toHaveCount(0);
+        expect(".o_gantt_soft_subgridline").toHaveCount(0);
     });
 });

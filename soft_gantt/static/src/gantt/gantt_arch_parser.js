@@ -1,8 +1,14 @@
 import { exprToBoolean } from "@web/core/utils/strings";
+import { evaluateExpr } from "@web/core/py_js/py";
 import { stringToOrderBy } from "@web/search/utils/order_by";
 import { visitXML } from "@web/core/utils/xml";
 
-import { WINDOW_RANGES } from "./gantt_utils";
+import {
+    CELL_PRECISIONS,
+    PRECISION_SCALES,
+    SCALE_UNITS,
+    WINDOW_RANGES,
+} from "./gantt_utils";
 import { Field } from "@web/views/fields/field";
 import { getActiveActions } from "@web/views/utils";
 
@@ -97,6 +103,7 @@ export class GanttSoftArchParser {
             colorField: "",
             scales: [...SCALES],
             scale: "month",
+            precision: {},
             range: "month",
             limit: DEFAULT_LIMIT,
             openFormView: exprToBoolean(xmlDoc.getAttribute("open_form_view")),
@@ -290,6 +297,50 @@ export class GanttSoftArchParser {
 
         archInfo.collapseFirstLevel = this._readBoolean(xmlDoc, "collapse_first_level");
         archInfo.cellCreate = this._readBoolean(xmlDoc, "cell_create");
+
+        const precisionAttribute = xmlDoc.getAttribute("precision");
+        if (precisionAttribute !== null) {
+            // The attribute is a Python literal, read like the expressions of
+            // the other views: {"day": "hour:quarter", "week": "day:half"}.
+            let precision;
+            try {
+                precision = evaluateExpr(precisionAttribute);
+            } catch {
+                throw new Error(
+                    `The "precision" of a gantt_soft view must be a dict like {'day': 'hour:quarter'}.`
+                );
+            }
+            if (!precision || typeof precision !== "object" || Array.isArray(precision)) {
+                throw new Error(
+                    `The "precision" of a gantt_soft view must be a dict like {'day': 'hour:quarter'}.`
+                );
+            }
+            for (const [scale, specification] of Object.entries(precision)) {
+                if (!SCALES.includes(scale)) {
+                    throw new Error(
+                        `Invalid scale "${scale}" in "precision" (expected one of ${SCALES.join(", ")}).`
+                    );
+                }
+                if (!PRECISION_SCALES.includes(scale)) {
+                    throw new Error(
+                        `The "${scale}" scale has no cells that can be subdivided: "precision" is available on ${PRECISION_SCALES.join(", ")}.`
+                    );
+                }
+                const cellUnit = SCALE_UNITS[scale];
+                const [unit, precisionName] = String(specification).split(":");
+                if (unit !== cellUnit || !(precisionName in CELL_PRECISIONS)) {
+                    throw new Error(
+                        `Invalid precision "${specification}" for the "${scale}" scale (expected "${cellUnit}:${Object.keys(
+                            CELL_PRECISIONS
+                        ).join("|")}").`
+                    );
+                }
+                archInfo.precision[scale] = {
+                    unit,
+                    parts: CELL_PRECISIONS[precisionName],
+                };
+            }
+        }
 
         const defaultRange = xmlDoc.getAttribute("default_range");
         if (defaultRange) {

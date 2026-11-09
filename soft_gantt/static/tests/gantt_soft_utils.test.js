@@ -15,6 +15,8 @@ import {
     parseOdooFieldDate,
     relationIds,
     serializeOdooDate,
+    snapToPrecision,
+    snapToUnit,
     windowRange,
 } from "@soft_gantt/gantt/gantt_utils";
 
@@ -451,6 +453,67 @@ describe("buildPopoverButtons", () => {
 
     test("a view without buttons offers none", () => {
         expect(buildPopoverButtons({}, record, () => {})).toEqual([]);
+    });
+});
+
+describe("snapToPrecision", () => {
+    const value = (text) => parseOdooFieldDate(text, "datetime");
+
+    test("without subdivisions it is the unit snap", () => {
+        const start = value("2026-03-03 08:07:00");
+        const stop = value("2026-03-03 10:52:00");
+        expect(snapToPrecision(start, stop, "hour", 1)).toEqual(
+            snapToUnit(start, stop, "hour")
+        );
+        expect(snapToPrecision(start, stop, "day", 1)).toEqual(
+            snapToUnit(start, stop, "day")
+        );
+    });
+
+    test("the day scale keeps the real minutes: its subgrid is a reading aid", () => {
+        const start = value("2026-03-03 08:07:00");
+        const stop = value("2026-03-03 09:52:00");
+        expect(snapToPrecision(start, stop, "hour", 4)).toEqual({ start, stop });
+    });
+
+    test("a day cut in quarters snaps the ends to quarter days", () => {
+        const snapped = snapToPrecision(
+            value("2026-03-03 08:07:00"),
+            value("2026-03-04 05:52:00"),
+            "day",
+            4
+        );
+        expect(snapped.start).toBe(value("2026-03-03 06:00:00"));
+        expect(snapped.stop).toBe(value("2026-03-04 00:00:00"));
+    });
+
+    test("a day cut in halves snaps an afternoon start to noon", () => {
+        const snapped = snapToPrecision(
+            value("2026-03-03 14:00:00"),
+            value("2026-03-04 05:00:00"),
+            "day",
+            2
+        );
+        expect(snapped.start).toBe(value("2026-03-03 12:00:00"));
+        expect(snapped.stop).toBe(value("2026-03-04 00:00:00"));
+    });
+
+    test("a single instant becomes one subdivision", () => {
+        const instant = value("2026-03-03 08:07:00");
+        const snapped = snapToPrecision(instant, instant, "day", 4);
+        expect(snapped.start).toBe(value("2026-03-03 06:00:00"));
+        expect(snapped.stop).toBe(value("2026-03-03 12:00:00"));
+    });
+
+    test("an inverted interval is widened instead of drawn empty", () => {
+        const snapped = snapToPrecision(
+            value("2026-03-03 18:00:00"),
+            value("2026-03-03 08:00:00"),
+            "day",
+            2
+        );
+        expect(snapped.start).toBe(value("2026-03-03 12:00:00"));
+        expect(snapped.stop).toBe(value("2026-03-04 00:00:00"));
     });
 });
 });
