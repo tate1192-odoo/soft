@@ -431,8 +431,8 @@ describe("buildPopoverButtons", () => {
     test("maps the arch buttons, in order, with their label, icon and class", () => {
         const buttons = buildPopoverButtons(archInfo, record, () => {});
         expect(buttons.map((button) => button.key)).toEqual([
-            "object:action_done",
-            "action:base.action_partner_form",
+            "0:object:action_done",
+            "1:action:base.action_partner_form",
         ]);
         expect(buttons.map((button) => button.label)).toEqual(["Done", "Open partner"]);
         expect(buttons[0].icon).toBe("fa fa-check");

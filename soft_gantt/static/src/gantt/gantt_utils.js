@@ -705,8 +705,11 @@ export function relationIds(value) {
  * @returns {Array<!Object>} button props for the popover component
  */
 export function buildPopoverButtons(archInfo, record, runAction) {
-    return (archInfo.buttons || []).map((button) => ({
-        key: `${button.type}:${button.name}`,
+    // The index is part of the key: an arch may declare the same method twice
+    // (two labels for two contexts) and a key that is only type+name would make
+    // Owl's t-foreach see duplicates.
+    return (archInfo.buttons || []).map((button, index) => ({
+        key: `${index}:${button.type}:${button.name}`,
         label: button.string,
         icon: button.icon,
         className: button.class,
