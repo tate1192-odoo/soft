@@ -76,6 +76,7 @@ export class GanttSoftArchParser {
             dateStopType: "datetime",
             labelField: "",
             groupByField: "",
+            groupByFields: [],
             groupTotalField: "",
             groupAvatarField: "",
             collapseFirstLevel: false,
@@ -200,15 +201,34 @@ export class GanttSoftArchParser {
 
         const groupBy = xmlDoc.getAttribute("group_by");
         if (groupBy) {
-            this._validateField(
-                fields,
-                modelName,
-                groupBy,
-                FIELD_ATTRIBUTES.group_by,
-                "group_by"
-            );
-            archInfo.groupByField = groupBy;
-            this._rememberSelection(archInfo, fields, groupBy);
+            // A comma separated list groups on several levels: the first field
+            // makes the outer rows, the second the rows inside them, and the
+            // last one holds the records (the bars). A single field is the one
+            // level case of the same tree.
+            const groupByFields = groupBy
+                .split(",")
+                .map((fieldName) => fieldName.trim())
+                .filter(Boolean);
+            if (!groupByFields.length) {
+                throw new Error(
+                    `The "group_by" attribute of a gantt_soft view must name at least one field.`
+                );
+            }
+            for (const fieldName of groupByFields) {
+                this._validateField(
+                    fields,
+                    modelName,
+                    fieldName,
+                    FIELD_ATTRIBUTES.group_by,
+                    "group_by"
+                );
+                this._rememberSelection(archInfo, fields, fieldName);
+            }
+            archInfo.groupByFields = groupByFields;
+            // The first level keeps its own name: the optional group avatar is
+            // read from it, and it is the level "first" refers to when the view
+            // starts folded.
+            archInfo.groupByField = groupByFields[0];
         }
 
         const groupTotal = xmlDoc.getAttribute("group_total");

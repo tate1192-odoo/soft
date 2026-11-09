@@ -94,6 +94,12 @@ export class GanttSoftController extends Component {
         // Fields the view needs beyond the ones it declares: the two dates, the
         // bar label, and the optional progress / colour / milestone /
         // dependencies fields.
+        const groupByFields =
+            archInfo.groupByFields?.length > 0
+                ? archInfo.groupByFields
+                : archInfo.groupByField
+                  ? [archInfo.groupByField]
+                  : [];
         const requiredFields = [
             "display_name",
             archInfo.dateStart,
@@ -101,7 +107,7 @@ export class GanttSoftController extends Component {
             archInfo.labelField,
             archInfo.progressField,
             archInfo.colorField,
-            archInfo.groupByField,
+            ...groupByFields,
             archInfo.groupTotalField,
             ...archInfo.expressionFields,
             archInfo.milestoneField,
@@ -339,8 +345,15 @@ export class GanttSoftController extends Component {
     exportCsv() {
         const { archInfo, fields, resModel } = this.props;
         const extraNames = Object.values(archInfo.fieldNodes).map((info) => info.name);
+        const groupByFields =
+            archInfo.groupByFields?.length > 0
+                ? archInfo.groupByFields
+                : archInfo.groupByField
+                  ? [archInfo.groupByField]
+                  : [];
         const header = [
             _t("Name"),
+            ...groupByFields.map((name) => fields[name]?.string || name),
             fields[archInfo.dateStart]?.string || archInfo.dateStart,
             fields[archInfo.dateStop]?.string || archInfo.dateStop,
             _t("Duration (days)"),
@@ -353,6 +366,7 @@ export class GanttSoftController extends Component {
             const stop = parseOdooFieldDate(record[archInfo.dateStop], archInfo.dateStopType);
             const row = [
                 record.display_name || `#${record.id}`,
+                ...groupByFields.map((name) => this._fieldValue(name, record[name])),
                 this._csvDate(start, archInfo.dateStartType),
                 this._csvDate(stop, archInfo.dateStopType),
                 start !== null && stop !== null ? Math.round(((stop - start) / DAY_MS) * 10) / 10 : "",
@@ -416,7 +430,7 @@ export class GanttSoftController extends Component {
         const context = createContextDefaults(
             this.props.archInfo,
             this.props.fields,
-            row?.key,
+            row?.groupValues,
             start,
             stop,
             this.props.context

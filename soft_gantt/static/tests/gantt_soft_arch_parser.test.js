@@ -422,4 +422,49 @@ describe("GanttSoftArchParser", () => {
             ).toThrow(/must be a boolean/);
         }
     });
+
+    test("reads a group_by list as grouping levels", () => {
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" group_by="user_id,state"/>'
+        );
+        expect(archInfo.groupByFields).toEqual(["user_id", "state"]);
+        // The first level keeps its own name for the avatar and the default
+        // folding, which are single level attributes.
+        expect(archInfo.groupByField).toBe("user_id");
+    });
+
+    test("refuses an invalid field on any grouping level", () => {
+        expect(() =>
+            parse(
+                '<gantt_soft date_start="date_start" date_stop="date_deadline" group_by="user_id,nope"/>'
+            )
+        ).toThrow(/Unknown field|not defined/);
+
+        expect(() =>
+            parse(
+                '<gantt_soft date_start="date_start" date_stop="date_deadline" group_by="user_id,date_start"/>'
+            )
+        ).toThrow(/must be of type/);
+    });
+
+    test("refuses an empty group_by list", () => {
+        expect(() =>
+            parse('<gantt_soft date_start="date_start" date_stop="date_deadline" group_by=","/>')
+        ).toThrow(/at least one field/);
+    });
+
+    test("the group avatar reads the outer level of a multi-level group", () => {
+        // user_id is the outer many2one: the avatar is its image field.
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" group_by="user_id,state" group_avatar="avatar_128"/>'
+        );
+        expect(archInfo.groupAvatarField).toBe("avatar_128");
+
+        expect(() =>
+            parse(
+                '<gantt_soft date_start="date_start" date_stop="date_deadline" group_by="state,user_id" group_avatar="avatar_128"/>'
+            )
+        ).toThrow(/requires a many2one "group_by"/);
+
+    });
 });

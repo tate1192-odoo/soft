@@ -79,13 +79,14 @@ GANTT_SOFT_FIELD_ATTRIBUTES = {
     # The relational list holding the records that must finish before this one:
     # the client draws an arrow from each of them.
     'dependencies': ('many2many', 'one2many'),
-    # The row a record is drawn on. A name, a team, a status: something with
-    # few distinct values. A date is the timeline itself and a float would give
-    # one row per value, so both are refused.
-    'group_by': ('char', 'text', 'selection', 'integer', 'many2one', 'boolean'),
     # A numeric field summed over the records of a group and shown on its row.
     'group_total': ('float', 'integer'),
 }
+
+#: Field types a ``group_by`` level can name. A name, a team, a status:
+#: something with few distinct values. A date is the timeline itself and a
+#: float would give one row per value, so both are refused.
+GANTT_SOFT_GROUP_BY_TYPES = ('char', 'text', 'selection', 'integer', 'many2one', 'boolean')
 
 #: Field types a declared ``<field>`` node can render (tooltip and card).
 GANTT_SOFT_FIELD_NODE_TYPES = (
@@ -174,6 +175,45 @@ class IrUiView(models.Model):
             )
 
         model_fields = name_manager.model._fields
+
+        # ``group_by`` names one or several levels, a comma separated list: the
+        # first field makes the outer rows and the last one holds the records.
+        group_by_fields = []
+        group_by = node.get('group_by')
+        if group_by is not None:
+            group_by_fields = [name.strip() for name in group_by.split(',') if name.strip()]
+            if not group_by_fields:
+                self._raise_view_error(
+                    _(
+                        "The group_by attribute of a gantt_soft view must name at "
+                        "least one field."
+                    ),
+                    node,
+                )
+            for field_name in group_by_fields:
+                field = model_fields.get(field_name)
+                if field is None:
+                    self._raise_view_error(
+                        _(
+                            "Unknown field %(field)r used as group_by in a "
+                            "gantt_soft view of %(model)s.",
+                            field=field_name,
+                            model=name_manager.model._name,
+                        ),
+                        node,
+                    )
+                elif field.type not in GANTT_SOFT_GROUP_BY_TYPES:
+                    self._raise_view_error(
+                        _(
+                            "Field %(field)r used as group_by in a gantt_soft "
+                            "view must be of type %(types)s, not %(type)s.",
+                            field=field_name,
+                            types='/'.join(GANTT_SOFT_GROUP_BY_TYPES),
+                            type=field.type,
+                        ),
+                        node,
+                    )
+
         for attribute, allowed_types in GANTT_SOFT_FIELD_ATTRIBUTES.items():
             field_name = node.get(attribute)
             if not field_name:
@@ -384,7 +424,10 @@ class IrUiView(models.Model):
         image_field_name = node.get('group_avatar')
         if not image_field_name:
             return
-        group_by = node.get('group_by')
+        group_by_fields = [
+            name.strip() for name in (node.get('group_by') or '').split(',') if name.strip()
+        ]
+        group_by = group_by_fields[0] if group_by_fields else None
         if not group_by:
             self._raise_view_error(
                 _(

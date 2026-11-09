@@ -413,8 +413,8 @@ export class GanttSoftRenderer extends Component {
             return [];
         }
         const bars = this.scheduledRows.map((row) => this._buildBar(row, range));
-        const groupByField = this.props.archInfo.groupByField;
-        if (!groupByField) {
+        const groupByFields = this.groupByFields;
+        if (!groupByFields.length) {
             return bars.map((bar) => ({
                 id: `record:${bar.id}`,
                 label: bar.label,
@@ -422,71 +422,176 @@ export class GanttSoftRenderer extends Component {
                 bars: [{ ...bar, top: BAR_TOP }],
             }));
         }
+        // One level is the one field case of the same recursion: the last level
+        // holds the records (the bars), every other level is a row of its own.
+        return this._buildGroupRows(bars, range, groupByFields, 0, "", []);
+    }
+
+    /** The levels the rows are grouped on, from the outer one to the inner one. */
+    get groupByFields() {
+        const { groupByFields, groupByField } = this.props.archInfo;
+        if (Array.isArray(groupByFields) && groupByFields.length) {
+            return groupByFields;
+        }
+        // A renderer mounted with a single level (a test, another view) still
+        // works: the older single field is the one level list.
+        return groupByField ? [groupByField] : [];
+    }
+
+    /**
+     * The rows of one grouping level, recursively.
+     *
+     * Each level splits the records of its parent group by the value of its
+     * field. The inner level holds the bars; the outer levels are header rows
+     * that fold their whole subtree into one bar when collapsed. Keys are the
+     * path of values ("7|cleaning"), so a value that appears under two parents
+     * is two rows and folding one does not fold the other.
+     *
+     * @param {Array} bars records to group, already drawn
+     * @param {Object} range the window
+     * @param {string[]} groupByFields all levels
+     * @param {number} depth the level being built
+     * @param {string} parentKey the key path of the parent group, "" at the top
+     * @param {Array} parentValues the group values of the parent path
+     * @returns {Array} rows in display order (headers followed by their subtree)
+     */
+    _buildGroupRows(bars, range, groupByFields, depth, parentKey, parentValues) {
+        const fieldName = groupByFields[depth];
+        const isLeaf = depth === groupByFields.length - 1;
         const groups = new Map();
         for (const bar of bars) {
             // The key identifies the group, the label names it. A many2one is
             // grouped by id: two customers with the same name are two groups,
             // and folding one of them does not fold the other.
-            const key = this._groupKey(bar.record, groupByField);
-            if (!groups.has(key)) {
-                groups.set(key, {
-                    key,
-                    label: this._groupLabel(bar.record, groupByField, key),
+            const valueKey = this._groupKey(bar.record, fieldName);
+            if (!groups.has(valueKey)) {
+                groups.set(valueKey, {
+                    valueKey,
+                    label: this._groupLabel(bar.record, fieldName, valueKey),
                     bars: [],
                 });
             }
-            groups.get(key).bars.push(bar);
+            groups.get(valueKey).bars.push(bar);
         }
-        return [...groups.values()]
-            .sort((a, b) => a.label.localeCompare(b.label, undefined, { numeric: true }))
-            .map(({ key, label, bars: groupBars }) => {
-                // The row counts its records and, when the view asks for it,
-                // sums a numeric field over them: the summary that makes a
-                // folded or expanded group readable at a glance.
-                const summary = this._groupSummaryLabel(label, groupBars);
-                const avatarUrl = this._groupAvatarUrl(key);
-                if (this._isGroupCollapsed(key)) {
-                    return this._buildCollapsedGroup(key, summary, groupBars, range, avatarUrl);
-                }
-                // The lanes describe what the reader sees, so they are packed on
-                // the intervals the bars are *drawn* with, not on the record's
-                // raw times. At a day unit two services of one team on the same
-                // day are two bars on the same day cell even when their times of
-                // day do not overlap; packing the raw times put them on one lane
-                // and the second bar hid the first.
-                const barsById = new Map(groupBars.map((bar) => [bar.id, bar]));
-                const packable = groupBars.map((bar) => ({
-                    ...bar,
-                    start: bar.laneStart,
-                    stop: bar.laneStop,
-                }));
-                const { packed, laneCount } = packLanes(packable);
+        const rows = [];
+        const sorted = [...groups.values()].sort((a, b) =>
+            a.label.localeCompare(b.label, undefined, { numeric: true })
+        );
+        for (const { valueKey, label, bars: groupBars } of sorted) {
+            const nodeKey = parentKey ? `${parentKey}|${valueKey}` : String(valueKey);
+            // The row counts its records (of the whole subtree) and, when the
+            // view asks for it, sums a numeric field over them: the summary
+            // that makes a folded or expanded group readable at a glance.
+            const summary = this._groupSummaryLabel(label, groupBars);
+            const groupValues = [...parentValues, { field: fieldName, value: valueKey }];
+            // The avatar belongs to the outer level: the arch names a single
+            // image field, and the outer row is the one that identifies the
+            // plan (a team, a customer).
+            const avatarUrl = depth === 0 ? this._groupAvatarUrl(valueKey) : null;
+            if (this._isGroupCollapsed(nodeKey, depth)) {
+                rows.push(
+                    this._buildCollapsedGroup(
+                        nodeKey,
+                        summary,
+                        groupBars,
+                        range,
+                        avatarUrl,
+                        depth,
+                        groupValues
+                    )
+                );
+            } else if (isLeaf) {
+                rows.push(
+                    this._buildLeafGroup(
+                        nodeKey,
+                        summary,
+                        groupBars,
+                        avatarUrl,
+                        depth,
+                        groupValues
+                    )
+                );
+            } else {
+                rows.push(
+                    this._buildBranchRow(nodeKey, summary, avatarUrl, depth, groupValues)
+                );
+                rows.push(
+                    ...this._buildGroupRows(
+                        groupBars,
+                        range,
+                        groupByFields,
+                        depth + 1,
+                        nodeKey,
+                        groupValues
+                    )
+                );
+            }
+        }
+        return rows;
+    }
+
+    /**
+     * The header row of a grouping level that has children.
+     *
+     * It paints no bar of its own (the records below it do); folding it is what
+     * turns the subtree into the single bar of ``_buildCollapsedGroup``.
+     */
+    _buildBranchRow(nodeKey, label, avatarUrl, depth, groupValues) {
+        return {
+            id: `group:${nodeKey}`,
+            key: nodeKey,
+            branch: true,
+            // The state the row is drawn in, handed back on a toggle: a group
+            // folded by the view's default has no entry in the collapsed map.
+            collapsed: false,
+            label,
+            avatarUrl,
+            depth,
+            groupValues,
+            height: LANE_HEIGHT,
+            bars: [],
+        };
+    }
+
+    /**
+     * The innermost group row: the one holding the records.
+     *
+     * The records are laid out on lanes along the timeline, so two overlapping
+     * the same day are two bars, and the row grows instead of hiding one behind
+     * the other.
+     */
+    _buildLeafGroup(nodeKey, label, groupBars, avatarUrl, depth, groupValues) {
+        const barsById = new Map(groupBars.map((bar) => [bar.id, bar]));
+        const packable = groupBars.map((bar) => ({
+            ...bar,
+            start: bar.laneStart,
+            stop: bar.laneStop,
+        }));
+        const { packed, laneCount } = packLanes(packable);
+        return {
+            id: `group:${nodeKey}`,
+            key: nodeKey,
+            collapsed: false,
+            label,
+            avatarUrl,
+            depth,
+            groupValues,
+            height: laneCount * LANE_HEIGHT,
+            bars: packed.map(({ row, lane }) => {
+                // The original bar, not the copy the lanes were packed on: the
+                // tooltip and the card describe the record, the card's dates
+                // being formatted from its own interval.
+                const bar = barsById.get(row.id);
                 return {
-                    id: `group:${key}`,
-                    key,
-                    // The state the row is drawn in, handed back on a toggle: a
-                    // group folded by the view's default has no entry in the
-                    // collapsed map yet.
-                    collapsed: false,
-                    label: summary,
-                    avatarUrl,
-                    height: laneCount * LANE_HEIGHT,
-                    bars: packed.map(({ row, lane }) => {
-                        // The original bar, not the copy the lanes were packed
-                        // on: the tooltip and the card describe the record, the
-                        // card's dates being formatted from its own interval.
-                        const bar = barsById.get(row.id);
-                        return {
-                            ...bar,
-                            // The row already names the group, so the bar names
-                            // the record itself.
-                            label: bar.record.display_name || bar.label,
-                            title: this._barTitle(bar, true),
-                            top: lane * LANE_HEIGHT + LANE_TOP,
-                        };
-                    }),
+                    ...bar,
+                    // The row already names the group, so the bar names the
+                    // record itself.
+                    label: bar.record.display_name || bar.label,
+                    title: this._barTitle(bar, true),
+                    top: lane * LANE_HEIGHT + LANE_TOP,
                 };
-            });
+            }),
+        };
     }
 
     /**
@@ -497,13 +602,19 @@ export class GanttSoftRenderer extends Component {
      * raw value identifies a selection, a char or a number; an unset value is
      * one group of its own (empty key).
      */
-    /** Whether a group starts folded: an explicit toggle wins over the default. */
-    _isGroupCollapsed(key) {
+    /**
+     * Whether a group row is folded.
+     *
+     * An explicit toggle wins. Otherwise ``collapse_first_level`` folds the
+     * *outer* level only: a nested row starts open, so folding a team does not
+     * also fold every service type inside it when the team is opened again.
+     */
+    _isGroupCollapsed(key, depth = 0) {
         const { collapsed, defaultCollapsed } = this.props;
         if (collapsed && Object.prototype.hasOwnProperty.call(collapsed, key)) {
             return Boolean(collapsed[key]);
         }
-        return Boolean(defaultCollapsed);
+        return depth === 0 && Boolean(defaultCollapsed);
     }
 
     /**
@@ -551,7 +662,8 @@ export class GanttSoftRenderer extends Component {
 
     /** The avatar of a group row, from the image field the arch names. */
     _groupAvatarUrl(key) {
-        const { groupByField, groupAvatarField } = this.props.archInfo;
+        const groupByField = this.groupByFields[0];
+        const { groupAvatarField } = this.props.archInfo;
         if (!groupByField || !groupAvatarField || !key) {
             return null;
         }
@@ -673,7 +785,15 @@ export class GanttSoftRenderer extends Component {
      * The bar stands for no single record: it cannot be moved or resized, and
      * clicking it unfolds the group again instead of opening a record.
      */
-    _buildCollapsedGroup(key, label, groupBars, range, avatarUrl = null) {
+    _buildCollapsedGroup(
+        key,
+        label,
+        groupBars,
+        range,
+        avatarUrl = null,
+        depth = 0,
+        groupValues = []
+    ) {
         let start = groupBars[0].laneStart;
         let stop = groupBars[0].laneStop;
         for (const bar of groupBars) {
@@ -690,6 +810,8 @@ export class GanttSoftRenderer extends Component {
             collapsed: true,
             label,
             avatarUrl,
+            depth,
+            groupValues,
             height: LANE_HEIGHT,
             bars: [
                 {

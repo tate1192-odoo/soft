@@ -105,7 +105,76 @@ class FoldTask extends models.Model {
     };
 }
 
-defineModels([Task, FoldTask]);
+class GroupedTask extends models.Model {
+    _name = "grouped.task";
+
+    name = fields.Char();
+    date_start = fields.Datetime();
+    date_deadline = fields.Datetime();
+    team = fields.Char({ string: "Team" });
+    kind = fields.Char({ string: "Kind" });
+    amount = fields.Float({ string: "Amount" });
+
+    _records = [
+        {
+            id: 1,
+            name: "Alpha cleaning 1",
+            date_start: "2026-03-02 00:00:00",
+            date_deadline: "2026-03-03 00:00:00",
+            team: "Alpha",
+            kind: "Cleaning",
+            amount: 1,
+        },
+        {
+            id: 2,
+            name: "Alpha cleaning 2",
+            date_start: "2026-03-04 00:00:00",
+            date_deadline: "2026-03-05 00:00:00",
+            team: "Alpha",
+            kind: "Cleaning",
+            amount: 2,
+        },
+        {
+            id: 3,
+            name: "Alpha repair",
+            date_start: "2026-03-02 00:00:00",
+            date_deadline: "2026-03-02 23:00:00",
+            team: "Alpha",
+            kind: "Repair",
+            amount: 3,
+        },
+        {
+            id: 4,
+            name: "Beta cleaning",
+            date_start: "2026-03-03 00:00:00",
+            date_deadline: "2026-03-04 00:00:00",
+            team: "Beta",
+            kind: "Cleaning",
+            amount: 4,
+        },
+    ];
+
+    _views = {
+        gantt_soft: `
+            <gantt_soft
+                string="Grouped"
+                date_start="date_start"
+                date_stop="date_deadline"
+                group_by="team,kind"
+                group_total="amount"
+                mode="month"
+                scales="day,week,month"
+            />
+        `,
+        search: `
+            <search>
+                <field name="name"/>
+            </search>
+        `,
+    };
+}
+
+defineModels([Task, FoldTask, GroupedTask]);
 
 const ORIGINAL_TIMEZONE = user.tz;
 beforeEach(() => {
@@ -313,4 +382,75 @@ test("a default folded group opens on the first toggle click", async () => {
     await click(queryFirst(".o_gantt_soft_group_toggle"));
     await animationFrame();
     expect(".o_gantt_soft_bar_collapsed").toHaveCount(2);
+});
+
+test("groups the records on two levels, summing each level", async () => {
+    await mountGanttView({
+        type: "gantt_soft",
+        resModel: "grouped.task",
+        state: { ...MARCH_STATE },
+    });
+
+    expect(queryAll(".o_gantt_soft_label").map((el) => el.textContent)).toEqual([
+        "Alpha (3) · Amount: 6.00",
+        "Cleaning (2) · Amount: 3.00",
+        "Repair (1) · Amount: 3.00",
+        "Beta (1) · Amount: 4.00",
+        "Cleaning (1) · Amount: 4.00",
+    ]);
+    expect(".o_gantt_soft_row").toHaveCount(5);
+    expect(".o_gantt_soft_bar").toHaveCount(4);
+});
+
+test("a default folded two-level group opens on the first toggle click", async () => {
+    await mountGanttView({
+        type: "gantt_soft",
+        resModel: "grouped.task",
+        state: { ...MARCH_STATE },
+        arch: `
+            <gantt_soft date_start="date_start" date_stop="date_deadline"
+                        group_by="team,kind" collapse_first_level="1"
+                        mode="month" scales="day,week,month"/>
+        `,
+    });
+
+    // Both outer groups are folded by the view's default.
+    expect(".o_gantt_soft_bar_collapsed").toHaveCount(2);
+
+    // Opening one of them is one click, not two: the toggle carries the drawn
+    // state of the row, whatever the default folded it with.
+    await click(queryFirst(".o_gantt_soft_group_toggle"));
+    await animationFrame();
+    expect(".o_gantt_soft_bar_collapsed").toHaveCount(1);
+
+    await click(queryFirst(".o_gantt_soft_group_toggle"));
+    await animationFrame();
+    expect(".o_gantt_soft_bar_collapsed").toHaveCount(2);
+});
+
+test("the CSV names every grouping level", async () => {
+    const blobs = [];
+    const original = URL.createObjectURL;
+    URL.createObjectURL = (blob) => {
+        blobs.push(blob);
+        return "blob:soft-gantt-test";
+    };
+    after(() => {
+        URL.createObjectURL = original;
+    });
+    await mountGanttView({
+        type: "gantt_soft",
+        resModel: "grouped.task",
+        state: { ...MARCH_STATE },
+    });
+    await click(queryOne(".o_gantt_soft_button_csv"));
+    expect(blobs).toHaveLength(1);
+    const csv = await blobs[0].text();
+    const lines = csv.replace("\ufeff", "").split("\r\n");
+    const header = lines[0].split(";");
+    expect(header[0]).toBe("Name");
+    expect(header).toInclude("Team");
+    expect(header).toInclude("Kind");
+    // The first record is Alpha/Cleaning: the two group columns follow the name.
+    expect(lines[1].split(";").slice(1, 3)).toEqual(["Alpha", "Cleaning"]);
 });
