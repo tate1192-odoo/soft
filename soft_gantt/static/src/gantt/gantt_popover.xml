@@ -21,8 +21,19 @@
                     </t>
                 </dl>
             </div>
-            <div class="popover-footer" t-if="props.open">
-                <button type="button" class="btn btn-primary btn-sm" t-on-click="() => this.props.open()">
+            <div class="popover-footer" t-if="props.open or buttons.length">
+                <!-- The actions of the view first, in arch order, then the
+                     form as the explicit navigation: acting on a record does
+                     not leave the chart. -->
+                <button t-foreach="buttons" t-as="button" t-key="button.key"
+                        type="button"
+                        t-attf-class="o_gantt_soft_popover_action btn btn-sm {{ button.className || 'btn-secondary' }}"
+                        t-on-click="() => button.onClick()">
+                    <i t-if="button.icon"
+                       t-attf-class="{{ button.icon }} {{ button.label ? 'me-1' : '' }}"/>
+                    <t t-if="button.label" t-esc="button.label"/>
+                </button>
+                <button t-if="props.open" type="button" class="btn btn-primary btn-sm" t-on-click="() => this.props.open()">
                     <i class="fa fa-external-link me-1"/>Open
                 </button>
             </div>

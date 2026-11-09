@@ -109,4 +109,75 @@ describe("GanttSoftPopover", () => {
         await animationFrame();
         expect(closed).toBe(1);
     });
+
+    test("shows the actions it is given, before the form button", async () => {
+        const clicked = [];
+        await mountPopover({
+            title: "ACME",
+            fields: [],
+            buttons: [
+                {
+                    key: "object:action_done",
+                    label: "Done",
+                    icon: "fa fa-check",
+                    className: "btn-danger",
+                    onClick: () => clicked.push("done"),
+                },
+                {
+                    key: "action:base.action_partner_form",
+                    label: "Open partner",
+                    icon: "",
+                    className: "",
+                    onClick: () => clicked.push("open"),
+                },
+            ],
+            open: () => {},
+            close: () => {},
+        });
+
+        const actions = queryAll(".o_gantt_soft_popover_action");
+        expect(actions.length).toBe(2);
+        expect(actions.map((button) => button.textContent.trim())).toEqual([
+            "Done",
+            "Open partner",
+        ]);
+        expect(actions[0].classList.contains("btn-danger")).toBe(true);
+        // The form button stays the explicit navigation after the actions.
+        expect(queryAll(".popover-footer button").at(-1).textContent.trim()).toBe("Open");
+
+        actions[0].dispatchEvent(new MouseEvent("click", { bubbles: true }));
+        await animationFrame();
+        expect(clicked).toEqual(["done"]);
+    });
+
+    test("shows the footer when there are only actions", async () => {
+        await mountPopover({
+            title: "No form",
+            fields: [],
+            buttons: [
+                { key: "object:done", label: "Done", icon: "", className: "", onClick: () => {} },
+            ],
+            close: () => {},
+        });
+
+        expect(".popover-footer").toHaveCount(1);
+        expect(".o_gantt_soft_popover_action").toHaveCount(1);
+        // No form navigation when the view does not offer it.
+        expect(".popover-footer .btn-primary").toHaveCount(0);
+    });
+
+    test("an icon only action has no text", async () => {
+        await mountPopover({
+            title: "Icon",
+            fields: [],
+            buttons: [
+                { key: "object:done", label: "", icon: "fa fa-check", className: "", onClick: () => {} },
+            ],
+            close: () => {},
+        });
+
+        const action = queryFirst(".o_gantt_soft_popover_action");
+        expect(action.textContent.trim()).toBe("");
+        expect(action.querySelector(".fa-check")).not.toBe(null);
+    });
 });

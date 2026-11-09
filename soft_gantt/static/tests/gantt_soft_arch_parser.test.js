@@ -467,4 +467,61 @@ describe("GanttSoftArchParser", () => {
         ).toThrow(/requires a many2one "group_by"/);
 
     });
+    test("reads the buttons of the details card, in arch order", () => {
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline">' +
+                '<button name="action_done" type="object" string="Done" icon="fa fa-check" ' +
+                'confirm="Close the task?" class="btn-danger"/>' +
+                '<button name="base.action_partner_form" type="action" string="Open"/>' +
+                '</gantt_soft>'
+        );
+        expect(archInfo.buttons).toEqual([
+            {
+                name: "action_done",
+                type: "object",
+                string: "Done",
+                icon: "fa fa-check",
+                confirm: "Close the task?",
+                class: "btn-danger",
+            },
+            {
+                name: "base.action_partner_form",
+                type: "action",
+                string: "Open",
+                icon: "",
+                confirm: "",
+                class: "",
+            },
+        ]);
+    });
+
+    test("an icon alone is enough for a card button", () => {
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline">' +
+                '<button name="action_done" type="object" icon="fa fa-check"/></gantt_soft>'
+        );
+        expect(archInfo.buttons.length).toBe(1);
+        expect(archInfo.buttons[0].string).toBe("");
+        expect(archInfo.buttons[0].icon).toBe("fa fa-check");
+    });
+
+    test("refuses an invalid card button", () => {
+        for (const button of [
+            // No name.
+            '<button type="object" string="Done"/>',
+            // Not a supported type.
+            '<button name="action_done" type="method" string="Done"/>',
+            // Nothing would be drawn.
+            '<button name="action_done" type="object"/>',
+            // An attribute the card does not know.
+            '<button name="action_done" type="object" string="Done" invisible="True"/>',
+        ]) {
+            expect(() =>
+                parse(
+                    `<gantt_soft date_start="date_start" date_stop="date_deadline">${button}</gantt_soft>`
+                )
+            ).toThrow(/button/);
+        }
+    });
+
 });

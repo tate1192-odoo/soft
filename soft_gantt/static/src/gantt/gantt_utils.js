@@ -692,6 +692,29 @@ export function relationIds(value) {
 }
 
 /**
+ * The actions the details card shows, bound to one record.
+ *
+ * The card is a place to act without leaving the chart: the view declares its
+ * buttons, the renderer does not know about them, and the controller receives
+ * one callback per button. Keeping the mapping here makes it testable without
+ * opening a popover.
+ *
+ * @param {Object} archInfo
+ * @param {Object} record the record the card describes
+ * @param {Function} runAction called with (button, record) when the button is clicked
+ * @returns {Array<!Object>} button props for the popover component
+ */
+export function buildPopoverButtons(archInfo, record, runAction) {
+    return (archInfo.buttons || []).map((button) => ({
+        key: `${button.type}:${button.name}`,
+        label: button.string,
+        icon: button.icon,
+        className: button.class,
+        onClick: () => runAction(button, record),
+    }));
+}
+
+/**
  * Context defaults for creating a record from the grid.
  *
  * A double click on an empty cell (or the "+" of a group row) opens the form of

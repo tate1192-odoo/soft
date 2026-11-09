@@ -88,6 +88,22 @@ GANTT_SOFT_FIELD_ATTRIBUTES = {
 #: float would give one row per value, so both are refused.
 GANTT_SOFT_GROUP_BY_TYPES = ('char', 'text', 'selection', 'integer', 'many2one', 'boolean')
 
+#: Attributes a ``<button>`` child can carry. The card offers the buttons in
+#: arch order; the label (``string``) and the confirmation text are translatable
+#: terms, like on the buttons of the other views.
+GANTT_SOFT_BUTTON_ATTRIBUTES = frozenset({
+    'name',
+    'type',
+    'string',
+    'icon',
+    'confirm',
+    'class',
+})
+
+#: The kinds of button a Gantt card can offer: call a method on the record, or
+#: open an action.
+GANTT_SOFT_BUTTON_TYPES = ('object', 'action')
+
 #: Field types a declared ``<field>`` node can render (tooltip and card).
 GANTT_SOFT_FIELD_NODE_TYPES = (
     'char',
@@ -360,18 +376,22 @@ class IrUiView(models.Model):
                     node,
                 )
 
-        # Only <field> children are rendered. Refusing anything else here keeps
-        # the client parser from silently ignoring a node the author expected
-        # to see, and a declared field must be a value the tooltip can read.
+        # The view accepts two kinds of children: <field> nodes, rendered in the
+        # tooltip and the card, and <button> nodes, rendered as actions of the
+        # card. Refusing anything else here keeps the client parser from
+        # silently ignoring a node the author expected to see.
         for child in node:
             if not isinstance(child.tag, str):
                 # An XML comment or processing instruction.
                 continue
+            if child.tag == 'button':
+                self._validate_gantt_soft_button(child, name_manager.model)
+                continue
             if child.tag != 'field':
                 self._raise_view_error(
                     _(
-                        "A gantt_soft view can only contain <field> nodes, "
-                        "got <%(tag)s>.",
+                        "A gantt_soft view can only contain <field> or <button> "
+                        "nodes, got <%(tag)s>.",
                         tag=child.tag,
                     ),
                     child,
@@ -386,6 +406,64 @@ class IrUiView(models.Model):
                         type=field.type,
                     ),
                     child,
+                )
+
+    def _validate_gantt_soft_button(self, node, model):
+        """Validate a ``<button>`` child of a gantt_soft view.
+
+        The card is a read-only surface: a button is a way to act on the record
+        without leaving the chart. ``type="object"`` calls a public method on
+        the record, ``type="action"`` opens an action; the method is checked at
+        install time, because a typo would otherwise be a button that fails
+        only when a user clicks it.
+        """
+        remaining = set(node.attrib) - GANTT_SOFT_BUTTON_ATTRIBUTES
+        if remaining:
+            self._raise_view_error(
+                _(
+                    "Invalid attribute(s) %(invalid)s on a <button> of a "
+                    "gantt_soft view. Valid attributes are: %(valid)s",
+                    invalid=', '.join(sorted(remaining)),
+                    valid=', '.join(sorted(GANTT_SOFT_BUTTON_ATTRIBUTES)),
+                ),
+                node,
+            )
+        name = (node.get('name') or '').strip()
+        if not name:
+            self._raise_view_error(
+                _("A <button> of a gantt_soft view must name a method or an action."),
+                node,
+            )
+        button_type = node.get('type')
+        if button_type not in GANTT_SOFT_BUTTON_TYPES:
+            self._raise_view_error(
+                _(
+                    "The type of a <button> of a gantt_soft view must be one of "
+                    "%(types)s, got %(type)r.",
+                    types='/'.join(GANTT_SOFT_BUTTON_TYPES),
+                    type=button_type,
+                ),
+                node,
+            )
+        if not (node.get('string') or node.get('icon')):
+            self._raise_view_error(
+                _(
+                    "A <button> of a gantt_soft view needs a string or an icon: "
+                    "the card would draw an empty button otherwise."
+                ),
+                node,
+            )
+        if button_type == 'object':
+            method = getattr(model, name, None)
+            if name.startswith('_') or not callable(method):
+                self._raise_view_error(
+                    _(
+                        "Unknown method %(name)r on %(model)s, used as the type "
+                        "object <button> of a gantt_soft view.",
+                        name=name,
+                        model=model._name,
+                    ),
+                    node,
                 )
 
     def _validate_gantt_soft_searchable_dates(self, node, model_fields):

@@ -156,6 +156,30 @@ the problem. The
 client parser runs the same checks on views built at runtime, so a broken view
 never shows an empty schedule instead of an error.
 
+Children of the view
+====================
+
+``<field>`` nodes add a value to the tooltip and to the details card.
+``<button>`` nodes add actions to the card, in arch order::
+
+    <gantt_soft date_start="date_start" date_stop="date_stop" ...>
+        <field name="partner_id"/>
+        <button name="action_confirm" type="object" string="Confirm"
+                icon="fa fa-check" confirm="Confirm this operation?"/>
+        <button name="base.action_partner_form" type="action" string="Open partner"/>
+    </gantt_soft>
+
+``type="object"`` calls a public method on the record, ``type="action"`` opens an
+action with that record as its active record. ``confirm`` shows the client's
+confirmation dialog first, ``class`` adds Bootstrap classes to the button, and
+either ``string`` or ``icon`` (or both) draws it. ``string`` and ``confirm`` are
+translatable terms, like the button labels of the other views. The method of an
+``object`` button is checked when the view is installed: a typo is a view error,
+not a button that fails when a user clicks it. The card is a read-only surface,
+so a button is a way to act without leaving the chart: the write rights are the
+method's own and a user who cannot write sees the error of the method, not a
+broken button.
+
 Behaviour
 =========
 
@@ -216,11 +240,13 @@ Behaviour
   ``color`` field says, while the ring flags a second fact (late, priority,
   cancellation) without a new field for it. The fields an expression reads are
   requested with the window even when the arch does not declare them.
-* **A bar carries its details.** Clicking a bar opens a card with the two dates
-  and every ``<field>`` the arch declares (dates, booleans, selection labels and
-  many2one names resolved), and an *Open* button that goes to the form. Moving
-  the bar is a drag; reading it is a click, so the two never fight. With
-  ``open_form_view="1"`` the click goes to the form directly.
+* **A bar carries its details and its actions.** Clicking a bar opens a card
+  with the two dates and every ``<field>`` the arch declares (dates, booleans,
+  selection labels and many2one names resolved), the ``<button>`` actions the
+  arch declares (a method call or an action, with an optional confirmation),
+  and an *Open* button that goes to the form. Moving the bar is a drag; reading
+  it is a click, so the two never fight. With ``open_form_view="1"`` the click
+  goes to the form directly.
 * **Search first.** Records come from the action's domain plus whatever the
   search bar applies: filters and favourites really reload the view. Grouping
   through the search bar is not offered, because the rows of this view are the
