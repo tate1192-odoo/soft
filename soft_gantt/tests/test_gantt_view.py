@@ -294,10 +294,20 @@ class TestSoftGanttView(TransactionCase):
         self.assertTrue(module, "soft_gantt must be known to ir.module.module")
         self.assertEqual(module.dependencies_id.mapped('name'), ['web'])
 
-    def test_the_enterprise_gantt_is_excluded(self):
-        """``web_gantt`` and this module must never be installed together."""
+    def test_the_enterprise_gantt_is_not_excluded(self):
+        """This module must be installable next to the Enterprise Gantt.
+
+        ``web_gantt`` answers the ``gantt`` view type, this module the
+        ``gantt_soft`` one: two different types coexist in one database. The
+        Enterprise module is ``auto_install``, so an exclusion would make this
+        module impossible to install on every Enterprise database.
+        """
         module = self.env['ir.module.module'].search([('name', '=', 'soft_gantt')])
-        self.assertIn('web_gantt', module.exclusion_ids.mapped('name'))
+        self.assertNotIn('web_gantt', module.exclusion_ids.mapped('name'))
+        # The two types are distinct: the consumer lists the one it wants.
+        self.assertIn(
+            'gantt_soft', dict(self.View._fields['type']._description_selection(self.env))
+        )
 
 
 @tagged('post_install', '-at_install', 'soft_gantt')

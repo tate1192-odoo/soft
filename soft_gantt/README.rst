@@ -12,6 +12,14 @@ type, ``gantt_soft``, built the same way the core builds its own extra view
 types (``web_hierarchy``): no Enterprise code, and no third-party JavaScript
 library to vendor or to keep up to date.
 
+The same module runs on **both editions**. Enterprise databases always have
+``web_gantt`` installed (it is ``auto_install``), and that is not a conflict:
+the two modules register two *different* view types (``gantt`` and
+``gantt_soft``), so they live side by side. A consumer lists the type it wants
+for its screen in the action's ``view_mode``: ``gantt_soft`` here, never both.
+One code base, the same behaviour and the same tests on a Community and on an
+Enterprise database.
+
 Usage
 =====
 
@@ -62,10 +70,14 @@ Python (read the modes, insert the new one after a known mode, write the value
 back) and removes it again in an ``uninstall_hook``. ``field_operation_gantt``
 does exactly that, with a test that pins the behaviour.
 
-The Enterprise Gantt (``web_gantt``) answers the ``gantt`` view type. Offering
-both in one database would give users two buttons for the same screen, so the
-module declares ``excludes: ["web_gantt"]`` in its manifest: Odoo refuses to
-install the two together.
+The Enterprise Gantt (``web_gantt``) answers the ``gantt`` view type, which is
+not the type this module adds: the two modules coexist, and a consumer chooses
+the one its action lists. This is deliberate — ``web_gantt`` is
+``auto_install`` on Enterprise, so an ``excludes`` entry would make this module
+impossible to install on every Enterprise database. One consequence to keep in
+mind: do **not** list both ``gantt`` and ``gantt_soft`` in the same action's
+``view_mode``, or the view switcher will show two Gantt buttons for the same
+screen.
 
 
 Arch attributes

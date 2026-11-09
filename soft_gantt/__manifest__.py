@@ -1,11 +1,12 @@
 {
     'name': 'Soft Gantt',
-    'version': '19.0.1.2.3',
-    'summary': 'Native Gantt / timeline view type for Odoo 19 Community: bars '
-               'read their dates from the view itself, search and filters drive '
-               'the records, bars can be dragged to reschedule, milestones, '
-               'dependency arrows, grouping and CSV export. No Enterprise, no '
-               'vendored JavaScript library, no business dependency.',
+    'version': '19.0.1.2.4',
+    'summary': 'Native Gantt / timeline view type for Odoo 19 Community and '
+               'Enterprise: bars read their dates from the view itself, search '
+               'and filters drive the records, bars can be dragged to '
+               'reschedule, milestones, dependency arrows, grouping and CSV '
+               'export. No Enterprise code copied, no vendored JavaScript '
+               'library, no business dependency.',
     'author': 'Softteknik Bilişim',
     'website': 'https://softteknik.com',
     'license': 'AGPL-3',
@@ -18,14 +19,14 @@
     'depends': [
         'web',
     ],
-    # The Enterprise Gantt answers the `gantt` view type. Offering both in the
-    # same database would give users two buttons for the same screen, so the
-    # two modules are never installed together: this is the manifest key
-    # `ir.module.module._update_exclusions` reads (the same way `soft_web_map`
-    # excludes `web_map`).
-    'excludes': [
-        'web_gantt',
-    ],
+    # The Enterprise Gantt (`web_gantt`) answers the `gantt` view type, a
+    # different type from `gantt_soft`, and it is `auto_install` there, so every
+    # Enterprise database has it. The module must therefore be installable next
+    # to it: an `excludes: ['web_gantt']` entry would make Odoo refuse the
+    # installation on every Enterprise database, and the coexistence is
+    # harmless. Two view types can live in one database, and the view switcher
+    # shows only the modes an action's `view_mode` lists: a consumer lists
+    # `gantt_soft` for its screen, never both.
     # No `data`: this module ships the view type only, without a view, a field
     # or an action. A module that schedules a model declares its own
     # `<gantt_soft>` view and adds the mode to its action's `view_mode`
