@@ -695,31 +695,51 @@ export function relationIds(value) {
  * Context defaults for creating a record from the grid.
  *
  * A double click on an empty cell (or the "+" of a group row) opens the form of
- * the model with the group and, when the click landed on a cell, the dates of
- * that cell already set: that is what turns the view into a planning surface
- * instead of a read-only chart. The keys are the `default_<field>` context keys
- * a form understands; a datetime is written in UTC, the format the server's
- * `default_get` reads.
+ * the model with the groups of the row and, when the click landed on a cell,
+ * the dates of that cell already set: that is what turns the view into a
+ * planning surface instead of a read-only chart. The keys are the
+ * `default_<field>` context keys a form understands; a datetime is written in
+ * UTC, the format the server's `default_get` reads.
+ *
+ * Every level of the row is defaulted, so creating on a nested row lands in the
+ * same team *and* the same service type. A group that is not set (the "Not set"
+ * row) is left without a default instead of defaulting to false.
  *
  * @param {Object} archInfo
  * @param {Object} fields field descriptions of the view's model
- * @param {string|undefined} groupValue the group key of the row, if grouped
+ * @param {Array<{field: string, value: string}>|string|undefined} groupValues
+ *   the groups of the row, from the outer level to the inner one; a plain
+ *   string is accepted for a single level (the first ``group_by`` field)
  * @param {number|null|undefined} start timestamp of the clicked cell
  * @param {number|null|undefined} stop timestamp of the clicked cell
  * @param {Object} context the view context, kept as-is
  * @returns {Object}
  */
-export function createContextDefaults(archInfo, fields, groupValue, start, stop, context = {}) {
+export function createContextDefaults(archInfo, fields, groupValues, start, stop, context = {}) {
     const defaults = {};
-    const groupField = archInfo.groupByField && fields[archInfo.groupByField];
-    if (groupField && groupValue !== undefined && groupValue !== null && groupValue !== "") {
-        let value = groupValue;
+    const firstGroupField = archInfo.groupByFields?.[0] || archInfo.groupByField;
+    const levels = Array.isArray(groupValues)
+        ? groupValues
+        : groupValues === undefined || groupValues === null || groupValues === ""
+          ? []
+          : [{ field: firstGroupField, value: groupValues }];
+    for (const { field: fieldName, value: rawValue } of levels) {
+        const groupField = fieldName && fields[fieldName];
+        if (
+            !groupField ||
+            rawValue === undefined ||
+            rawValue === null ||
+            rawValue === ""
+        ) {
+            continue;
+        }
+        let value = rawValue;
         if (groupField.type === "many2one") {
-            value = Number(groupValue);
+            value = Number(rawValue);
         } else if (groupField.type === "boolean") {
-            value = groupValue === "true";
+            value = rawValue === "true";
         } else if (groupField.type === "integer") {
-            value = Number(groupValue);
+            value = Number(rawValue);
         }
         const valid =
             (groupField.type === "many2one" && Number.isInteger(value) && value > 0) ||
@@ -727,7 +747,7 @@ export function createContextDefaults(archInfo, fields, groupValue, start, stop,
             (groupField.type === "boolean" && typeof value === "boolean") ||
             ["char", "text", "selection"].includes(groupField.type);
         if (valid) {
-            defaults[`default_${archInfo.groupByField}`] = value;
+            defaults[`default_${fieldName}`] = value;
         }
     }
     if (start !== null && start !== undefined) {

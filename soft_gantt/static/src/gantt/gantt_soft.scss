@@ -302,6 +302,18 @@ $o-gantt-soft-popover-close-filter: none !default;
 
 // Avatar of a group row: the image field the view names, shown next to the
 // group label so a plan is read by face as well as by name.
+// A level that has children is a header: it names the branch and folds its
+// whole subtree, so it reads stronger than the rows under it.
+.o_gantt_soft_label_branch {
+    font-weight: 600;
+}
+
+// A nested group row is indented (the template sets the padding): the level
+// itself is the indentation, so no extra margin is needed.
+.o_gantt_soft_label_child {
+    color: $o-gantt-soft-muted;
+}
+
 .o_gantt_soft_row_avatar {
     flex: 0 0 auto;
     width: 1.25rem;

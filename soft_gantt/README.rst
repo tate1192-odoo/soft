@@ -106,17 +106,22 @@ Arch attributes
                        names are refused
 ``default_range``      initial window: ``day``, ``week``, ``month``,
                        ``quarter`` or ``year`` (month)
-``group_by``           optional field the rows are grouped by: one row per
-                       value (a team, a customer), the records of that group
-                       drawn along the timeline
+``group_by``           optional field, or comma separated list of fields,
+                       the rows are grouped by: one row per value of the first
+                       field (a team, a customer), then one row per value of the
+                       next one, ..., and the records of the last level are
+                       drawn along the timeline (``group_by="team_id,type_id"``)
 ``group_total``        optional Float/Integer field summed over the records of
                        a group and shown on its row ("Alpha (3) · Total work:
                        17.5")
-``group_avatar``       optional binary image field of the group's record, read
-                       on the group's comodel and drawn as an avatar on its
-                       row; requires a many2one ``group_by``
-``collapse_first_level``  ``1`` starts with every group folded, which is how a
-                       long plan is read before opening the groups one by one
+``group_avatar``       optional binary image field of the outer group's record,
+                       read on the comodel of the first ``group_by`` field and
+                       drawn as an avatar on its row; requires that first level
+                       to be a many2one
+``collapse_first_level``  ``1`` starts with the outer groups folded (folded
+                       into one bar each), which is how a long plan is read
+                       before opening the groups one by one; nested rows stay
+                       open when their parent is unfolded
 ``cell_create``        ``1`` turns the grid into a planning surface: a double
                        click on an empty cell opens the form with that cell's
                        dates defaulted, the ``+`` of a group row with the group
@@ -140,8 +145,8 @@ Every attribute that can be checked without a browser is validated when the
 view is installed: a misspelled field name, a Char field used as a date, a date
 field the ORM cannot search (the window is read with a domain on it), an
 unknown attribute, a bad ``mode`` or ``scales``, a non-positive ``limit``, a
-read-only field used as a group, a ``milestone`` field that is not a Boolean, a
-``dependencies`` list that points at another model, an unknown ``decoration-*``
+``group_by`` level naming an unknown field or a non-groupable type, a
+``milestone`` field that is not a Boolean, a ``dependencies`` list that points at another model, an unknown ``decoration-*``
 name or an empty decoration expression, a ``group_total`` that is not numeric, a
 ``group_avatar`` that names no binary field (or a non-many2one ``group_by``), a
 ``cell_create``/``collapse_first_level`` that is not one of ``0``/``1``/``true``/
@@ -176,17 +181,23 @@ Behaviour
   unit is coarsened until the cells are readable rather than drawing thousand
   stripes. The period label follows the window: a day is named as a day, a week
   by its two ends, a month by its name.
-* **One row per record, or one row per group.** By default every record is a
-  row. With ``group_by`` the rows are the values of that field (one per team,
-  per customer) and the records of a group are drawn along it: the group
-  vertically, its dates horizontally. Two bars that overlap *on screen* are
-  given a lane each, so the row grows instead of hiding one behind the other: at
-  a day scale that includes two services of the same team on the same day, whose
-  times of day need not overlap. Records whose group is unset keep a row of
-  their own ("Not set"). A many2one group is identified by its id, so two records
-  sharing a name stay apart. A milestone keeps a lane of its own from a bar
-  starting at the same instant: its diamond is drawn around that point, so
-  sharing the lane would put the bar's edge under it.
+* **One row per record, one row per group, or a tree of groups.** By default
+  every record is a row. With ``group_by`` the rows are the values of that field
+  (one per team, per customer) and the records of a group are drawn along it: the
+  group vertically, its dates horizontally. ``group_by`` also takes a comma
+  separated list: every level makes a row, the outer levels are header rows that
+  count (and, with ``group_total``, sum) their whole subtree, and the last level
+  holds the bars (``group_by="team_id,type_id"``: team, then service type inside
+  it). A header row folds its whole subtree into one bar; nested rows start open
+  when their parent is unfolded. Two bars that overlap *on screen* are given a
+  lane each, so the row grows instead of hiding one behind the other: at a day
+  scale that includes two services of the same team on the same day, whose times
+  of day need not overlap. Records whose group is unset keep a row of their own
+  ("Not set"). A many2one group is identified by its id, so two records sharing a
+  name stay apart, and a nested group is identified by the *path* of its values,
+  so the same service type under two teams is two rows. A milestone keeps a lane
+  of its own from a bar starting at the same instant: its diamond is drawn around
+  that point, so sharing the lane would put the bar's edge under it.
 * **The grid creates records too.** With ``cell_create="1"`` the empty cells
   are a planning surface, not wallpaper: a double click opens the form of the
   model with the clicked cell's dates defaulted (in the format each date field

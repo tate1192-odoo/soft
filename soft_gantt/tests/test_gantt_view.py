@@ -322,6 +322,27 @@ class TestSoftGanttView(TransactionCase):
             'group_by="company_id" group_total="name"/>'
         )
 
+    def test_group_by_accepts_several_levels(self):
+        """``group_by`` is a comma separated list of grouping levels."""
+        view = self._create_view(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="company_id,color" group_total="color"/>'
+        )
+        self.assertEqual(view.type, 'gantt_soft')
+
+    def test_group_by_refuses_an_invalid_level(self):
+        for arch in (
+            # The second level does not exist.
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="company_id,not_a_field"/>',
+            # The second level is a date: a date is the timeline, not a row.
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            'group_by="company_id,create_date"/>',
+            # An empty list names no level.
+            '<gantt_soft date_start="create_date" date_stop="write_date" group_by=","/>',
+        ):
+            self._assert_arch_is_refused(arch)
+
     def test_group_avatar_requires_a_many2one_group_with_an_image_field(self):
         # ``res.partner.image_1920`` is the image field, ``parent_id`` a
         # many2one to another partner.

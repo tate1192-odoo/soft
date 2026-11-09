@@ -1363,6 +1363,205 @@ describe("dependencies", () => {
         await animationFrame();
         expect(".o_gantt_soft_dependencies").toHaveCount(0);
     });
+
+    // ------------------------------------------------------------------
+    // Several grouping levels
+    // ------------------------------------------------------------------
+
+    const TEAMS = {
+        alpha: { id: 7, display_name: "Alpha" },
+        beta: { id: 8, display_name: "Beta" },
+        cleaning: { id: 1, display_name: "Cleaning" },
+        repair: { id: 2, display_name: "Repair" },
+    };
+    const MULTI_ARCH = () =>
+        makeArchInfo({
+            groupByField: "team_id",
+            groupByFields: ["team_id", "service_type_id"],
+        });
+    const MULTI_RECORDS = () => [
+        makeRecord(1, "2026-03-02 00:00:00", "2026-03-03 00:00:00", {
+            team_id: TEAMS.alpha,
+            service_type_id: TEAMS.cleaning,
+        }),
+        makeRecord(2, "2026-03-04 00:00:00", "2026-03-05 00:00:00", {
+            team_id: TEAMS.alpha,
+            service_type_id: TEAMS.cleaning,
+        }),
+        makeRecord(3, "2026-03-02 00:00:00", "2026-03-02 23:00:00", {
+            team_id: TEAMS.alpha,
+            service_type_id: TEAMS.repair,
+        }),
+        makeRecord(4, "2026-03-03 00:00:00", "2026-03-04 00:00:00", {
+            team_id: TEAMS.beta,
+            service_type_id: TEAMS.cleaning,
+        }),
+    ];
+
+    test("groups on two levels: a header row, then the groups of records", async () => {
+        await mountRenderer({ archInfo: MULTI_ARCH(), records: MULTI_RECORDS() });
+
+        // Outer level: one header per team, counting the whole subtree; inner
+        // level: one row per service type, holding the bars.
+        expect(queryAll(".o_gantt_soft_label").map((el) => el.textContent)).toEqual([
+            "Alpha (3)",
+            "Cleaning (2)",
+            "Repair (1)",
+            "Beta (1)",
+            "Cleaning (1)",
+        ]);
+        expect(".o_gantt_soft_row").toHaveCount(5);
+        expect(".o_gantt_soft_bar").toHaveCount(4);
+        // The header rows paint no bar of their own.
+        expect(
+            queryAll(".o_gantt_soft_row").map(
+                (row) => row.querySelectorAll(".o_gantt_soft_bar").length
+            )
+        ).toEqual([0, 2, 1, 0, 1]);
+        expect(queryAll(".o_gantt_soft_label_branch").length).toBe(2);
+        expect(queryAll(".o_gantt_soft_label_child").length).toBe(3);
+    });
+
+    test("folding the outer level folds its whole subtree", async () => {
+        const records = MULTI_RECORDS();
+        await mountRenderer({
+            archInfo: MULTI_ARCH(),
+            records,
+            collapsed: { 7: true },
+        });
+
+        // Alpha is one folded bar, Beta keeps its header and its group row.
+        expect(queryAll(".o_gantt_soft_label").map((el) => el.textContent)).toEqual([
+            "Alpha (3)",
+            "Beta (1)",
+            "Cleaning (1)",
+        ]);
+        expect(".o_gantt_soft_bar_collapsed").toHaveCount(1);
+        expect(queryOne(".o_gantt_soft_bar_collapsed .o_gantt_soft_bar_label").textContent).toBe(
+            "3 record(s)"
+        );
+    });
+
+    test("folding a nested level only folds that branch", async () => {
+        const records = MULTI_RECORDS();
+        // Alpha's "Cleaning" group (team 7, service type 1).
+        await mountRenderer({
+            archInfo: MULTI_ARCH(),
+            records,
+            collapsed: { "7|1": true },
+        });
+
+        expect(queryAll(".o_gantt_soft_label").map((el) => el.textContent)).toEqual([
+            "Alpha (3)",
+            "Cleaning (2)",
+            "Repair (1)",
+            "Beta (1)",
+            "Cleaning (1)",
+        ]);
+        // Alpha/Cleaning holds two records folded into one bar; the other rows
+        // still paint their own bars (Repair 1, Beta/Cleaning 1).
+        expect(".o_gantt_soft_bar_collapsed").toHaveCount(1);
+        expect(".o_gantt_soft_bar").toHaveCount(3);
+    });
+
+    test("collapse_first_level folds the outer level", async () => {
+        await mountRenderer({
+            archInfo: MULTI_ARCH(),
+            records: MULTI_RECORDS(),
+            defaultCollapsed: true,
+        });
+
+        expect(".o_gantt_soft_bar_collapsed").toHaveCount(2);
+        expect(".o_gantt_soft_label_branch").toHaveCount(0);
+    });
+
+    test("opening an outer group does not also fold the groups inside it", async () => {
+        await mountRenderer({
+            archInfo: MULTI_ARCH(),
+            records: MULTI_RECORDS(),
+            defaultCollapsed: true,
+            collapsed: { 7: false },
+        });
+
+        // Alpha is open (its two groups stay open), Beta is folded.
+        expect(".o_gantt_soft_bar_collapsed").toHaveCount(1);
+        expect(".o_gantt_soft_label_branch").toHaveCount(1);
+        expect(queryAll(".o_gantt_soft_label").map((el) => el.textContent)).toEqual([
+            "Alpha (3)",
+            "Cleaning (2)",
+            "Repair (1)",
+            "Beta (1)",
+        ]);
+    });
+
+    test("group_total sums each level over its own subtree", async () => {
+        const records = MULTI_RECORDS().map((record, index) => ({
+            ...record,
+            amount: [1, 2, 3, 4][index],
+        }));
+        await mountRenderer({
+            fields: { amount: { type: "float", digits: [16, 2], string: "Amount" } },
+            archInfo: makeArchInfo({
+                groupByField: "team_id",
+                groupByFields: ["team_id", "service_type_id"],
+                groupTotalField: "amount",
+            }),
+            records,
+        });
+
+        const labels = queryAll(".o_gantt_soft_label").map((el) => el.textContent);
+        // Alpha: 1 + 2 + 3 = 6; Alpha/Cleaning: 1 + 2 = 3; ...
+        expect(labels[0]).toBe("Alpha (3) · Amount: 6");
+        expect(labels[1]).toBe("Cleaning (2) · Amount: 3");
+        expect(labels[2]).toBe("Repair (1) · Amount: 3");
+        expect(labels[3]).toBe("Beta (1) · Amount: 4");
+    });
+
+    test("the + of a nested row defaults every grouping level", async () => {
+        const calls = [];
+        await mountRenderer({
+            archInfo: MULTI_ARCH(),
+            canCellCreate: true,
+            onCreateAt: (data) => calls.push(data),
+            records: MULTI_RECORDS(),
+        });
+
+        // The second "+" belongs to Alpha/Cleaning: the inner group row.
+        queryAll(".o_gantt_soft_group_add")[1].dispatchEvent(
+            new MouseEvent("click", { bubbles: true })
+        );
+        await animationFrame();
+
+        expect(calls.length).toBe(1);
+        expect(calls[0].row.groupValues).toEqual([
+            { field: "team_id", value: "7" },
+            { field: "service_type_id", value: "1" },
+        ]);
+    });
+
+    test("the same child label under two parents folds independently", async () => {
+        const records = MULTI_RECORDS();
+        await mountRenderer({
+            archInfo: MULTI_ARCH(),
+            records,
+            // Beta's "Cleaning" group only.
+            collapsed: { "8|1": true },
+        });
+
+        // Alpha/Cleaning keeps its two bars, Beta/Cleaning folds into one.
+        expect(".o_gantt_soft_bar_collapsed").toHaveCount(1);
+        expect(".o_gantt_soft_bar").toHaveCount(4);
+        expect(
+            queryAll(".o_gantt_soft_bar").filter(
+                (bar) => !bar.classList.contains("o_gantt_soft_bar_collapsed")
+            ).length
+        ).toBe(3);
+        expect(queryAll(".o_gantt_soft_label").map((el) => el.textContent)).toEqual([
+            "Alpha (3)",
+            "Cleaning (2)",
+            "Repair (1)",
+            "Beta (1)",
+            "Cleaning (1)",
+        ]);
+    });
 });
-
-

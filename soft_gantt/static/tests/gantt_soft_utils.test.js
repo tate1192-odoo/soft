@@ -299,7 +299,7 @@ describe("createContextDefaults", () => {
     };
 
     test("defaults the many2one group with the id the row stands for", () => {
-        const context = createContextDefaults(archInfo, fields, "7", null, null, {
+        const context = createContextDefaults(archInfo, fields, [{ field: "team_id", value: "7" }], null, null, {
             default_company_id: 3,
         });
         expect(context.default_team_id).toBe(7);
@@ -310,7 +310,7 @@ describe("createContextDefaults", () => {
     test("defaults the clicked cell's dates in UTC", () => {
         const start = Date.UTC(2026, 2, 3, 8, 0);
         const stop = Date.UTC(2026, 2, 3, 9, 0);
-        const context = createContextDefaults(archInfo, fields, "", start, stop);
+        const context = createContextDefaults(archInfo, fields, [], start, stop);
         expect(context.default_date_start).toBe("2026-03-03 08:00:00");
         expect(context.default_date_deadline).toBe("2026-03-03 09:00:00");
     });
@@ -319,7 +319,7 @@ describe("createContextDefaults", () => {
         const context = createContextDefaults(
             { ...archInfo, dateStartType: "date", dateStopType: "date" },
             fields,
-            "",
+            [],
             Date.UTC(2026, 2, 3),
             Date.UTC(2026, 2, 4)
         );
@@ -331,7 +331,7 @@ describe("createContextDefaults", () => {
         const boolean = createContextDefaults(
             { ...archInfo, groupByField: "active" },
             fields,
-            "true",
+            [{ field: "active", value: "true" }],
             null,
             null
         );
@@ -340,15 +340,66 @@ describe("createContextDefaults", () => {
         const label = createContextDefaults(
             { ...archInfo, groupByField: "label" },
             fields,
-            "Acme",
+            [{ field: "label", value: "Acme" }],
             null,
             null
         );
         expect(label.default_label).toBe("Acme");
     });
 
+
+    test("defaults every level of a multi-level group", () => {
+        const multiArchInfo = {
+            ...archInfo,
+            groupByField: "team_id",
+            groupByFields: ["team_id", "service_type_id"],
+        };
+        const multiFields = {
+            ...fields,
+            service_type_id: { type: "selection" },
+        };
+        const context = createContextDefaults(
+            multiArchInfo,
+            multiFields,
+            [
+                { field: "team_id", value: "7" },
+                { field: "service_type_id", value: "cleaning" },
+            ],
+            null,
+            null
+        );
+        expect(context.default_team_id).toBe(7);
+        expect(context.default_service_type_id).toBe("cleaning");
+    });
+
+    test("leaves an unset middle level without a default", () => {
+        const multiArchInfo = {
+            ...archInfo,
+            groupByField: "team_id",
+            groupByFields: ["team_id", "service_type_id"],
+        };
+        const context = createContextDefaults(
+            multiArchInfo,
+            { ...fields, service_type_id: { type: "selection" } },
+            [
+                { field: "team_id", value: "7" },
+                { field: "service_type_id", value: "" },
+            ],
+            null,
+            null
+        );
+        expect(context.default_team_id).toBe(7);
+        expect("default_service_type_id" in context).toBe(false);
+    });
+
+    test("accepts the single level as a plain value", () => {
+        // The renderer always sends a list; the plain form keeps the helper
+        // usable for a single level without a list.
+        const context = createContextDefaults(archInfo, fields, "9", null, null);
+        expect(context.default_team_id).toBe(9);
+    });
     test("does not default a group that is not set", () => {
-        const context = createContextDefaults(archInfo, fields, "", null, null);
+        const context = createContextDefaults(archInfo, fields, [], null, null);
         expect("default_team_id" in context).toBe(false);
         expect("default_date_start" in context).toBe(false);
     });

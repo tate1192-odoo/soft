@@ -48,8 +48,8 @@
                         <div class="o_gantt_soft_side">
                             <div t-attf-style="height: {{ paddingTop }}px"/>
                             <div t-foreach="visibleRows" t-as="row" t-key="row.id"
-                                 class="o_gantt_soft_label"
-                                 t-attf-style="height: {{ row.height }}px"
+                                 t-attf-class="o_gantt_soft_label {{ row.branch ? 'o_gantt_soft_label_branch' : '' }} {{ row.depth ? 'o_gantt_soft_label_child' : '' }}"
+                                 t-attf-style="height: {{ row.height }}px; padding-inline-start: {{ 0.5 + (row.depth || 0) * 0.75 }}rem"
                                  t-att-title="row.bars.length === 1 ? row.bars[0].title : row.label"
                                  t-on-click="(ev) => this.onRowLabelClick(ev, row)">
                                 <!-- A grouped row folds: the arrow is decoration (its
