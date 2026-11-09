@@ -8,6 +8,12 @@ import { getActiveActions } from "@web/views/utils";
 
 const SCALES = ["day", "week", "month", "quarter", "year"];
 
+/** Values a boolean arch attribute can carry (kept in sync with the server). */
+const BOOLEAN_VALUES = ["0", "1", "true", "false"];
+
+/** Bar decorations, drawn as a ring on the bar whose record matches. */
+export const DECORATIONS = ["danger", "info", "secondary", "success", "warning"];
+
 /** Arch attribute -> the field types it accepts (kept in sync with the server). */
 const FIELD_ATTRIBUTES = {
     date_start: ["date", "datetime"],
@@ -24,6 +30,8 @@ const FIELD_ATTRIBUTES = {
     // The row a record is drawn on. A date is the timeline itself and a float
     // would give one row per value, so neither is accepted.
     group_by: ["char", "text", "selection", "integer", "many2one", "boolean"],
+    // A numeric field summed over the records of a group, shown on its row.
+    group_total: ["integer", "float"],
 };
 
 /** Types a declared `<field>` node can render in a tooltip or the card. */
@@ -68,6 +76,12 @@ export class GanttSoftArchParser {
             dateStopType: "datetime",
             labelField: "",
             groupByField: "",
+            groupTotalField: "",
+            groupAvatarField: "",
+            collapseFirstLevel: false,
+            cellCreate: false,
+            decorations: [],
+            expressionFields: [],
             milestoneField: "",
             dependenciesField: "",
             selectionLabels: {},
@@ -197,6 +211,59 @@ export class GanttSoftArchParser {
             this._rememberSelection(archInfo, fields, groupBy);
         }
 
+        const groupTotal = xmlDoc.getAttribute("group_total");
+        if (groupTotal) {
+            this._validateField(
+                fields,
+                modelName,
+                groupTotal,
+                FIELD_ATTRIBUTES.group_total,
+                "group_total"
+            );
+            archInfo.groupTotalField = groupTotal;
+        }
+
+        const groupAvatar = xmlDoc.getAttribute("group_avatar");
+        if (groupAvatar) {
+            if (!archInfo.groupByField) {
+                throw new Error(
+                    `The "group_avatar" attribute requires "group_by": there is no group row to draw it on.`
+                );
+            }
+            if (fields[archInfo.groupByField].type !== "many2one") {
+                throw new Error(
+                    `The "group_avatar" attribute requires a many2one "group_by", not a ${fields[archInfo.groupByField].type}.`
+                );
+            }
+            archInfo.groupAvatarField = groupAvatar;
+        }
+
+        // A bar carries a ring when its record matches an expression, the way a
+        // list row is decorated: the expression is evaluated on the record by
+        // the renderer. The fields it reads are collected below, from the arch
+        // (the server adds them when they are not declared) and from the
+        // expressions themselves (for views built at runtime).
+        for (const name of xmlDoc.getAttributeNames()) {
+            if (name.startsWith("decoration-")) {
+                const decoration = name.slice("decoration-".length);
+                if (!DECORATIONS.includes(decoration)) {
+                    throw new Error(
+                        `Invalid decoration "${name}" in a gantt_soft view (expected one of ${DECORATIONS.map(
+                            (decoration) => `decoration-${decoration}`
+                        ).join(", ")}).`
+                    );
+                }
+                const condition = xmlDoc.getAttribute(name);
+                if (!condition.trim()) {
+                    throw new Error(`The "${name}" attribute of a gantt_soft view must be an expression.`);
+                }
+                archInfo.decorations.push({ name: decoration, condition });
+            }
+        }
+
+        archInfo.collapseFirstLevel = this._readBoolean(xmlDoc, "collapse_first_level");
+        archInfo.cellCreate = this._readBoolean(xmlDoc, "cell_create");
+
         const defaultRange = xmlDoc.getAttribute("default_range");
         if (defaultRange) {
             if (!WINDOW_RANGES.includes(defaultRange)) {
@@ -225,21 +292,68 @@ export class GanttSoftArchParser {
             if (node.tagName !== "field") {
                 return;
             }
+            const name = node.getAttribute("name");
+            // The server adds a hidden <field> for a field only an expression
+            // reads (a decoration): it has to be loaded, not rendered in the
+            // card. The same shape lets a consumer declare a field it only uses
+            // from an expression.
+            const invisible = node.getAttribute("invisible");
+            if (invisible === "True" || invisible === "1") {
+                if (name && fields[name]) {
+                    this._rememberSelection(archInfo, fields, name);
+                    archInfo.expressionFields.push(name);
+                }
+                return;
+            }
             const fieldInfo = Field.parseFieldNode(node, models, modelName, "gantt_soft", jsClass);
             if (!FIELD_NODE_TYPES.includes(fieldInfo.type)) {
                 throw new Error(
                     `Field "${fieldInfo.name}" of type ${fieldInfo.type} cannot be declared in a gantt_soft view.`
                 );
             }
-            const name = fieldInfo.name;
-            this._rememberSelection(archInfo, fields, name);
-            fieldNextIds[name] = fieldNextIds[name] || 0;
-            const fieldId = `${name}_${fieldNextIds[name]++}`;
+            const fieldName = fieldInfo.name;
+            this._rememberSelection(archInfo, fields, fieldName);
+            fieldNextIds[fieldName] = fieldNextIds[fieldName] || 0;
+            const fieldId = `${fieldName}_${fieldNextIds[fieldName]++}`;
             archInfo.fieldNodes[fieldId] = fieldInfo;
             node.setAttribute("field_id", fieldId);
         });
 
+        // A view built at runtime has no server-added hidden field nodes: read
+        // the identifiers out of the expressions and keep the ones naming a
+        // field of the model, so the read can request them.
+        const expressionFields = new Set(archInfo.expressionFields);
+        for (const { condition } of archInfo.decorations) {
+            for (const identifier of condition.match(/[A-Za-z_][A-Za-z0-9_]*/g) || []) {
+                if (fields[identifier]) {
+                    expressionFields.add(identifier);
+                }
+            }
+        }
+        archInfo.expressionFields = [...expressionFields];
+
         return archInfo;
+    }
+
+    /**
+     * Read a boolean arch attribute.
+     *
+     * The server accepts the same values: ``str2bool``'s extra spellings
+     * (``no``/``off``) are refused there because the client's
+     * ``exprToBoolean`` would read them as true.
+     */
+    _readBoolean(xmlDoc, attribute) {
+        const value = xmlDoc.getAttribute(attribute);
+        if (value === null) {
+            return false;
+        }
+        const normalized = value.trim().toLowerCase();
+        if (!BOOLEAN_VALUES.includes(normalized)) {
+            throw new Error(
+                `The "${attribute}" attribute of a gantt_soft view must be a boolean (0, 1, true or false), got "${value}".`
+            );
+        }
+        return normalized === "1" || normalized === "true";
     }
 
     /**

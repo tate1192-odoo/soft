@@ -22,6 +22,7 @@ import {
     addFieldDays,
     buildCsv,
     clampResize,
+    createContextDefaults,
     dateTimeInUserZone,
     defaultWindowReference,
     downloadTextFile,
@@ -77,6 +78,7 @@ export class GanttSoftController extends Component {
     setup() {
         this.orm = useService("orm");
         this.notification = useService("notification");
+        this.actionService = useService("action");
         // The card is anchored on the bar it belongs to, and escapes the view
         // when a click would otherwise take the reader to another screen. Its
         // own container class is what lets the stylesheet theme the card (and
@@ -100,6 +102,8 @@ export class GanttSoftController extends Component {
             archInfo.progressField,
             archInfo.colorField,
             archInfo.groupByField,
+            archInfo.groupTotalField,
+            ...archInfo.expressionFields,
             archInfo.milestoneField,
             archInfo.dependenciesField,
         ].filter(Boolean);
@@ -172,12 +176,18 @@ export class GanttSoftController extends Component {
     get rendererProps() {
         return {
             archInfo: this.props.archInfo,
+            fields: this.props.fields,
             records: this.model.records,
             scale: this.state.scale,
             window: this.window,
             canEdit: this.canEdit,
             collapsed: this.state.collapsedGroups,
+            defaultCollapsed: this.props.archInfo.collapseFirstLevel,
+            canCellCreate:
+                this.props.archInfo.cellCreate &&
+                Boolean(this.props.archInfo.activeActions?.create),
             onBarClick: this.onBarClick.bind(this),
+            onCreateAt: this.onCreateAt.bind(this),
             onReschedule: this.onReschedule.bind(this),
             onResize: this.onResize.bind(this),
             onToggleGroup: this.onToggleGroup.bind(this),
@@ -391,6 +401,39 @@ export class GanttSoftController extends Component {
     }
 
     /**
+     * Create a record from the grid: a double click on an empty cell, or the
+     * "+" of a group row.
+     *
+     * The view has no form of its own (a view type is not a model), so the work
+     * is delegated to the form of the action the view is opened from: the
+     * dialog creates the record, and the defaults carry what the grid already
+     * knows: the group of the row and the dates of the clicked cell.
+     */
+    async onCreateAt({ row, start, stop }) {
+        if (!this.props.selectRecord || !this.props.archInfo.activeActions?.create) {
+            return;
+        }
+        const context = createContextDefaults(
+            this.props.archInfo,
+            this.props.fields,
+            row?.key,
+            start,
+            stop,
+            this.props.context
+        );
+        await this.actionService.doAction(
+            {
+                type: "ir.actions.act_window",
+                res_model: this.props.resModel,
+                views: [[false, "form"]],
+                target: "new",
+                context,
+            },
+            { onClose: () => this.model.reload() }
+        );
+    }
+
+    /**
      * The label / value pairs the card shows for a record: the two dates, then
      * every field the view declared, in the order the arch lists them.
      */
@@ -559,7 +602,17 @@ export class GanttSoftController extends Component {
      * and follows the reader through the scale and the window. A useState
      * object is reactive key by key, so writing straight into it is enough.
      */
-    onToggleGroup(key) {
-        this.state.collapsedGroups[key] = !this.state.collapsedGroups[key];
+    onToggleGroup(key, collapsed) {
+        // The renderer hands the state the row is *drawn* in, not the map entry:
+        // a group folded by `collapse_first_level` has no entry yet, and
+        // toggling the entry alone would write "folded" on the first click — a
+        // dead click for the reader — instead of opening the group. The map is
+        // replaced rather than mutated: a key that did not exist is a new
+        // object property, and replacing the value is what re-renders the
+        // renderer with the new state.
+        this.state.collapsedGroups = {
+            ...this.state.collapsedGroups,
+            [key]: !collapsed,
+        };
     }
 }

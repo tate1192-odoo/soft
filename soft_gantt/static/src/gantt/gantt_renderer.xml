@@ -58,8 +58,15 @@
                                 <span t-if="row.key !== undefined"
                                       t-attf-class="o_gantt_soft_group_toggle {{ row.collapsed ? 'o_gantt_soft_group_toggle_collapsed' : '' }}"
                                       t-att-title="toggleTitle(row.collapsed)"
-                                      t-on-click="(ev) => this.onToggleGroupClick(ev, row.key)"/>
-                                <span t-esc="row.label"/>
+                                      t-on-click="(ev) => this.onToggleGroupClick(ev, row)"/>
+                                <img t-if="row.avatarUrl" class="o_gantt_soft_row_avatar"
+                                     t-att-src="row.avatarUrl" alt=""/>
+                                <span class="o_gantt_soft_row_label" t-esc="row.label"/>
+                                <button t-if="row.key !== undefined and props.canCellCreate"
+                                        type="button" class="o_gantt_soft_group_add"
+                                        t-att-title="newRecordTitle"
+                                        t-att-aria-label="newRecordTitle"
+                                        t-on-click="(ev) => this.onGroupAddClick(ev, row)"><i class="fa fa-plus"/></button>
                             </div>
                             <div t-attf-style="height: {{ paddingBottom }}px"/>
                         </div>
@@ -102,7 +109,8 @@
                                 <div t-attf-style="height: {{ paddingTop }}px"/>
                                 <div t-foreach="visibleRows" t-as="row" t-key="row.id"
                                      class="o_gantt_soft_row"
-                                     t-attf-style="height: {{ row.height }}px">
+                                     t-attf-style="height: {{ row.height }}px"
+                                     t-on-dblclick="(ev) => this.onTimelineRowDblClick(ev, row)">
                                     <div t-foreach="row.bars" t-as="bar" t-key="bar.id"
                                          t-if="bar.geometry"
                                          class="o_gantt_soft_bar"

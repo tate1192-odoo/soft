@@ -44,10 +44,25 @@ GANTT_SOFT_VALID_ATTRIBUTES = frozenset({
     'default_order',
     'default_range',
     'group_by',
+    'group_total',
+    'group_avatar',
+    'collapse_first_level',
+    'cell_create',
     'mode',
     'scales',
     'limit',
 })
+
+#: Values a boolean arch attribute can carry. The client reads them with
+#: ``exprToBoolean``, whose only false strings are ``"0"`` and ``"false"``:
+#: ``str2bool`` would also accept ``no``/``off`` as false while the client would
+#: read them as true, so only the values both sides read the same way pass.
+GANTT_SOFT_BOOLEAN_VALUES = frozenset({'0', '1', 'false', 'true'})
+
+#: Decorations a bar can carry. The expression next to the name is evaluated on
+#: the record, like the ``decoration-*`` attributes of a list view, and the bar
+#: draws a ring in that colour.
+GANTT_SOFT_DECORATIONS = ('danger', 'info', 'secondary', 'success', 'warning')
 
 #: Arch attribute -> the field types it accepts.
 GANTT_SOFT_FIELD_ATTRIBUTES = {
@@ -68,6 +83,8 @@ GANTT_SOFT_FIELD_ATTRIBUTES = {
     # few distinct values. A date is the timeline itself and a float would give
     # one row per value, so both are refused.
     'group_by': ('char', 'text', 'selection', 'integer', 'many2one', 'boolean'),
+    # A numeric field summed over the records of a group and shown on its row.
+    'group_total': ('float', 'integer'),
 }
 
 #: Field types a declared ``<field>`` node can render (tooltip and card).
@@ -110,7 +127,41 @@ class IrUiView(models.Model):
         if not node_info['validate']:
             return
 
-        remaining = set(node.attrib) - GANTT_SOFT_VALID_ATTRIBUTES
+        # Decorations are validated by name only: the expression itself is
+        # evaluated on the record by the client, which is also what adds the
+        # fields it reads to the view (base's generic attribute processing does
+        # that for every `decoration-*` attribute, as it does for list views).
+        for attribute in node.attrib:
+            if not attribute.startswith('decoration-'):
+                continue
+            decoration = attribute[len('decoration-'):]
+            if decoration not in GANTT_SOFT_DECORATIONS:
+                self._raise_view_error(
+                    _(
+                        "Invalid decoration %(attribute)s in a gantt_soft view. "
+                        "Valid decorations are: %(decorations)s",
+                        attribute=attribute,
+                        decorations=', '.join(
+                            f'decoration-{name}' for name in GANTT_SOFT_DECORATIONS
+                        ),
+                    ),
+                    node,
+                )
+            if not (node.get(attribute) or '').strip():
+                self._raise_view_error(
+                    _(
+                        "The %(attribute)s attribute of a gantt_soft view must "
+                        "be an expression.",
+                        attribute=attribute,
+                    ),
+                    node,
+                )
+
+        remaining = {
+            attribute
+            for attribute in node.attrib
+            if not attribute.startswith('decoration-')
+        } - GANTT_SOFT_VALID_ATTRIBUTES
         if remaining:
             self._raise_view_error(
                 _(
@@ -158,6 +209,7 @@ class IrUiView(models.Model):
         # ``searchable`` in ``fields_get``; the client parser checks the same
         # flag for views it builds at runtime.
         self._validate_gantt_soft_searchable_dates(node, model_fields)
+        self._validate_gantt_soft_group_avatar(node, model_fields)
 
         # The dependencies list must point back at the view's own model: an
         # arrow can only join two bars that this view draws.
@@ -182,6 +234,21 @@ class IrUiView(models.Model):
                         "The %(attribute)s attribute is required in a "
                         "gantt_soft view.",
                         attribute=attribute,
+                    ),
+                    node,
+                )
+
+        # The two gestures are booleans: a typo must fail at install time, not
+        # silently turn the gesture off the way a falsy reading would.
+        for attribute in ('collapse_first_level', 'cell_create'):
+            value = node.get(attribute)
+            if value is not None and value.strip().lower() not in GANTT_SOFT_BOOLEAN_VALUES:
+                self._raise_view_error(
+                    _(
+                        "The %(attribute)s attribute of a gantt_soft view must "
+                        "be a boolean (0, 1, true or false), got %(value)r.",
+                        attribute=attribute,
+                        value=value,
                     ),
                     node,
                 )
@@ -305,6 +372,64 @@ class IrUiView(models.Model):
                     ),
                     node,
                 )
+
+    def _validate_gantt_soft_group_avatar(self, node, model_fields):
+        """Refuse a group avatar that cannot be drawn.
+
+        The avatar is shown on a *group* row, so the row must be a many2one and
+        the image field must exist on the record it points at: the client only
+        has the relation name and builds a ``/web/image`` URL from it, which
+        means no field metadata is available client side to check this.
+        """
+        image_field_name = node.get('group_avatar')
+        if not image_field_name:
+            return
+        group_by = node.get('group_by')
+        if not group_by:
+            self._raise_view_error(
+                _(
+                    "The group_avatar attribute of a gantt_soft view requires "
+                    "the group_by attribute: there is no group row to draw it on."
+                ),
+                node,
+            )
+        group_field = model_fields.get(group_by)
+        if group_field is None:
+            # The group_by attribute check already reported the unknown field.
+            return
+        if group_field.type != 'many2one':
+            self._raise_view_error(
+                _(
+                    "The group_avatar attribute of a gantt_soft view requires a "
+                    "many2one group_by: %(field)r is a %(type)s.",
+                    field=group_by,
+                    type=group_field.type,
+                ),
+                node,
+            )
+        comodel_fields = self.env[group_field.comodel_name]._fields
+        image_field = comodel_fields.get(image_field_name)
+        if image_field is None:
+            self._raise_view_error(
+                _(
+                    "Unknown field %(field)r on %(comodel)s, used as group_avatar "
+                    "in a gantt_soft view.",
+                    field=image_field_name,
+                    comodel=group_field.comodel_name,
+                ),
+                node,
+            )
+        if image_field.type != 'binary':
+            self._raise_view_error(
+                _(
+                    "Field %(field)r on %(comodel)s, used as group_avatar in a "
+                    "gantt_soft view, must be a binary image field, not %(type)s.",
+                    field=image_field_name,
+                    comodel=group_field.comodel_name,
+                    type=image_field.type,
+                ),
+                node,
+            )
 
     def _get_view_info(self):
         return {'gantt_soft': {'icon': 'fa fa-tasks'}} | super()._get_view_info()

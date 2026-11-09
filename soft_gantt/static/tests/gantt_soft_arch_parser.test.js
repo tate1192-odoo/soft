@@ -318,4 +318,108 @@ describe("GanttSoftArchParser", () => {
         expect(archInfo.scales).toEqual(["day", "week", "month", "quarter", "year"]);
         expect(archInfo.scale).toBe("quarter");
     });
+
+    test("reads decoration expressions", () => {
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" ' +
+                'decoration-danger="state == \'done\'" decoration-success="progress &gt;= 100"/>'
+        );
+        expect(archInfo.decorations).toEqual([
+            { name: "danger", condition: "state == 'done'" },
+            { name: "success", condition: "progress >= 100" },
+        ]);
+    });
+
+    test("refuses an unknown decoration name", () => {
+        expect(() =>
+            parse(
+                '<gantt_soft date_start="date_start" date_stop="date_deadline" decoration-whatever="true"/>'
+            )
+        ).toThrow(/Invalid decoration/);
+    });
+
+    test("refuses an empty decoration expression", () => {
+        expect(() =>
+            parse(
+                '<gantt_soft date_start="date_start" date_stop="date_deadline" decoration-danger=""/>'
+            )
+        ).toThrow(/must be an expression/);
+    });
+
+    test("collects the fields a decoration reads", () => {
+        // A runtime-built arch has no server-added hidden field node: the parser
+        // reads the identifiers out of the expression so the read can request
+        // the field the expression needs.
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" decoration-danger="state == \'done\'"/>'
+        );
+        expect(archInfo.expressionFields.includes("state")).toBe(true);
+        // Strings in the expression are not field names.
+        expect(archInfo.expressionFields.includes("done")).toBe(false);
+    });
+
+    test("a hidden field is loaded but not rendered in the card", () => {
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" ' +
+                'decoration-danger="state == \'done\'"><field name="state" invisible="True"/></gantt_soft>'
+        );
+        expect(Object.keys(archInfo.fieldNodes)).toEqual([]);
+        expect(archInfo.expressionFields.includes("state")).toBe(true);
+    });
+
+    test("reads the group_total field and its type", () => {
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" group_by="user_id" group_total="progress"/>'
+        );
+        expect(archInfo.groupTotalField).toBe("progress");
+
+        expect(() =>
+            parse(
+                '<gantt_soft date_start="date_start" date_stop="date_deadline" group_total="name"/>'
+            )
+        ).toThrow(/must be of type integer\/float/);
+    });
+
+    test("reads the group avatar and refuses it without a many2one group_by", () => {
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" group_by="user_id" group_avatar="avatar_128"/>'
+        );
+        expect(archInfo.groupAvatarField).toBe("avatar_128");
+
+        expect(() =>
+            parse(
+                '<gantt_soft date_start="date_start" date_stop="date_deadline" group_avatar="avatar_128"/>'
+            )
+        ).toThrow(/requires "group_by"/);
+
+        expect(() =>
+            parse(
+                '<gantt_soft date_start="date_start" date_stop="date_deadline" group_by="state" group_avatar="avatar_128"/>'
+            )
+        ).toThrow(/requires a many2one "group_by"/);
+    });
+
+    test("reads collapse_first_level and cell_create, false by default", () => {
+        const defaults = parse('<gantt_soft date_start="date_start" date_stop="date_deadline"/>');
+        expect(defaults.collapseFirstLevel).toBe(false);
+        expect(defaults.cellCreate).toBe(false);
+
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" collapse_first_level="true" cell_create="1"/>'
+        );
+        expect(archInfo.collapseFirstLevel).toBe(true);
+        expect(archInfo.cellCreate).toBe(true);
+    });
+
+    test("refuses a boolean spelling the client would read differently", () => {
+        // `str2bool` accepts no/off as false while `exprToBoolean` reads them
+        // as true: only the values both sides read the same way are accepted.
+        for (const value of ["no", "off", "yes", "sometimes"]) {
+            expect(() =>
+                parse(
+                    `<gantt_soft date_start="date_start" date_stop="date_deadline" cell_create="${value}"/>`
+                )
+            ).toThrow(/must be a boolean/);
+        }
+    });
 });

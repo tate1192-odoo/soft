@@ -300,6 +300,46 @@ $o-gantt-soft-popover-close-filter: none !default;
     }
 }
 
+// Avatar of a group row: the image field the view names, shown next to the
+// group label so a plan is read by face as well as by name.
+.o_gantt_soft_row_avatar {
+    flex: 0 0 auto;
+    width: 1.25rem;
+    height: 1.25rem;
+    margin-inline-end: 0.375rem;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.o_gantt_soft_row_label {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+// The "+" of a group row opens the form with the group defaulted. It stays out
+// of the way until the row is hovered, like the resize grips of a bar.
+.o_gantt_soft_group_add {
+    flex: 0 0 auto;
+    margin-inline-start: auto;
+    padding: 0 0.25rem;
+    border: 0;
+    background: none;
+    color: $o-gantt-soft-muted;
+    opacity: 0;
+    cursor: pointer;
+
+    &:hover {
+        color: $o-gantt-soft-text;
+    }
+}
+
+.o_gantt_soft_label:hover .o_gantt_soft_group_add,
+.o_gantt_soft_group_add:focus {
+    opacity: 1;
+}
+
 .o_gantt_soft_timeline {
     flex: 1 1 auto;
     position: relative;
@@ -448,6 +488,30 @@ $o-gantt-soft-popover-close-filter: none !default;
 
 .o_gantt_soft_arrow_head {
     fill: $o-gantt-soft-muted;
+}
+
+// A decoration is a second reading on top of the bar colour (late, cancelled,
+// priority): the ring sits inside the bar so the layout does not move.
+.o_gantt_soft_bar {
+    &.o_gantt_soft_decoration_danger {
+        box-shadow: inset 0 0 0 2px $o-danger;
+    }
+
+    &.o_gantt_soft_decoration_info {
+        box-shadow: inset 0 0 0 2px $o-info;
+    }
+
+    &.o_gantt_soft_decoration_secondary {
+        box-shadow: inset 0 0 0 2px $o-gray-500;
+    }
+
+    &.o_gantt_soft_decoration_success {
+        box-shadow: inset 0 0 0 2px $o-success;
+    }
+
+    &.o_gantt_soft_decoration_warning {
+        box-shadow: inset 0 0 0 2px $o-warning;
+    }
 }
 
 .o_gantt_soft_bar_draggable {
