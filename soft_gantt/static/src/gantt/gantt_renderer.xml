@@ -39,6 +39,11 @@
                                      t-attf-style="left: {{ column.left }}%; width: {{ column.width }}%">
                                     <span t-esc="column.label"/>
                                 </div>
+                                <!-- The subdivisions of the cells: a reading grid
+                                     inside each column (quarter hours, half days). -->
+                                <div t-foreach="subcolumns" t-as="subcell" t-key="subcell.key"
+                                     class="o_gantt_soft_subcell"
+                                     t-attf-style="left: {{ subcell.left }}%; width: {{ subcell.width }}%"/>
                             </div>
                         </div>
                     </div>
@@ -84,6 +89,9 @@
                                      class="o_gantt_soft_gridline"
                                      t-att-class="column.isWeekend ? 'o_gantt_soft_gridline_weekend' : ''"
                                      t-attf-style="left: {{ column.left }}%; width: {{ column.width }}%"/>
+                                <div t-foreach="subcolumns" t-as="subcell" t-key="subcell.key"
+                                     class="o_gantt_soft_subgridline"
+                                     t-attf-style="left: {{ subcell.left }}%; width: {{ subcell.width }}%"/>
                                 <div class="o_gantt_soft_today" t-if="todayLeft !== null"
                                      t-attf-style="left: {{ todayLeft }}%; width: {{ todayWidth }}%"/>
                             </div>

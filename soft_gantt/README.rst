@@ -104,6 +104,14 @@ Arch attributes
                        offered ``scales``
 ``scales``             comma separated scales offered to the user; unknown
                        names are refused
+``precision``          subdivisions of the cell of a scale, as a Python dict:
+                       ``precision="{'day': 'hour:quarter', 'week':
+                       'day:half'}"``. The unit must be the scale's own cell
+                       (hours of a day, days of a week or a month) and the
+                       factor one of ``full``, ``half``, ``quarter``. On the
+                       day scale the bars keep their real minutes (the grid is
+                       a reading aid); on the week and month scales they snap
+                       to the finer day parts
 ``default_range``      initial window: ``day``, ``week``, ``month``,
                        ``quarter`` or ``year`` (month)
 ``group_by``           optional field, or comma separated list of fields,
@@ -144,7 +152,8 @@ Arch attributes
 Every attribute that can be checked without a browser is validated when the
 view is installed: a misspelled field name, a Char field used as a date, a date
 field the ORM cannot search (the window is read with a domain on it), an
-unknown attribute, a bad ``mode`` or ``scales``, a non-positive ``limit``, a
+unknown attribute, a bad ``mode``, ``scales`` or ``precision``, a non-positive
+``limit``, a
 ``group_by`` level naming an unknown field or a non-groupable type, a
 ``milestone`` field that is not a Boolean, a ``dependencies`` list that points at another model, an unknown ``decoration-*``
 name or an empty decoration expression, a ``group_total`` that is not numeric, a
@@ -204,7 +213,11 @@ Behaviour
   line and a *Today* badge. Should a window ever be too wide for its unit, the
   unit is coarsened until the cells are readable rather than drawing thousand
   stripes. The period label follows the window: a day is named as a day, a week
-  by its two ends, a month by its name.
+  by its two ends, a month by its name. ``precision`` subdivides the cells of a
+  scale into full, half or quarter cells (the hours of a day into quarter
+  hours, the days of a week or a month into half days), drawn as a lighter grid
+  inside the columns: on the day scale the bars keep their stored minutes, on
+  the day-unit scales they snap to the finer day part.
 * **One row per record, one row per group, or a tree of groups.** By default
   every record is a row. With ``group_by`` the rows are the values of that field
   (one per team, per customer) and the records of a group are drawn along it: the

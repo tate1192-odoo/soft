@@ -20,6 +20,7 @@ The view type itself is generic: the dates are named by the view's own
 """
 
 from odoo import _, fields, models
+from odoo.tools.safe_eval import safe_eval
 
 #: Attributes accepted on a ``<gantt_soft>`` root node. The bounds are strict
 #: on purpose: an attribute that is not implemented must fail loudly rather
@@ -50,6 +51,7 @@ GANTT_SOFT_VALID_ATTRIBUTES = frozenset({
     'cell_create',
     'mode',
     'scales',
+    'precision',
     'limit',
 })
 
@@ -58,6 +60,22 @@ GANTT_SOFT_VALID_ATTRIBUTES = frozenset({
 #: ``str2bool`` would also accept ``no``/``off`` as false while the client would
 #: read them as true, so only the values both sides read the same way pass.
 GANTT_SOFT_BOOLEAN_VALUES = frozenset({'0', '1', 'false', 'true'})
+
+#: Cell unit of each scale: what a column of that scale shows. A ``precision``
+#: entry is written ``"<unit>:<full|half|quarter>"`` and must name that unit.
+GANTT_SOFT_SCALE_UNITS = {
+    'day': 'hour',
+    'week': 'day',
+    'month': 'day',
+    'quarter': 'week',
+    'year': 'month',
+}
+
+#: Subdivisions a cell can be cut in, with the factors the client uses.
+GANTT_SOFT_CELL_PRECISIONS = {'full': 1, 'half': 2, 'quarter': 4}
+
+#: Scales whose cells (hours or days) can be subdivided by ``precision``.
+GANTT_SOFT_PRECISION_SCALES = ('day', 'week', 'month')
 
 #: Decorations a bar can carry. The expression next to the name is evaluated on
 #: the record, like the ``decoration-*`` attributes of a list view, and the bar
@@ -347,6 +365,60 @@ class IrUiView(models.Model):
                 ),
                 node,
             )
+
+        precision_attribute = node.get('precision')
+        if precision_attribute is not None:
+            try:
+                precision = safe_eval(precision_attribute, {})
+            except Exception:  # noqa: BLE001 - any unreadable literal is a view error
+                precision = None
+            if not isinstance(precision, dict):
+                self._raise_view_error(
+                    _(
+                        "The precision attribute of a gantt_soft view must be a "
+                        "dict like {'day': 'hour:quarter'}."
+                    ),
+                    node,
+                )
+            for scale, specification in precision.items():
+                if scale not in GANTT_SOFT_SCALES:
+                    self._raise_view_error(
+                        _(
+                            "Invalid scale %(scale)r in the precision of a "
+                            "gantt_soft view (expected one of %(scales)s).",
+                            scale=scale,
+                            scales=', '.join(GANTT_SOFT_SCALES),
+                        ),
+                        node,
+                    )
+                if scale not in GANTT_SOFT_PRECISION_SCALES:
+                    self._raise_view_error(
+                        _(
+                            "The %(scale)r scale cannot be subdivided: the "
+                            "precision attribute is available on %(scales)s.",
+                            scale=scale,
+                            scales=', '.join(GANTT_SOFT_PRECISION_SCALES),
+                        ),
+                        node,
+                    )
+                cell_unit = GANTT_SOFT_SCALE_UNITS[scale]
+                unit, separator, precision_name = str(specification).partition(':')
+                if (
+                    unit != cell_unit
+                    or precision_name not in GANTT_SOFT_CELL_PRECISIONS
+                ):
+                    self._raise_view_error(
+                        _(
+                            "Invalid precision %(value)r for the %(scale)r scale "
+                            "of a gantt_soft view (expected "
+                            "%(unit)r:<%(values)s>).",
+                            value=specification,
+                            scale=scale,
+                            unit=cell_unit,
+                            values='|'.join(GANTT_SOFT_CELL_PRECISIONS),
+                        ),
+                        node,
+                    )
 
         default_range = node.get('default_range')
         if default_range and default_range not in GANTT_SOFT_RANGES:

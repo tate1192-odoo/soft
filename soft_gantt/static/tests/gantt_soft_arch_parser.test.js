@@ -524,4 +524,37 @@ describe("GanttSoftArchParser", () => {
         }
     });
 
+
+    test("reads the precision of the scales", () => {
+        const archInfo = parse(
+            '<gantt_soft date_start="date_start" date_stop="date_deadline" ' +
+                'scales="day,week,month" ' +
+                'precision="{\'day\': \'hour:quarter\', \'week\': \'day:half\'}"/>'
+        );
+        expect(archInfo.precision).toEqual({
+            day: { unit: "hour", parts: 4 },
+            week: { unit: "day", parts: 2 },
+        });
+    });
+
+    test("refuses a precision that does not fit the scale's cells", () => {
+        for (const precision of [
+            // The day scale's cells are hours.
+            "{'day': 'day:half'}",
+            // Only full, half and quarter exist.
+            "{'day': 'hour:eighth'}",
+            // Quarter cells (weeks) cannot be subdivided.
+            "{'quarter': 'week:half'}",
+            // Not a scale.
+            "{'fortnight': 'day:half'}",
+            // Not a dict at all.
+            "'day'",
+        ]) {
+            expect(() =>
+                parse(
+                    `<gantt_soft date_start="date_start" date_stop="date_deadline" precision="${precision}"/>`
+                )
+            ).toThrow(/precision/);
+        }
+    });
 });

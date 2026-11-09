@@ -392,6 +392,35 @@ class TestSoftGanttView(TransactionCase):
         )
 
     # ------------------------------------------------------------------
+    # Cell precision
+    # ------------------------------------------------------------------
+
+    def test_precision_is_accepted(self):
+        view = self._create_view(
+            '<gantt_soft date_start="create_date" date_stop="write_date" '
+            "precision=\"{'day': 'hour:quarter', 'week': 'day:half'}\"/>"
+        )
+        self.assertEqual(view.type, 'gantt_soft')
+
+    def test_precision_is_validated(self):
+        for precision in (
+            # The day scale is read in hours, not in days.
+            "{'day': 'day:half'}",
+            # Only full, half and quarter subdivisions exist.
+            "{'day': 'hour:eighth'}",
+            # A week is a quarter scale's cell: it cannot be subdivided.
+            "{'quarter': 'week:half'}",
+            # Not a scale of this view type.
+            "{'fortnight': 'day:half'}",
+            # Not a dict at all.
+            "'day'",
+        ):
+            self._assert_arch_is_refused(
+                '<gantt_soft date_start="create_date" date_stop="write_date" '
+                'precision="%s"/>' % precision
+            )
+
+    # ------------------------------------------------------------------
     # Actions of the details card
     # ------------------------------------------------------------------
 

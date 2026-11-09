@@ -63,6 +63,12 @@ export const SCALE_UNITS = {
     year: "month",
 };
 
+/** Subdivisions a cell can be cut in (the `precision` arch attribute). */
+export const CELL_PRECISIONS = { full: 1, half: 2, quarter: 4 };
+
+/** Scales whose cells (hours or days) can be subdivided by `precision`. */
+export const PRECISION_SCALES = ["day", "week", "month"];
+
 /** Window a scale zooms to when the user picks it in the control panel. */
 export const SCALE_WINDOWS = {
     day: "day",
@@ -595,6 +601,58 @@ export function snapToUnit(start, stop, unit) {
     const rawTo = atBoundary ? floorStop : addLocalDays(floorStop, 1);
     const to = rawTo > from ? rawTo : addLocalDays(from, 1);
     return { start: from, stop: to };
+}
+
+/**
+ * The bar interval, snapped to the subdivisions of the current scale.
+ *
+ * On the day scale the columns are hours and a bar already carries its real
+ * minutes: the quarter hour grid is a *reading* aid there, so the interval is
+ * returned as it is. On the week and month scales the columns are days and the
+ * bars were snapped to the day; with `precision` (a day cut in halves or
+ * quarters) the snap follows the finer cells, so a service starting at 14:00
+ * lands on the 12:00 line of a half day instead of the start of the day.
+ *
+ * Missing ends are handled before this call (``ensureDuration``), so a stop is
+ * present here; a collapsed or inverted interval is widened to one subdivision
+ * rather than drawn empty.
+ *
+ * @param {number|null|undefined} start
+ * @param {number|null|undefined} stop
+ * @param {string} unit the timeline's cell unit
+ * @param {number} [parts] the number of subdivisions in a cell
+ * @returns {{start: (number|null|undefined), stop: (number|null|undefined)}}
+ */
+export function snapToPrecision(start, stop, unit, parts = 1) {
+    if (!parts || parts <= 1) {
+        return snapToUnit(start, stop, unit);
+    }
+    if (unit === "hour") {
+        // The day scale is already read at the minute: the subgrid only helps
+        // the eye, it must not move a service off its real time.
+        return { start, stop };
+    }
+    if (unit !== "day" || start === null || start === undefined) {
+        return snapToUnit(start, stop, unit);
+    }
+    const snapOne = (timestamp) => {
+        const dayStart = startOfLocalDay(timestamp);
+        const span = addLocalDays(dayStart, 1) - dayStart;
+        const index = Math.min(
+            parts - 1,
+            Math.max(0, Math.floor(((timestamp - dayStart) / span) * parts))
+        );
+        return dayStart + (span * index) / parts;
+    };
+    const snappedStart = snapOne(start);
+    let snappedStop = stop === null || stop === undefined ? null : snapOne(stop);
+    if (snappedStop === null || snappedStop <= snappedStart) {
+        const dayStart = startOfLocalDay(snappedStart);
+        const span = addLocalDays(dayStart, 1) - dayStart;
+        const step = span / parts;
+        snappedStop = Math.min(snappedStart + step, dayStart + span);
+    }
+    return { start: snappedStart, stop: snappedStop };
 }
 
 /**
