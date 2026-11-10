@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Soft Report Generator - Word Template Engine',
-    'version': '19.0.1.0.3',
+    'version': '19.0.1.0.0',
     'category': 'Productivity',
     'summary': 'Word (.docx) templates -> PDF via LibreOffice; '
                'placeholder mapping, table loops, conditions, HTML fields',
