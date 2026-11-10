@@ -165,7 +165,8 @@
                                     <li><strong>Conditions</strong>:
                                         <code>{{#if state == 'sale'}}</code> …
                                         <code>{{#else}}</code> … <code>{{/if}}</code>
-                                        (own paragraph)</li>
+                                        (works inline or as a block on its own
+                                        paragraph)</li>
                                     <li><strong>Images</strong>:
                                         <code>{{img:field}}</code> (binary field)</li>
                                     <li>Upload the file and click

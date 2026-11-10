@@ -340,6 +340,46 @@ class TestEngineFixes(SoftReportGeneratorCommon):
         self.assertNotIn('state', vals, 'caller dict must not be mutated')
 
     # ------------------------------------------------------------------
+    #  Inline conditionals and expressions (PR review findings)
+    # ------------------------------------------------------------------
+
+    def test_inline_conditional_keeps_paragraph_text(self):
+        """``A {{#if x}}yes{{/if}} B`` must not take the paragraph down."""
+        template = self._build_template(
+            make_simple_docx('X {{#if flag}}YES{{/if}} Y'))
+        partner = self._make_partner()
+
+        shown = self._render(template, {
+            '__record__': partner, '__raw__': {'flag': True}, 'flag': True})
+        hidden = self._render(template, {
+            '__record__': partner, '__raw__': {'flag': False}, 'flag': False})
+
+        self.assertIn('X YES Y', ' '.join(self._text(shown).split()))
+        self.assertIn('X Y', ' '.join(self._text(hidden).split()))
+
+    def test_inline_conditional_with_else_branch(self):
+        template = self._build_template(
+            make_simple_docx('VAT {{#if flag}}included{{#else}}excluded{{/if}}.'))
+        out = self._render(template, {
+            '__record__': self._make_partner(),
+            '__raw__': {'flag': False}, 'flag': False})
+        self.assertIn('VAT excluded.', ' '.join(self._text(out).split()))
+
+    def test_expression_resolves_model_field_not_in_template(self):
+        """``{{=name.upper()}}`` works even without a ``{{name}}`` placeholder."""
+        template = self._build_template(make_simple_docx('{{=name.upper()}}'))
+        out = self._render(template, {
+            '__record__': self._make_partner('Acme'), '__raw__': {}})
+        self.assertEqual(self._text(out).strip(), 'ACME')
+
+    def test_condition_resolves_model_field_not_in_template(self):
+        template = self._build_template(
+            make_simple_docx('{{#if name}}has-name{{/if}}'))
+        out = self._render(template, {
+            '__record__': self._make_partner('Acme'), '__raw__': {}})
+        self.assertIn('has-name', self._text(out))
+
+    # ------------------------------------------------------------------
     #  O6 — unmapped placeholders are reported
     # ------------------------------------------------------------------
 

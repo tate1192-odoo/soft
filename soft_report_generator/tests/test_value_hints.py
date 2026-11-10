@@ -133,6 +133,27 @@ class TestValueHints(SoftReportGeneratorCommon):
     #  Field-path validation on Activate
     # ------------------------------------------------------------------
 
+    def test_activate_accepts_loop_children_and_system_placeholders(self):
+        """Loop children resolve against the loop item; tax_totals_* are not fields."""
+        template = self._build_template(
+            make_simple_docx('{{#child_ids}}', '{{name}}', '{{/child_ids}}',
+                             'Total: {{tax_totals_total}}'),
+            field_ids=[
+                (0, 0, {'placeholder': 'child_ids', 'field_path': 'child_ids',
+                        'is_loop': True}),
+                # child path is relative to res.partner (the loop item)
+                (0, 0, {'placeholder': 'name', 'field_path': 'name',
+                        'loop_parent': 'child_ids'}),
+                # filled from tax_totals at render time, not a model field
+                (0, 0, {'placeholder': 'tax_totals_total',
+                        'field_path': 'tax_totals_total',
+                        'auto_resolved': True}),
+            ],
+            state='ready',
+        )
+        template.action_activate()
+        self.assertEqual(template.state, 'active')
+
     def test_activate_rejects_unknown_field_path(self):
         template = self._build_template(
             make_simple_docx('{{nope}}'),

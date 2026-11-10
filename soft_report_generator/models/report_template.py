@@ -15,6 +15,7 @@ _logger = logging.getLogger(__name__)
 # imports (``from .models.report_template import W_NS``) keep working.
 from .template_parser import (  # noqa: F401
     W_NS, XML_NS, WP_NS, A_NS, PIC_NS, R_NS, REL_NS, CT_NS,
+    SYSTEM_LOOPS, SYSTEM_PLACEHOLDERS,
 )
 
 
@@ -359,24 +360,48 @@ class SoftReportTemplate(models.Model):
         self.state = 'active'
 
     def _validate_field_paths(self):
-        """Reject mappings whose field path does not exist on the model.
+        """Reject mappings whose field path does not exist on their model.
 
-        A wrong path used to fail silently at print time (empty cell); it is
-        caught here instead, where the user can fix it.
+        Three cases must not be treated as plain model fields:
+
+        * loop children (``loop_parent`` set) resolve against the *loop item's*
+          model, and may also read the parent record (cross-context fallback);
+        * ``tax_totals_*`` placeholders are filled from ``tax_totals`` at render
+          time, they are not fields of any model.
         """
         if not self.model_name:
             return
-        paths = [
-            mapping.field_path for mapping in self.field_ids
-            if mapping.field_path and not mapping.is_loop
-        ]
-        unknown = self._soft_report_unknown_paths(self.model_name, paths)
+        Model = self.env[self.model_name]
+
+        comodel_of = {}
+        for mapping in self.field_ids.filtered('is_loop'):
+            head = (mapping.field_path or '').split('.')[0]
+            field = Model._fields.get(head)
+            comodel_of[mapping.placeholder] = getattr(
+                field, 'comodel_name', None)
+
+        unknown, names = [], {}
+        for mapping in self.field_ids:
+            path = (mapping.field_path or '').strip()
+            if mapping.is_loop or not path:
+                continue
+            if mapping.placeholder in SYSTEM_PLACEHOLDERS:
+                continue
+            if mapping.loop_parent in SYSTEM_LOOPS:
+                continue  # tax_groups / tax_subtotals children are synthetic
+            loop_model = comodel_of.get(mapping.loop_parent)
+            if not self._soft_report_unknown_paths(
+                    loop_model or self.model_name, [path]):
+                continue
+            # A loop child may point at the parent record's field
+            if loop_model and not self._soft_report_unknown_paths(
+                    self.model_name, [path]):
+                continue
+            unknown.append(path)
+            names[path] = mapping.placeholder
+
         if not unknown:
             return
-        names = {
-            mapping.field_path: mapping.placeholder
-            for mapping in self.field_ids if mapping.field_path
-        }
         raise UserError(_(
             'These field paths do not exist on %(model)s: %(paths)s',
             model=self.model_name,
@@ -393,6 +418,10 @@ class SoftReportTemplate(models.Model):
         invalid = []
         Model = self.env[self.model_name]
         for fm in self.field_ids.filtered('is_loop'):
+            # tax_groups / tax_subtotals are filled from tax_totals at render
+            # time: they are not model fields and carry no field path.
+            if fm.placeholder in SYSTEM_LOOPS:
+                continue
             path = fm.field_path or ''
             head = path.split('.')[0]
             if not head or head not in Model._fields:

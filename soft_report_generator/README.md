@@ -87,6 +87,12 @@ removed from the output. Content controls (`w:sdt`) are traversed like any
 other container, and a block inside a loop row is evaluated against **that
 row's** record.
 
+A block written inside a single paragraph (`Total: {{#if taxed}}incl. VAT{{/if}}`)
+is resolved in place — only the markers disappear, the surrounding text stays.
+Expressions and conditions resolve bare field names from the record, so
+`{{=amount_total * 0.1}}` works even when `{{amount_total}}` is not printed
+elsewhere in the document.
+
 ### Loops
 
 ```

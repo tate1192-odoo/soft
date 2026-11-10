@@ -5,6 +5,28 @@ All notable changes to **soft_report_generator** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [19.0.1.0.3] - 2026-11-10
+
+Review fixes for the PR (#47):
+
+### Fixed
+
+- *Activate* no longer rejects templates that use loops or tax totals. The
+  field-path validation checked every mapping against the template's own model,
+  so loop children (which live on the loop item) and the synthetic
+  `tax_totals_*` / `tax_groups` / `tax_subtotals` placeholders failed with "field
+  path does not exist". Children are now validated against their loop's comodel
+  (with the parent fallback the renderer uses), and system placeholders and
+  system loops are skipped.
+- `{{#if}}` opened and closed in the same paragraph used to delete the whole
+  paragraph, text included. Inline blocks are now rendered in place; only the
+  markers are removed.
+- `{{#if amount_total > 100}}` / `{{=amount_total * 0.1}}` raised `NameError`
+  when the field was not printed elsewhere in the document: the expression
+  namespace only carried values mapped as placeholders. Bare field names used
+  in an expression are now resolved from the record (and from the parent record
+  inside a loop).
+
 ## [19.0.1.0.2] - 2026-11-10
 
 ### Added

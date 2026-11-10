@@ -684,12 +684,16 @@ class DocxEngineMixin(models.AbstractModel):
         text = re.sub(r'\s+', ' ', text).strip()
         return text
 
-    def _expression_namespace(self, context):
+    def _expression_namespace(self, context, expr=None):
         """safe_eval namespace for ``{{=expr}}`` and ``{{#if expr}}``.
 
         Values only: the mapped raw values plus the wrapped ``time`` and
         ``datetime`` modules. The environment, the user and the cursor are NOT
         reachable from template content (see :class:`_TemplateValueProxy`).
+
+        When *expr* is given, bare field names used in the expression are
+        resolved from the record as well — ``{{#if amount_total > 100}}`` used
+        to fail unless ``{{amount_total}}`` also appeared in the document.
         """
         namespace = {
             name: _TemplateValueProxy._wrap(value)
@@ -697,6 +701,19 @@ class DocxEngineMixin(models.AbstractModel):
             if not name.startswith('__')
         }
         record = context.get('__record__')
+        if expr and record:
+            parent = context.get('__parent_record__')
+            for name in set(re.findall(r'[A-Za-z_]\w*', expr)):
+                if name in namespace:
+                    continue
+                value = None
+                if name in getattr(record, '_fields', {}):
+                    value = self._resolve_field_path(record, name)
+                elif parent and name in getattr(parent, '_fields', {}):
+                    value = self._resolve_field_path(parent, name)
+                else:
+                    continue
+                namespace[name] = _TemplateValueProxy._wrap(value)
         namespace['o'] = namespace['record'] = _TemplateValueProxy._wrap(record)
         namespace['time'] = safe_time
         namespace['datetime'] = safe_datetime
@@ -705,7 +722,8 @@ class DocxEngineMixin(models.AbstractModel):
     def _eval_expression(self, expr, context):
         """Evaluate ``{{=expr}}`` using safe_eval."""
         try:
-            result = safe_eval(expr.strip(), self._expression_namespace(context))
+            result = safe_eval(
+                expr.strip(), self._expression_namespace(context, expr))
         except Exception as exc:
             raise UserError(self.env._(
                 'The template expression %(expr)s could not be evaluated: %(error)s',
@@ -731,7 +749,8 @@ class DocxEngineMixin(models.AbstractModel):
 
         # Full expression: {{#if amount_total > 1000}}
         try:
-            return bool(safe_eval(condition, self._expression_namespace(context)))
+            return bool(safe_eval(
+                condition, self._expression_namespace(context, condition)))
         except Exception as exc:
             raise UserError(self.env._(
                 'The template condition %(expr)s could not be evaluated: %(error)s',
@@ -1174,6 +1193,13 @@ class DocxEngineMixin(models.AbstractModel):
             if if_match:
                 parent_showing = stack[-1] if stack else True
                 if parent_showing:
+                    # A block written inside a single paragraph ("A {{#if x}}
+                    # yes {{/if}} B") keeps its text: the marker used to take
+                    # the whole paragraph down, silently dropping the content.
+                    inline = self._render_inline_conditionals(text, context)
+                    if inline is not None:
+                        self._set_paragraph_text(child, inline)
+                        continue
                     result = self._eval_condition(
                         if_match.group(1).strip(), context)
                     stack.append(result)
@@ -1218,6 +1244,52 @@ class DocxEngineMixin(models.AbstractModel):
                 parent.remove(elem)
             except ValueError:
                 pass
+
+    def _render_inline_conditionals(self, text, context):
+        """Render ``{{#if}}`` blocks opened and closed in the same paragraph.
+
+        ``A {{#if x}}yes{{/if}} B`` used to lose the whole paragraph, text
+        included.  Returns ``None`` when the paragraph only holds markers (block
+        style, handled by the caller paragraph-by-paragraph) or when the blocks
+        are nested.
+        """
+        if '{{#if' not in text or '{{/if}}' not in text:
+            return None
+        residual = re.sub(r'\{\{#if\s+.+?\}\}', '', text)
+        residual = residual.replace('{{#else}}', '').replace('{{/if}}', '')
+        if not residual.strip():
+            return None  # marker-only paragraph: a block marker, not content
+
+        out = []
+        pos = 0
+        while True:
+            start = text.find('{{#if', pos)
+            if start < 0:
+                break
+            open_match = re.match(r'\{\{#if\s+(.+?)\}\}', text[start:])
+            if not open_match:
+                return None
+            end = text.find('{{/if}}', start + open_match.end())
+            if end < 0:
+                return None
+            inner = text[start + open_match.end():end]
+            if '{{#if' in inner or '{{/if}}' in inner:
+                return None  # nested inline blocks are not supported
+            then_part, _sep, else_part = inner.partition('{{#else}}')
+            condition = open_match.group(1).strip()
+            keep = then_part if self._eval_condition(condition, context) else else_part
+            out.append(text[pos:start])
+            out.append(keep)
+            pos = end + len('{{/if}}')
+        out.append(text[pos:])
+        return ''.join(out)
+
+    def _set_paragraph_text(self, para, text):
+        """Replace the content of *para* with a single run holding *text*."""
+        for run in list(para.findall('{%s}r' % W_NS)):
+            para.remove(run)
+        if text and text.strip():
+            self._emit_text_run(para, text)
 
     # ---- images ----
 

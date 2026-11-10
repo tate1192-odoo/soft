@@ -34,6 +34,16 @@ R_NS = 'http://schemas.openxmlformats.org/officeDocument/2006/relationships'
 REL_NS = 'http://schemas.openxmlformats.org/package/2006/relationships'
 CT_NS = 'http://schemas.openxmlformats.org/package/2006/content-types'
 
+#: Placeholders filled from ``tax_totals`` at render time — they are not model
+#: fields, so they must not be validated against the model.
+SYSTEM_PLACEHOLDERS = (
+    'tax_totals_total', 'tax_totals_cash_rounding',
+    'tax_totals_same_tax_base', 'tax_totals_has_cash_rounding',
+)
+
+#: Loops filled from ``tax_totals`` at render time — they carry no field path.
+SYSTEM_LOOPS = ('tax_groups', 'tax_subtotals')
+
 
 class TemplateParserMixin(models.AbstractModel):
     """Mixin that adds DOCX/tax_totals parsing helpers to a template model."""
