@@ -74,10 +74,46 @@ class PdfConverterMixin(models.AbstractModel):
         writer.write(buf)
         return buf.getvalue()
 
+    def _merge_product_documents(self, record, pdf_bytes):
+        """Append the product documents of *record* to ``pdf_bytes``.
+
+        Odoo 19 replaced ``_get_product_documents_pdf()`` (which returned merged
+        bytes) with ``_get_product_documents()``, returning ``product.document``
+        records; the old ``hasattr()`` hook therefore matched nothing on 19 and
+        the documented product-PDF merge silently did nothing. Only real PDF
+        attachments are appended, in document order, and the input is returned
+        unchanged when the record has none (or the model has no such method).
+        """
+        getter = getattr(record, '_get_product_documents', None)
+        if not getter:
+            return pdf_bytes
+        try:
+            documents = getter()
+        except Exception:
+            _logger.warning(
+                'Product documents of %s could not be read', record, exc_info=True)
+            return pdf_bytes
+
+        parts = [pdf_bytes]
+        for document in documents:
+            if document.type != 'binary' or not document.datas:
+                continue
+            if not (document.mimetype or '').endswith('pdf'):
+                continue
+            try:
+                data = base64.b64decode(document.datas)
+            except Exception:
+                continue
+            if not data.startswith(b'%PDF'):
+                continue
+            parts.append(data)
+        if len(parts) == 1:
+            return pdf_bytes
+        return self._merge_pdfs(parts)
+
     # ==================================================================
     #  PDF PREVIEW
     # ==================================================================
-
     def _render_preview_pdf(self, record):
         """Render *record* to PDF for preview, cover page included.
 

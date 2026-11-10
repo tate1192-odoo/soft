@@ -5,6 +5,18 @@ All notable changes to **soft_report_generator** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [19.0.1.0.1] - 2026-11-10
+
+### Fixed
+
+- Product PDF documents are merged again. Odoo 19 replaced
+  `sale.order._get_product_documents_pdf()` (which returned merged bytes) with
+  `_get_product_documents()`, returning `product.document` records, so the
+  `hasattr()` hook matched nothing and the advertized merge silently never ran.
+  The records' PDF attachments are now appended after the report, in document
+  order, and non-PDF attachments are skipped. The hook stays optional: a model
+  without the method gets the report back unchanged.
+
 ## [19.0.1.0.0] - 2026-11-10
 
 İlk sürüm: modülün bu repoya girişi (PR #47). Çekirdek `soft_report_generator`

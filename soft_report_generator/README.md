@@ -197,6 +197,12 @@ Core depends on `base` and `mail` only; model-specific helpers ship as
 * **Cover Page**: an optional `.docx` rendered with the same context and
   prepended to the PDF (the *Preview PDF* button and the HTTP preview route
   both honour it).
+* **Product documents** (`sale_pdf_quote_builder`): PDF attachments on the
+  product (`product.document`, attached *on quotation* — and *on order
+  confirmation* once the order is confirmed) are appended after the report, in
+  document order; non-PDF attachments are skipped. Odoo 19 exposes them through
+  `sale.order._get_product_documents()`; on a model without that method the
+  merge is a no-op.
 * `original` returns the **rendered** `.docx` (placeholders replaced), not the
   uploaded template.
 * Generated files are stored as `ir.attachment` records and served through
