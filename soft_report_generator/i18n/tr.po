@@ -1,0 +1,1109 @@
+# Turkish translation of soft_report_generator.
+# This file contains the translation of the following modules:
+# 	* soft_report_generator
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-10 14:43+0000\n"
+"PO-Revision-Date: 2026-11-10 15:10+0300\n"
+"Last-Translator: Softteknik Bilisim\n"
+"Language-Team: Turkish\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"%(fmt)s conversion completed but output file was not found.\n"
+"Expected: %(path)s\n"
+"\n"
+"This may happen if LibreOffice is not fully installed."
+msgstr ""
+"%(fmt)s dönüşümü tamamlandı ancak çıktı dosyası bulunamadı.\n"
+"Beklenen: %(path)s\n"
+"\n"
+"Bu durum LibreOffice tam kurulmadığında görülebilir."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"%(fmt)s conversion failed. LibreOffice returned an error.\n"
+"Binary used: %(binary)s\n"
+"Output: %(output)s\n"
+"\n"
+"%(hint)s"
+msgstr ""
+"%(fmt)s dönüşümü başarısız oldu. LibreOffice hata döndürdü.\n"
+"Kullanılan dosya: %(binary)s\n"
+"Çıktı: %(output)s\n"
+"\n"
+"%(hint)s"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid "<no output>"
+msgstr "<çıktı yok>"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "<strong>How to create your template:</strong>"
+msgstr "<strong>Şablonunuzu nasıl oluşturursunuz:</strong>"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"<strong>Optional.</strong> Upload a\n"
+"                                    <strong>.docx</strong> cover page template.\n"
+"                                    It will be rendered with the same record data\n"
+"                                    and prepended to the PDF output.\n"
+"                                    Use the same placeholder syntax as the main template."
+msgstr ""
+"<strong>İsteğe bağlı.</strong> Bir\n"
+"                                    <strong>.docx</strong> kapak sayfası şablonu yükleyin.\n"
+"                                    Aynı kayıt verisiyle oluşturulur\n"
+"                                    ve çıktı PDF'inin başına eklenir.\n"
+"                                    Ana şablonla aynı yer tutucu sözdizimini kullanın."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"<strong>Placeholders detected!</strong>\n"
+"                                    Map each one to the correct Odoo field path, then\n"
+"                                    click <strong>Activate</strong>."
+msgstr ""
+"<strong>Yer tutucular bulundu!</strong>\n"
+"                                    Her birini doğru Odoo alan yoluna eşleyip\n"
+"                                    <strong>Etkinleştir</strong> düğmesine basın."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"<strong>Tips:</strong>\n"
+"                                    Use dot notation for related fields\n"
+"                                    (<code>partner_id.city</code>).\n"
+"                                    For loops, set <em>Field Path</em> to the One2many\n"
+"                                    field (e.g. <code>order_line</code>) and check\n"
+"                                    <em>Is Loop</em>. Child fields inside a loop should\n"
+"                                    have a <em>Loop Parent</em> value."
+msgstr ""
+"<strong>İpuçları:</strong>\n"
+"                                    İlişkili alanlar için nokta gösterimini kullanın\n"
+"                                    (<code>partner_id.city</code>).\n"
+"                                    Döngülerde <em>Alan Yolu</em> alanına One2many alanını\n"
+"                                    girin (ör. <code>order_line</code>) ve\n"
+"                                    <em>Döngü mü</em> kutusunu işaretleyin. Döngü içindeki alt alanlarda\n"
+"                                    <em>Döngü Üstü</em> değeri olmalıdır."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_needaction
+msgid "Action Needed"
+msgstr "İşlem Gerekli"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Activate"
+msgstr "Etkinleştir"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__active
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__state__active
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Active"
+msgstr "Etkin"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_ids
+msgid "Activities"
+msgstr "Aktiviteler"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "Etkinlik İstisna Dekorasyonu"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_state
+msgid "Activity State"
+msgstr "Aktivite Durumu"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "Aktivite Türü İmgesi"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_attachment_count
+msgid "Attachment Count"
+msgstr "Ek Sayısı"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__auto_resolved
+msgid "Auto Resolved"
+msgstr "Otomatik Çözüldü"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__available_template_ids
+msgid "Available Templates"
+msgstr "Kullanılabilir Şablonlar"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_wizard_view_form
+msgid "Cancel"
+msgstr "İptal"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template_field__is_loop
+msgid "Check if this placeholder marks a repeating section (One2many field)."
+msgstr ""
+"Bu yer tutucunun yinelenen bir bölümü (One2many alanı) işaretleyip "
+"işaretlemediğini belirtir."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__company_id
+msgid "Company"
+msgstr "Firma"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__cover_filename
+msgid "Cover File Name"
+msgstr "Kapak Dosya Adı"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Cover Page"
+msgstr "Kapak Sayfası"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__cover_file
+msgid "Cover Page Template"
+msgstr "Kapak Sayfası Şablonu"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Create a Word (.docx) file"
+msgstr "Bir Word (.docx) dosyası oluşturun"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Create a print action on the selected model"
+msgstr "Seçilen model üzerinde yazdırma eylemi oluşturur"
+
+#. module: soft_report_generator
+#: model_terms:ir.actions.act_window,help:soft_report_generator.soft_report_template_action
+msgid "Create your first report template"
+msgstr "İlk rapor şablonunuzu oluşturun"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__create_uid
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__create_uid
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__create_uid
+msgid "Created by"
+msgstr "Tarafından oluşturuldu"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__create_date
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__create_date
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__create_date
+msgid "Created on"
+msgstr "Oluşturuldu"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Deactivate"
+msgstr "Devre Dışı Bırak"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__description
+msgid "Description"
+msgstr "Açıklama"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Detect placeholders in your template file"
+msgstr "Şablon dosyanızdaki yer tutucuları bulur"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_sale_order__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_docx_mixin__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_parser_mixin__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_pdf_mixin__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__display_name
+msgid "Display Name"
+msgstr "İsim Göster"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__template_domain
+msgid "Domain"
+msgstr "Alan Adı"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__use_domain
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Domain Filter"
+msgstr "Alan Adı Filtresi"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template_field__field_path
+msgid "Dot-separated path to a field on the model, e.g. partner_id.name"
+msgstr ""
+"Model üzerindeki bir alana nokta ile ayrılmış yol, ör. partner_id.name"
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__state__draft
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Draft"
+msgstr "Taslak"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__field_ids
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Field Mappings"
+msgstr "Alan Eşlemeleri"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__field_path
+msgid "Field Path"
+msgstr "Alan Yolu"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__template_filename
+msgid "File Name"
+msgstr "Dosya Adı"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_follower_ids
+msgid "Followers"
+msgstr "Takipçiler"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "Takipçiler (İş ortakları)"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome simgesi, ör. fa-tasks"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"For repeating table rows (lines), add a row with\n"
+"                                        <code>{{#order_line}}</code> before the data rows and\n"
+"                                        <code>{{/order_line}}</code> after"
+msgstr ""
+"Yinelenen tablo satırları için veri satırlarından önce\n"
+"                                        <code>{{#order_line}}</code> satırını, sonra da\n"
+"                                        <code>{{/order_line}}</code> satırını ekleyin"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Found %(ph)s placeholders and %(lp)s loops."
+msgstr "%(ph)s yer tutucu ve %(lp)s döngü bulundu."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Generate a test report with the first record"
+msgstr "İlk kayıtla deneme raporu üretir"
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__html
+msgid "HTML"
+msgstr "HTML"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_sale_order__has_discount
+msgid "Has Discount"
+msgstr "İndirim Var"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__has_message
+msgid "Has Message"
+msgstr "Mesaj Var"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_sale_order__has_tax
+msgid "Has Tax"
+msgstr "Vergi Var"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_sale_order__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_docx_mixin__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_parser_mixin__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_pdf_mixin__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_exception_icon
+msgid "Icon"
+msgstr "Simge"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "İstisnai bir etkinliği belirtmek için kullanılan simge."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "İşaretliyse, yeni mesajlar dikkatinize sunulacak."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_has_error
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "İşaretliyse, bazı mesajlar gönderi hatası içermektedir."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template_field__loop_parent
+msgid "If this placeholder is inside a loop, enter the loop placeholder name."
+msgstr "Bu yer tutucu bir döngü içindeyse döngü yer tutucusunun adını girin."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Insert <strong>images</strong>:\n"
+"                                        <code>{{img:company_id.logo}}</code>"
+msgstr ""
+"<strong>Görsel</strong> ekleyin:\n"
+"                                        <code>{{img:company_id.logo}}</code>"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_is_follower
+msgid "Is Follower"
+msgstr "Takipçi mi"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__is_loop
+msgid "Is Loop"
+msgstr "Döngü mü"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__write_uid
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__write_uid
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__write_uid
+msgid "Last Updated by"
+msgstr "Son Güncelleyen"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__write_date
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__write_date
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__write_date
+msgid "Last Updated on"
+msgstr "Son Güncelleme"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"LibreOffice binary not found: %(binary)s\n"
+"\n"
+"%(hint)s"
+msgstr ""
+"LibreOffice çalıştırılabilir dosyası bulunamadı: %(binary)s\n"
+"\n"
+"%(hint)s"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"LibreOffice is not installed on this server.\n"
+"\n"
+"%s"
+msgstr ""
+"Bu sunucuda LibreOffice kurulu değil.\n"
+"\n"
+"%s"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__loop_parent
+msgid "Loop Parent"
+msgstr "Döngü Üstü"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Loop over %s"
+msgstr "%s üzerinde döngü"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid ""
+"Loop placeholders must point to One2many/Many2many fields:\n"
+"%s"
+msgstr ""
+"Döngü yer tutucuları One2many/Many2many alanlarını göstermelidir:\n"
+"%s"
+
+#. module: soft_report_generator
+#: model:res.groups,name:soft_report_generator.group_soft_report_generator_manager
+msgid "Manager"
+msgstr "Yönetici"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__merge_pdf
+msgid "Merge into Single PDF"
+msgstr "Tek PDF'te Birleştir"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_has_error
+msgid "Message Delivery error"
+msgstr "Mesaj Teslim hatası"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_ids
+msgid "Messages"
+msgstr "Mesajlar"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__model_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__res_model
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Model"
+msgstr "Model"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "Aktivite Son Tarihim"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "Sonraki Aktivite Takvimi Etkinliği"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "Sonraki Aktivite Son Tarihi"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_summary
+msgid "Next Activity Summary"
+msgstr "Sonraki Aktivite Özeti"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_type_id
+msgid "Next Activity Type"
+msgstr "Sonraki Aktivite Türü"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/docx_engine.py:0
+msgid "No"
+msgstr "Hayır"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "No active report templates found for %(model)s."
+msgstr "%(model)s için etkin rapor şablonu bulunamadı."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid "No records found in %(model)s to preview."
+msgstr "Önizleme için %(model)s içinde kayıt bulunamadı."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "No records found in %(model)s to test with."
+msgstr "Deneme için %(model)s içinde kayıt bulunamadı."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "No records selected."
+msgstr "Kayıt seçilmedi."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/wizard/report_template_wizard.py:0
+msgid "No records to print."
+msgstr "Yazdırılacak kayıt yok."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_needaction_counter
+msgid "Number of Actions"
+msgstr "Aksiyon Sayısı"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_has_error_counter
+msgid "Number of errors"
+msgstr "Hata adedi"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "İşlem gerektiren mesaj sayısı"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "Teslimat hatası olan mesaj adedi"
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__odt
+msgid "ODT"
+msgstr "ODT"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__model_id
+msgid "Odoo Model"
+msgstr "Odoo Modeli"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__template_domain
+msgid ""
+"Odoo domain expression to filter which records can use this template.\n"
+"Example: [(\"state\", \"=\", \"sale\")] to only match confirmed sales."
+msgstr ""
+"Hangi kayıtların bu şablonu kullanabileceğini filtreleyen Odoo alan adı ifadesi.\n"
+"Örnek: [(\"state\", \"=\", \"sale\")] yalnızca onaylanmış satışlar için."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Open a PDF preview in a new browser tab"
+msgstr "PDF önizlemesini yeni tarayıcı sekmesinde açar"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__cover_file
+msgid ""
+"Optional DOCX cover page. Rendered with the same context and prepended to "
+"the output PDF."
+msgstr ""
+"İsteğe bağlı DOCX kapak sayfası. Aynı bağlamla oluşturulur ve çıktı PDF'inin"
+" başına eklenir."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__output_format
+msgid "Output Format"
+msgstr "Çıktı Biçimi"
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__pdf
+msgid "PDF"
+msgstr "PDF"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"PDF merge requires the \"pypdf\" library.\n"
+"\n"
+"Install it with:  pip install pypdf"
+msgstr ""
+"PDF birleştirme \"pypdf\" kütüphanesini gerektirir.\n"
+"\n"
+"Kurulum:  pip install pypdf"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Parse Template"
+msgstr "Şablonu Ayrıştır"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__placeholder
+msgid "Placeholder"
+msgstr "Yer Tutucu"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Please select a model first."
+msgstr "Önce bir model seçin."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/wizard/report_template_wizard.py:0
+msgid "Please select a report template."
+msgstr "Lütfen bir rapor şablonu seçin."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Please select an Odoo model first."
+msgstr "Önce bir Odoo modeli seçin."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Please upload a template file first."
+msgstr "Önce bir şablon dosyası yükleyin."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Preview PDF"
+msgstr "PDF Önizle"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_wizard_view_form
+msgid "Print"
+msgstr "Yazdır"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__server_action_id
+msgid "Print Action"
+msgstr "Yazdırma Eylemi"
+
+#. module: soft_report_generator
+#: model:ir.actions.server,name:soft_report_generator.action_print_sale_order
+msgid "Print Quotation (Soft Report)"
+msgstr "Teklif Yazdır (Soft Report)"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Print: %s"
+msgstr "Yazdır: %s"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__priority
+msgid "Priority"
+msgstr "Öncelik"
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__rtf
+msgid "RTF"
+msgstr "RTF"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__rating_ids
+msgid "Ratings"
+msgstr "Değerlendirmeler"
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__state__ready
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Ready"
+msgstr "Hazır"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__res_ids_json
+msgid "Record IDs (JSON)"
+msgstr "Kayıt ID'leri (JSON)"
+
+#. module: soft_report_generator
+#: model:ir.ui.menu,name:soft_report_generator.soft_report_generator_menu_root
+#: model:res.groups.privilege,name:soft_report_generator.privilege_soft_report_generator
+msgid "Report Generator"
+msgstr "Rapor Tasarımcısı"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__template_id
+msgid "Report Template"
+msgstr "Rapor Şablonu"
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template
+msgid "Report Template"
+msgstr "Rapor Şablonu Tasarımcısı"
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_field
+msgid "Report Template Field Mapping"
+msgstr "Rapor Şablonu Alan Eşlemesi"
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_wizard
+msgid "Report Template Selection Wizard"
+msgstr "Rapor Şablonu Seçim Sihirbazı"
+
+#. module: soft_report_generator
+#: model:ir.actions.act_window,name:soft_report_generator.soft_report_template_action
+#: model:ir.ui.menu,name:soft_report_generator.soft_report_generator_menu_templates
+msgid "Report Templates"
+msgstr "Rapor Şablonları"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Reset to Draft"
+msgstr "Taslağa Döndür"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_user_id
+msgid "Responsible User"
+msgstr "Sorumlu Kullanıcı"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "SMS İleti hatası"
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_sale_order
+msgid "Sales Order"
+msgstr "Satış Siparişi"
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__original
+msgid "Same as Template"
+msgstr "Şablonla Aynı"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_wizard_view_form
+msgid "Select Report Template"
+msgstr "Rapor Şablonu Seç"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__model_id
+msgid "Select the Odoo model this template applies to."
+msgstr "Bu şablonun geçerli olacağı Odoo modelini seçin."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__sequence
+msgid "Sequence"
+msgstr "Sıralama"
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_docx_mixin
+msgid "Soft Report Template — DOCX Engine Mixin"
+msgstr "Soft Report Template — DOCX Motoru Mixin"
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_pdf_mixin
+msgid "Soft Report Template — PDF Converter Mixin"
+msgstr "Soft Report Template — PDF Dönüştürücü Mixin"
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_parser_mixin
+msgid "Soft Report Template — Parser Mixin"
+msgstr "Soft Report Template — Ayrıştırıcı Mixin"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__state
+msgid "State"
+msgstr "Durum"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Status"
+msgstr "Durum"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+"Aktivitilere göre durum\n"
+"Gecikmiş: Son tarih geçmiş\n"
+"Bugün: Aktivite tarihi bugün\n"
+"Planlanmış: Gelecek aktiviteler."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Technical"
+msgstr "Teknik"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__template_id
+msgid "Template"
+msgstr "Şablon"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__template_file
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Template File"
+msgstr "Şablon Dosyası"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__name
+msgid "Template Name"
+msgstr "Şablon Adı"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Template Parsed"
+msgstr "Şablon Ayrıştırıldı"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid ""
+"Template file must have a .%(allowed)s extension. Got: .%(ext)s (%(name)s)"
+msgstr ""
+"Şablon dosyası .%(allowed)s uzantılı olmalıdır. Gelen: .%(ext)s (%(name)s)"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Test Report"
+msgstr "Deneme Raporu"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid "The %(fmt)s conversion timed out after 120 seconds."
+msgstr "%(fmt)s dönüşümü 120 saniye sonra zaman aşımına uğradı."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/wizard/report_template_wizard.py:0
+msgid ""
+"The selected template is designed for %(model)s records, but %(other)s "
+"records were given."
+msgstr ""
+"Seçilen şablon %(model)s kayıtları için tasarlanmış, ancak %(other)s "
+"kayıtları verildi."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/docx_engine.py:0
+msgid "The template condition %(expr)s could not be evaluated: %(error)s"
+msgstr "Şablon koşulu %(expr)s değerlendirilemedi: %(error)s"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/docx_engine.py:0
+msgid "The template expression %(expr)s could not be evaluated: %(error)s"
+msgstr "Şablon ifadesi %(expr)s değerlendirilemedi: %(error)s"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid ""
+"The uploaded file is not a valid .docx document. Please open it in Word or "
+"LibreOffice and save it again as .docx."
+msgstr ""
+"Yüklenen dosya geçerli bir .docx belgesi değil. Word veya LibreOffice ile "
+"açıp yeniden .docx olarak kaydedin."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "These loop markers need a field path (One2many): %(names)s"
+msgstr "Bu döngü işaretleri için alan yolu gerekli (One2many): %(names)s"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "These placeholders are not mapped yet: %(names)s"
+msgstr "Bu yer tutucular henüz eşlenmedi: %(names)s"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid ""
+"This template is designed for %(model)s records, not for %(other)s records."
+msgstr ""
+"Bu şablon %(model)s kayıtları için tasarlanmıştır, %(other)s kayıtları için "
+"değil."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "This will remove all field mappings. Continue?"
+msgstr "Tüm alan eşlemeleri silinecek. Devam edilsin mi?"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "This will remove the print action. Continue?"
+msgstr "Yazdırma eylemi silinecek. Devam edilsin mi?"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__template_type
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Type"
+msgstr "Tip"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Type <code>{{field_name}}</code> where you want dynamic data\n"
+"                                        <br/><small class=\"text-muted\">\n"
+"                                        e.g. <code>{{name}}</code>,\n"
+"                                        <code>{{partner_id.name}}</code>,\n"
+"                                        <code>{{partner_id.street}}</code>\n"
+"                                        </small>"
+msgstr ""
+"Dinamik veri istediğiniz yere <code>{{field_name}}</code> yazın\n"
+"                                        <br/><small class=\"text-muted\">\n"
+"                                        e.g. <code>{{name}}</code>,\n"
+"                                        <code>{{partner_id.name}}</code>,\n"
+"                                        <code>{{partner_id.street}}</code>\n"
+"                                        </small>"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "Kayıtlardaki istisna etkinliğinin türü."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Unsupported file type. Please upload a .docx file."
+msgstr "Desteklenmeyen dosya türü. Lütfen .docx dosyası yükleyin."
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Unsupported template type."
+msgstr "Desteklenmeyen şablon türü."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Upload a <strong>.docx</strong> file.\n"
+"                                    After uploading, go to <strong>Field Mappings</strong>\n"
+"                                    tab and click <strong>Parse Template</strong>."
+msgstr ""
+"Bir <strong>.docx</strong> dosyası yükleyin.\n"
+"                                    Yükledikten sonra <strong>Alan Eşlemeleri</strong>\n"
+"                                    sekmesine gidip <strong>Şablonu Ayrıştır</strong> düğmesine basın."
+
+#. module: soft_report_generator
+#: model_terms:ir.actions.act_window,help:soft_report_generator.soft_report_template_action
+msgid ""
+"Upload a Word file with\n"
+"                <code>{{placeholder}}</code> markers,\n"
+"                map them to Odoo fields, and let anyone\n"
+"                generate professional reports in one click."
+msgstr ""
+"İçinde\n"
+"                <code>{{placeholder}}</code> işaretleri olan bir Word dosyası yükleyin,\n"
+"                bunları Odoo alanlarına eşleyin ve herkesin\n"
+"                tek tıkla profesyonel rapor üretmesini sağlayın."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Upload the file and click <strong>Parse Template</strong>"
+msgstr "Dosyayı yükleyip <strong>Şablonu Ayrıştır</strong> düğmesine basın"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Use <strong>conditions</strong>:\n"
+"                                        <code>{{#if state == 'sale'}}</code> …\n"
+"                                        <code>{{#else}}</code> …\n"
+"                                        <code>{{/if}}</code>"
+msgstr ""
+"<strong>Koşullar</strong>:\n"
+"                                        <code>{{#if state == 'sale'}}</code> …\n"
+"                                        <code>{{#else}}</code> …\n"
+"                                        <code>{{/if}}</code>"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Use <strong>expressions</strong>:\n"
+"                                        <code>{{=amount_total * 0.1}}</code>,\n"
+"                                        <code>{{=partner_id.name.upper()}}</code>"
+msgstr ""
+"<strong>İfadeler</strong>:\n"
+"                                        <code>{{=amount_total * 0.1}}</code>,\n"
+"                                        <code>{{=partner_id.name.upper()}}</code>"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Use <strong>format pipes</strong>:\n"
+"                                        <code>{{amount_total|currency}}</code>,\n"
+"                                        <code>{{date_order|date}}</code>,\n"
+"                                        <code>{{name|upper}}</code>"
+msgstr ""
+"<strong>Biçim boruları</strong>:\n"
+"                                        <code>{{amount_total|currency}}</code>,\n"
+"                                        <code>{{date_order|date}}</code>,\n"
+"                                        <code>{{name|upper}}</code>"
+
+#. module: soft_report_generator
+#: model:res.groups,name:soft_report_generator.group_soft_report_generator_user
+msgid "User"
+msgstr "Kullanıcı"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__website_message_ids
+msgid "Website Messages"
+msgstr "Websitesi Mesajları"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__website_message_ids
+msgid "Website communication history"
+msgstr "Websitesi iletişim geçmişi"
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__use_domain
+msgid ""
+"When enabled, this template is only available for records that match the "
+"specified domain."
+msgstr ""
+"Etkinleştirildiğinde bu şablon yalnızca belirtilen alan adına uyan kayıtlar "
+"için kullanılabilir."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__priority
+msgid ""
+"When multiple templates match a record, the one with the lowest priority "
+"number is used first."
+msgstr ""
+"Bir kayıtla birden çok şablon eşleştiğinde en düşük öncelik numaralı şablon "
+"önce kullanılır."
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__merge_pdf
+msgid ""
+"When printing multiple records as PDF, merge all pages into a single PDF "
+"file instead of a ZIP archive."
+msgstr ""
+"Birden çok kayıt PDF olarak yazdırılırken tüm sayfalar ZIP arşivi yerine tek"
+" PDF dosyasında birleştirilir."
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Word"
+msgstr "Word"
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__template_type__docx
+msgid "Word (.docx)"
+msgstr "Word (.docx)"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/docx_engine.py:0
+msgid "Yes"
+msgstr "Evet"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "e.g. Sale Order"
+msgstr "ör. Satış Siparişi"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "e.g. Sales Quotation Template"
+msgstr "ör. Satış Teklif Şablonu"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "e.g. order_line"
+msgstr "ör. order_line"
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "e.g. partner_id.name"
+msgstr "ör. partner_id.name"

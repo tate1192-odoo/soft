@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="privilege_soft_report_generator" model="res.groups.privilege">
+        <field name="name">Report Generator</field>
+    </record>
+
+    <record id="group_soft_report_generator_user" model="res.groups">
+        <field name="name">User</field>
+        <field name="privilege_id" ref="privilege_soft_report_generator"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="group_soft_report_generator_manager" model="res.groups">
+        <field name="name">Manager</field>
+        <field name="privilege_id" ref="privilege_soft_report_generator"/>
+        <field name="implied_ids" eval="[(4, ref('group_soft_report_generator_user'))]"/>
+    </record>
+
+    <record id="soft_report_template_multi_company_rule" model="ir.rule">
+        <field name="name">Soft Report Template: multi-company</field>
+        <field name="model_id" ref="model_soft_report_template"/>
+        <field name="domain_force">
+            ['|', ('company_id', '=', False), ('company_id', 'in', company_ids)]
+        </field>
+    </record>
+
+    <record id="soft_report_template_field_multi_company_rule" model="ir.rule">
+        <field name="name">Soft Report Template Field: multi-company</field>
+        <field name="model_id" ref="model_soft_report_template_field"/>
+        <field name="domain_force">
+            ['|', ('template_id.company_id', '=', False),
+                  ('template_id.company_id', 'in', company_ids)]
+        </field>
+    </record>
+
+</odoo>

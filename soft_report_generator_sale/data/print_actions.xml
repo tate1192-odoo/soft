@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Print Quotation server action for sale.order.
+
+        Adds an entry to the sale.order Print menu (binding_model_id) that
+        delegates to soft.report.template.action_print_with_selection, which
+        picks the active template for the model (filters by domain if set,
+        otherwise first match) and shows a template picker when multiple
+        match. The picker is itself a wizard in
+        soft_report_generator/wizard/report_template_wizard.py.
+    -->
+    <record id="action_print_sale_order" model="ir.actions.server">
+        <field name="name">Print Quotation (Soft Report)</field>
+        <field name="model_id" ref="sale.model_sale_order"/>
+        <field name="binding_model_id" ref="sale.model_sale_order"/>
+        <field name="binding_type">report</field>
+        <field name="group_ids" eval="[(4, ref('soft_report_generator.group_soft_report_generator_user'))]"/>
+        <field name="state">code</field>
+        <field name="code">action = env['soft.report.template'].action_print_with_selection('sale.order', records.ids)</field>
+    </record>
+
+</odoo>

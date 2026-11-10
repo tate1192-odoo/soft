@@ -1,0 +1,304 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ============================================================ -->
+    <!--  LIST VIEW                                                    -->
+    <!-- ============================================================ -->
+
+    <record id="soft_report_template_view_list" model="ir.ui.view">
+        <field name="name">soft.report.template.list</field>
+        <field name="model">soft.report.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="model_id"/>
+                <field name="template_type"/>
+                <field name="output_format"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'ready'"
+                       decoration-success="state == 'active'"/>
+                <field name="priority" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  FORM VIEW                                                    -->
+    <!-- ============================================================ -->
+
+    <record id="soft_report_template_view_form" model="ir.ui.view">
+        <field name="name">soft.report.template.form</field>
+        <field name="model">soft.report.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_parse_template"
+                            string="Parse Template"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"
+                            help="Detect placeholders in your template file"/>
+                    <button name="action_activate"
+                            string="Activate"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'ready'"
+                            help="Create a print action on the selected model"/>
+                    <button name="action_test_report"
+                            string="Test Report"
+                            type="object"
+                            invisible="state not in ('ready', 'active')"
+                            help="Generate a test report with the first record"/>
+                    <button name="action_preview_report"
+                            string="Preview PDF"
+                            type="object"
+                            class="btn-secondary"
+                            icon="fa-eye"
+                            invisible="state not in ('ready', 'active')"
+                            help="Open a PDF preview in a new browser tab"/>
+                    <button name="action_deactivate"
+                            string="Deactivate"
+                            type="object"
+                            invisible="state != 'active'"
+                            confirm="This will remove the print action. Continue?"/>
+                    <button name="action_reset_draft"
+                            string="Reset to Draft"
+                            type="object"
+                            invisible="state == 'draft'"
+                            confirm="This will remove all field mappings. Continue?"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,ready,active"/>
+                </header>
+                <sheet>
+                    <div class="oe_title mb-3">
+                        <label for="name"/>
+                        <h1>
+                            <field name="name" placeholder="e.g. Sales Quotation Template"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group>
+                            <field name="model_id"
+                                   readonly="state != 'draft'"
+                                   placeholder="e.g. Sale Order"/>
+                            <field name="template_type" invisible="1"/>
+                            <field name="output_format"/>
+                            <field name="merge_pdf"
+                                   invisible="output_format != 'pdf'"/>
+                        </group>
+                        <group>
+                            <field name="template_filename"
+                                   string="Template File"
+                                   readonly="1"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="use_domain"/>
+                        </group>
+                    </group>
+
+                    <group string="Domain Filter" invisible="not use_domain">
+                        <group>
+                            <field name="template_domain" widget="domain"
+                                   options="{'model': 'model_name'}"/>
+                        </group>
+                        <group>
+                            <field name="priority"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Template File" name="template_upload">
+                            <group>
+                                <group>
+                                    <field name="template_file"
+                                           filename="template_filename"
+                                           readonly="state == 'active'"
+                                           widget="binary"/>
+                                    <field name="template_filename" invisible="1"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info mt-2" role="alert">
+                                <p class="mb-0">
+                                    Upload a <strong>.docx</strong> file.
+                                    After uploading, go to <strong>Field Mappings</strong>
+                                    tab and click <strong>Parse Template</strong>.
+                                </p>
+                            </div>
+                        </page>
+
+                        <page string="Field Mappings" name="mappings">
+                            <field name="field_ids" readonly="state == 'active'">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="placeholder"/>
+                                    <field name="is_loop"/>
+                                    <field name="field_path"
+                                           placeholder="e.g. partner_id.name"/>
+                                    <field name="loop_parent"
+                                           placeholder="e.g. order_line"/>
+                                    <field name="auto_resolved" column_invisible="1"/>
+                                    <field name="description" optional="hide"/>
+                                </list>
+                            </field>
+
+                            <div class="alert alert-info mt-3" role="alert"
+                                 invisible="state != 'draft'">
+                                <p class="mb-1">
+                                    <strong>How to create your template:</strong>
+                                </p>
+                                <ol class="mb-0">
+                                    <li>Create a Word (.docx) file</li>
+                                    <li>Type <code>{{field_name}}</code> where you want
+                                        dynamic data; relationship fields use a dot path
+                                        (<code>{{partner_id.name}}</code>)</li>
+                                    <li>Repeating table rows: a row with
+                                        <code>{{#lines_field}}</code> before the data rows
+                                        and <code>{{/lines_field}}</code> after</li>
+                                    <li><strong>Pipes</strong>:
+                                        <code>{{amount|currency}}</code>,
+                                        <code>{{date|date}}</code>,
+                                        <code>{{text|upper}}</code></li>
+                                    <li><strong>Expressions</strong>:
+                                        <code>{{=amount * 0.1}}</code></li>
+                                    <li><strong>Conditions</strong>:
+                                        <code>{{#if state == 'sale'}}</code> …
+                                        <code>{{#else}}</code> … <code>{{/if}}</code>
+                                        (works inline or as a block on its own
+                                        paragraph)</li>
+                                    <li><strong>Images</strong>:
+                                        <code>{{img:field}}</code> (binary field)</li>
+                                    <li>Upload the file and click
+                                        <strong>Parse Template</strong></li>
+                                </ol>
+                                <div class="mt-3">
+                                    <field name="hint_examples" readonly="1" nolabel="1"/>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-success mt-3" role="alert"
+                                 invisible="state != 'ready'">
+                                <p class="mb-1">
+                                    <strong>Placeholders detected!</strong>
+                                    Map each one to the correct Odoo field path, then
+                                    click <strong>Activate</strong>.
+                                </p>
+                                <p class="mb-0 text-muted">
+                                    <strong>Tips:</strong>
+                                    Use dot notation for related fields
+                                    (<code>partner_id.city</code>).
+                                    For loops, set <em>Field Path</em> to the One2many
+                                    field (e.g. <code>order_line</code>) and check
+                                    <em>Is Loop</em>. Child fields inside a loop should
+                                    have a <em>Loop Parent</em> value.
+                                </p>
+                            </div>
+                        </page>
+
+                        <page string="Cover Page" name="cover_page"
+                              invisible="output_format != 'pdf'">
+                            <group>
+                                <group>
+                                    <field name="cover_file"
+                                           filename="cover_filename"
+                                           widget="binary"/>
+                                    <field name="cover_filename" invisible="1"/>
+                                </group>
+                            </group>
+                            <div class="alert alert-info mt-2" role="alert">
+                                <p class="mb-0">
+                                    <strong>Optional.</strong> Upload a
+                                    <strong>.docx</strong> cover page template.
+                                    It will be rendered with the same record data
+                                    and prepended to the PDF output.
+                                    Use the same placeholder syntax as the main template.
+                                </p>
+                            </div>
+                        </page>
+
+                        <page string="Technical" name="technical"
+                              groups="base.group_no_one">
+                            <group>
+                                <field name="model_name"/>
+                                <field name="server_action_id" readonly="1"/>
+                            </group>
+                        </page>
+
+                        <page string="Available Values" name="value_hints"
+                              groups="soft_report_generator.group_soft_report_generator_user"
+                              invisible="not model_id">
+                            <div class="alert alert-light" role="alert">
+                                <p class="mb-0">
+                                    Values usable in the .docx for
+                                    <field name="model_name" readonly="1" class="d-inline"/>.
+                                    Generated from the model, from the QWeb reports
+                                    already printing it, or from a declaration the
+                                    module itself provides. Copy the placeholder text
+                                    into your document.
+                                </p>
+                            </div>
+                            <field name="value_hints" readonly="1"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  SEARCH VIEW                                                  -->
+    <!-- ============================================================ -->
+
+    <record id="soft_report_template_view_search" model="ir.ui.view">
+        <field name="name">soft.report.template.search</field>
+        <field name="model">soft.report.template</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="model_id"/>
+                <filter name="filter_active" string="Active"
+                        domain="[('state', '=', 'active')]"/>
+                <filter name="filter_ready" string="Ready"
+                        domain="[('state', '=', 'ready')]"/>
+                <filter name="filter_draft" string="Draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <separator/>
+                <filter name="filter_docx" string="Word"
+                        domain="[('template_type', '=', 'docx')]"/>
+                <separator/>
+                <filter name="group_model" string="Model"
+                        context="{'group_by': 'model_id'}"/>
+                <filter name="group_state" string="Status"
+                        context="{'group_by': 'state'}"/>
+                <filter name="group_type" string="Type"
+                        context="{'group_by': 'template_type'}"/>
+            </search>
+        </field>
+    </record>
+
+    <!-- ============================================================ -->
+    <!--  ACTION                                                       -->
+    <!-- ============================================================ -->
+
+    <record id="soft_report_template_action" model="ir.actions.act_window">
+        <field name="name">Report Templates</field>
+        <field name="res_model">soft.report.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="soft_report_template_view_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first report template
+            </p>
+            <p>
+                Upload a Word file with
+                <code>{{placeholder}}</code> markers,
+                map them to Odoo fields, and let anyone
+                generate professional reports in one click.
+            </p>
+        </field>
+    </record>
+
+</odoo>
