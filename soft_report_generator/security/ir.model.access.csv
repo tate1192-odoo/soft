@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_soft_report_template_user,soft.report.template.user,model_soft_report_template,group_soft_report_generator_user,1,0,0,0
+access_soft_report_template_manager,soft.report.template.manager,model_soft_report_template,group_soft_report_generator_manager,1,1,1,1
+access_soft_report_template_field_user,soft.report.template.field.user,model_soft_report_template_field,group_soft_report_generator_user,1,0,0,0
+access_soft_report_template_field_manager,soft.report.template.field.manager,model_soft_report_template_field,group_soft_report_generator_manager,1,1,1,1
+access_soft_report_template_wizard_user,soft.report.template.wizard.user,model_soft_report_template_wizard,group_soft_report_generator_user,1,1,1,1
+access_soft_report_template_wizard_manager,soft.report.template.wizard.manager,model_soft_report_template_wizard,group_soft_report_generator_manager,1,1,1,1

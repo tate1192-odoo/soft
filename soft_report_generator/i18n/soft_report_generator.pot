@@ -1,0 +1,1020 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* soft_report_generator
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-10 14:43+0000\n"
+"PO-Revision-Date: 2026-11-10 14:43+0000\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: \n"
+"Plural-Forms: \n"
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"%(fmt)s conversion completed but output file was not found.\n"
+"Expected: %(path)s\n"
+"\n"
+"This may happen if LibreOffice is not fully installed."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"%(fmt)s conversion failed. LibreOffice returned an error.\n"
+"Binary used: %(binary)s\n"
+"Output: %(output)s\n"
+"\n"
+"%(hint)s"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid "<no output>"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "<strong>How to create your template:</strong>"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"<strong>Optional.</strong> Upload a\n"
+"                                    <strong>.docx</strong> cover page template.\n"
+"                                    It will be rendered with the same record data\n"
+"                                    and prepended to the PDF output.\n"
+"                                    Use the same placeholder syntax as the main template."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"<strong>Placeholders detected!</strong>\n"
+"                                    Map each one to the correct Odoo field path, then\n"
+"                                    click <strong>Activate</strong>."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"<strong>Tips:</strong>\n"
+"                                    Use dot notation for related fields\n"
+"                                    (<code>partner_id.city</code>).\n"
+"                                    For loops, set <em>Field Path</em> to the One2many\n"
+"                                    field (e.g. <code>order_line</code>) and check\n"
+"                                    <em>Is Loop</em>. Child fields inside a loop should\n"
+"                                    have a <em>Loop Parent</em> value."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Activate"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__active
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__state__active
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Active"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__auto_resolved
+msgid "Auto Resolved"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__available_template_ids
+msgid "Available Templates"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_wizard_view_form
+msgid "Cancel"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template_field__is_loop
+msgid "Check if this placeholder marks a repeating section (One2many field)."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__company_id
+msgid "Company"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__cover_filename
+msgid "Cover File Name"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Cover Page"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__cover_file
+msgid "Cover Page Template"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Create a Word (.docx) file"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Create a print action on the selected model"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.actions.act_window,help:soft_report_generator.soft_report_template_action
+msgid "Create your first report template"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__create_uid
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__create_uid
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__create_date
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__create_date
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Deactivate"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__description
+msgid "Description"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Detect placeholders in your template file"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_sale_order__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_docx_mixin__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_parser_mixin__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_pdf_mixin__display_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__template_domain
+msgid "Domain"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__use_domain
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Domain Filter"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template_field__field_path
+msgid "Dot-separated path to a field on the model, e.g. partner_id.name"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__state__draft
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Draft"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__field_ids
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Field Mappings"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__field_path
+msgid "Field Path"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__template_filename
+msgid "File Name"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"For repeating table rows (lines), add a row with\n"
+"                                        <code>{{#order_line}}</code> before the data rows and\n"
+"                                        <code>{{/order_line}}</code> after"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Found %(ph)s placeholders and %(lp)s loops."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Generate a test report with the first record"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__html
+msgid "HTML"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_sale_order__has_discount
+msgid "Has Discount"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_sale_order__has_tax
+msgid "Has Tax"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_sale_order__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_docx_mixin__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_parser_mixin__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_pdf_mixin__id
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__id
+msgid "ID"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_has_error
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template_field__loop_parent
+msgid "If this placeholder is inside a loop, enter the loop placeholder name."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Insert <strong>images</strong>:\n"
+"                                        <code>{{img:company_id.logo}}</code>"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__is_loop
+msgid "Is Loop"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__write_uid
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__write_uid
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__write_date
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__write_date
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"LibreOffice binary not found: %(binary)s\n"
+"\n"
+"%(hint)s"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"LibreOffice is not installed on this server.\n"
+"\n"
+"%s"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__loop_parent
+msgid "Loop Parent"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Loop over %s"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid ""
+"Loop placeholders must point to One2many/Many2many fields:\n"
+"%s"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:res.groups,name:soft_report_generator.group_soft_report_generator_manager
+msgid "Manager"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__merge_pdf
+msgid "Merge into Single PDF"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__model_name
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__res_model
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Model"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/docx_engine.py:0
+msgid "No"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "No active report templates found for %(model)s."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid "No records found in %(model)s to preview."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "No records found in %(model)s to test with."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "No records selected."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/wizard/report_template_wizard.py:0
+msgid "No records to print."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__odt
+msgid "ODT"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__model_id
+msgid "Odoo Model"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__template_domain
+msgid ""
+"Odoo domain expression to filter which records can use this template.\n"
+"Example: [(\"state\", \"=\", \"sale\")] to only match confirmed sales."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Open a PDF preview in a new browser tab"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__cover_file
+msgid ""
+"Optional DOCX cover page. Rendered with the same context and prepended to "
+"the output PDF."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__output_format
+msgid "Output Format"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__pdf
+msgid "PDF"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid ""
+"PDF merge requires the \"pypdf\" library.\n"
+"\n"
+"Install it with:  pip install pypdf"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Parse Template"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__placeholder
+msgid "Placeholder"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Please select a model first."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/wizard/report_template_wizard.py:0
+msgid "Please select a report template."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Please select an Odoo model first."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Please upload a template file first."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Preview PDF"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_wizard_view_form
+msgid "Print"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__server_action_id
+msgid "Print Action"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.actions.server,name:soft_report_generator.action_print_sale_order
+msgid "Print Quotation (Soft Report)"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Print: %s"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__priority
+msgid "Priority"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__rtf
+msgid "RTF"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__rating_ids
+msgid "Ratings"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__state__ready
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Ready"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__res_ids_json
+msgid "Record IDs (JSON)"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.ui.menu,name:soft_report_generator.soft_report_generator_menu_root
+#: model:res.groups.privilege,name:soft_report_generator.privilege_soft_report_generator
+msgid "Report Generator"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_wizard__template_id
+msgid "Report Template"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template
+msgid "Report Template"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_field
+msgid "Report Template Field Mapping"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_wizard
+msgid "Report Template Selection Wizard"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.actions.act_window,name:soft_report_generator.soft_report_template_action
+#: model:ir.ui.menu,name:soft_report_generator.soft_report_generator_menu_templates
+msgid "Report Templates"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Reset to Draft"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_sale_order
+msgid "Sales Order"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__output_format__original
+msgid "Same as Template"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_wizard_view_form
+msgid "Select Report Template"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__model_id
+msgid "Select the Odoo model this template applies to."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__sequence
+msgid "Sequence"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_docx_mixin
+msgid "Soft Report Template — DOCX Engine Mixin"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_pdf_mixin
+msgid "Soft Report Template — PDF Converter Mixin"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model,name:soft_report_generator.model_soft_report_template_parser_mixin
+msgid "Soft Report Template — Parser Mixin"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__state
+msgid "State"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Status"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Technical"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template_field__template_id
+msgid "Template"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__template_file
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Template File"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__name
+msgid "Template Name"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Template Parsed"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid ""
+"Template file must have a .%(allowed)s extension. Got: .%(ext)s (%(name)s)"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Test Report"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+msgid "The %(fmt)s conversion timed out after 120 seconds."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/wizard/report_template_wizard.py:0
+msgid ""
+"The selected template is designed for %(model)s records, but %(other)s "
+"records were given."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/docx_engine.py:0
+msgid "The template condition %(expr)s could not be evaluated: %(error)s"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/docx_engine.py:0
+msgid "The template expression %(expr)s could not be evaluated: %(error)s"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid ""
+"The uploaded file is not a valid .docx document. Please open it in Word or "
+"LibreOffice and save it again as .docx."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "These loop markers need a field path (One2many): %(names)s"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "These placeholders are not mapped yet: %(names)s"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid ""
+"This template is designed for %(model)s records, not for %(other)s records."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "This will remove all field mappings. Continue?"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "This will remove the print action. Continue?"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__template_type
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Type"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Type <code>{{field_name}}</code> where you want dynamic data\n"
+"                                        <br/><small class=\"text-muted\">\n"
+"                                        e.g. <code>{{name}}</code>,\n"
+"                                        <code>{{partner_id.name}}</code>,\n"
+"                                        <code>{{partner_id.street}}</code>\n"
+"                                        </small>"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Unsupported file type. Please upload a .docx file."
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/pdf_converter.py:0
+#: code:addons/soft_report_generator/models/report_template.py:0
+msgid "Unsupported template type."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Upload a <strong>.docx</strong> file.\n"
+"                                    After uploading, go to <strong>Field Mappings</strong>\n"
+"                                    tab and click <strong>Parse Template</strong>."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.actions.act_window,help:soft_report_generator.soft_report_template_action
+msgid ""
+"Upload a Word file with\n"
+"                <code>{{placeholder}}</code> markers,\n"
+"                map them to Odoo fields, and let anyone\n"
+"                generate professional reports in one click."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "Upload the file and click <strong>Parse Template</strong>"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Use <strong>conditions</strong>:\n"
+"                                        <code>{{#if state == 'sale'}}</code> …\n"
+"                                        <code>{{#else}}</code> …\n"
+"                                        <code>{{/if}}</code>"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Use <strong>expressions</strong>:\n"
+"                                        <code>{{=amount_total * 0.1}}</code>,\n"
+"                                        <code>{{=partner_id.name.upper()}}</code>"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid ""
+"Use <strong>format pipes</strong>:\n"
+"                                        <code>{{amount_total|currency}}</code>,\n"
+"                                        <code>{{date_order|date}}</code>,\n"
+"                                        <code>{{name|upper}}</code>"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:res.groups,name:soft_report_generator.group_soft_report_generator_user
+msgid "User"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,field_description:soft_report_generator.field_soft_report_template__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__use_domain
+msgid ""
+"When enabled, this template is only available for records that match the "
+"specified domain."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__priority
+msgid ""
+"When multiple templates match a record, the one with the lowest priority "
+"number is used first."
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields,help:soft_report_generator.field_soft_report_template__merge_pdf
+msgid ""
+"When printing multiple records as PDF, merge all pages into a single PDF "
+"file instead of a ZIP archive."
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_search
+msgid "Word"
+msgstr ""
+
+#. module: soft_report_generator
+#: model:ir.model.fields.selection,name:soft_report_generator.selection__soft_report_template__template_type__docx
+msgid "Word (.docx)"
+msgstr ""
+
+#. module: soft_report_generator
+#. odoo-python
+#: code:addons/soft_report_generator/models/docx_engine.py:0
+msgid "Yes"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "e.g. Sale Order"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "e.g. Sales Quotation Template"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "e.g. order_line"
+msgstr ""
+
+#. module: soft_report_generator
+#: model_terms:ir.ui.view,arch_db:soft_report_generator.soft_report_template_view_form
+msgid "e.g. partner_id.name"
+msgstr ""

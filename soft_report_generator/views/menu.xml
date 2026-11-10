@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <menuitem id="soft_report_generator_menu_root"
+              name="Report Generator"
+              web_icon="soft_report_generator,static/description/icon.png"
+              groups="group_soft_report_generator_user"
+              sequence="200"/>
+
+    <menuitem id="soft_report_generator_menu_templates"
+              name="Report Templates"
+              action="soft_report_template_action"
+              parent="soft_report_generator_menu_root"
+              groups="group_soft_report_generator_user"
+              sequence="10"/>
+
+</odoo>
