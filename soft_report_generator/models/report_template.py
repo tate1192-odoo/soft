@@ -545,11 +545,12 @@ class SoftReportTemplate(models.Model):
                     output, self.template_type, self.output_format,
                 )
 
-            # Merge product PDF documents (sale_pdf_quote_builder integration)
-            if self.output_format == 'pdf' and hasattr(record, '_get_product_documents_pdf'):
-                product_pdf = record._get_product_documents_pdf()
-                if product_pdf:
-                    output = self._merge_pdfs([output, product_pdf])
+            # Merge product PDF documents (sale_pdf_quote_builder). Odoo 19 has
+            # no ``_get_product_documents_pdf()`` (it returned merged bytes);
+            # the record exposes ``_get_product_documents()`` returning
+            # ``product.document`` records, so merging is done here.
+            if self.output_format == 'pdf':
+                output = self._merge_product_documents(record, output)
 
             outputs.append((record, output))
 

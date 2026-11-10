@@ -13,6 +13,7 @@ and guards the ``_normalize_cross_paragraph_placeholders`` regression.
 
 import base64
 import os
+from unittest.mock import patch
 
 from odoo.tests import tagged
 
@@ -166,3 +167,134 @@ class TestSaleOrderHelpers(SoftReportGeneratorCommon):
         with zipfile.ZipFile(BytesIO(docx_bytes)) as zf:
             root = etree.fromstring(zf.read('word/document.xml'))
         return ''.join(t.text or '' for t in root.iter('{%s}t' % W_NS))
+
+    # ------------------------------------------------------------------
+    #  Odoo 19: product PDF documents are merged after the report
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _pdf_bytes(pages=1):
+        """Minimal valid PDF with *pages* blank pages, or None without pypdf."""
+        try:
+            from pypdf import PdfWriter
+        except ImportError:
+            return None
+        from io import BytesIO
+        writer = PdfWriter()
+        for _index in range(pages):
+            writer.add_blank_page(width=200, height=200)
+        buf = BytesIO()
+        writer.write(buf)
+        return buf.getvalue()
+
+    @staticmethod
+    def _page_count(pdf_bytes):
+        try:
+            from pypdf import PdfReader
+        except ImportError:
+            return None
+        from io import BytesIO
+        return len(PdfReader(BytesIO(pdf_bytes)).pages)
+
+    def test_product_documents_are_merged(self):
+        """A PDF product document must be appended to the rendered report.
+
+        Odoo 19 exposes ``_get_product_documents()`` (records), not
+        ``_get_product_documents_pdf()`` (bytes): the old hook matched nothing
+        and the advertized merge silently never ran.
+        """
+        pdf = self._pdf_bytes()
+        if pdf is None:
+            self.skipTest('pypdf is not installed')
+        if 'attached_on_sale' not in self.env['product.document']._fields:
+            self.skipTest('sale_pdf_quote_builder is not installed')
+
+        template = self._build_template(
+            make_docx_with_table([['{{partner_id.name}}']]),
+            model_ref='sale.model_sale_order',
+        )
+        order = self._make_order()
+        document = self.env['product.document'].create({
+            'name': 'datasheet.pdf',
+            'res_model': 'product.product',
+            'res_id': order.order_line.product_id.id,
+            'datas': base64.b64encode(pdf),
+            'attached_on_sale': 'quotation',
+        })
+        self.assertEqual(document.mimetype, 'application/pdf')
+        self.assertIn(document, order._get_product_documents())
+
+        merged = template._merge_product_documents(order, pdf)
+        self.assertEqual(
+            self._page_count(merged), 2,
+            'report + product document must be merged into one PDF')
+
+    def test_non_pdf_product_documents_are_not_merged(self):
+        """A text attachment on the product must not be fed to the PDF merger."""
+        pdf = self._pdf_bytes()
+        if pdf is None:
+            self.skipTest('pypdf is not installed')
+        if 'attached_on_sale' not in self.env['product.document']._fields:
+            self.skipTest('sale_pdf_quote_builder is not installed')
+
+        template = self._build_template(
+            make_docx_with_table([['{{partner_id.name}}']]),
+            model_ref='sale.model_sale_order',
+        )
+        order = self._make_order()
+        self.env['product.document'].create({
+            'name': 'notes.txt',
+            'res_model': 'product.product',
+            'res_id': order.order_line.product_id.id,
+            'datas': base64.b64encode(b'plain text, not a pdf'),
+            'attached_on_sale': 'quotation',
+        })
+        merged = template._merge_product_documents(order, pdf)
+        self.assertEqual(self._page_count(merged), 1)
+        self.assertEqual(merged, pdf, 'the input PDF must come back untouched')
+
+    def test_generate_report_routes_the_pdf_through_the_merge(self):
+        """The call site: generate_report() must merge, not only the helper."""
+        pdf = self._pdf_bytes()
+        if pdf is None:
+            self.skipTest('pypdf is not installed')
+        if 'attached_on_sale' not in self.env['product.document']._fields:
+            self.skipTest('sale_pdf_quote_builder is not installed')
+
+        template = self._build_template(
+            make_docx_with_table([['{{partner_id.name}}']]),
+            model_ref='sale.model_sale_order', state='ready')
+        order = self._make_order()
+        self.env['product.document'].create({
+            'name': 'datasheet.pdf',
+            'res_model': 'product.product',
+            'res_id': order.order_line.product_id.id,
+            'datas': base64.b64encode(pdf),
+            'attached_on_sale': 'quotation',
+        })
+        template.write({'output_format': 'pdf', 'merge_pdf': True})
+
+        # one page out of the converter; the product document has to be added
+        with patch.object(
+            type(template), '_convert_format',
+            lambda _self, data, source, target: pdf,
+        ):
+            action = template.generate_report(order)
+
+        attachment_id = int(
+            action['url'].split('/web/content/')[1].split('?')[0])
+        merged = base64.b64decode(
+            self.env['ir.attachment'].browse(attachment_id).datas)
+        self.assertEqual(
+            self._page_count(merged), 2,
+            'generate_report() must append the product document')
+
+    def test_merge_without_the_hook_returns_the_report(self):
+        """The core stays model-agnostic: a model without the hook is a no-op."""
+        pdf = self._pdf_bytes()
+        if pdf is None:
+            self.skipTest('pypdf is not installed')
+        template = self._build_template(make_docx_with_table([['{{name}}']]))
+        partner = self._make_partner()
+        self.assertFalse(hasattr(partner, '_get_product_documents'))
+        self.assertIs(template._merge_product_documents(partner, pdf), pdf)
