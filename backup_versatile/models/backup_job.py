@@ -240,9 +240,12 @@ class BackupJob(models.Model):
         temp_dir = tempfile.mkdtemp(prefix='odoo_backup_')
         self._mark_temp_dir_owner(temp_dir)
         try:
-            # Fail fast if a configured provider cannot receive the file:
-            # dumping first and only then discovering an unwritable directory
-            # (or an unreachable host) wastes minutes and gigabytes.
+            # Fail fast if the configured database is not even on this server
+            # (a configuration carried over from another database keeps the
+            # original name), then if a provider cannot receive the file.
+            # Dumping first and only then discovering a missing source database
+            # or an unwritable directory wastes minutes and gigabytes.
+            self._preflight_database()
             self._preflight_providers()
 
             # Create backup file inside our temp dir
@@ -649,6 +652,42 @@ class BackupJob(models.Model):
         except Exception as e:
             raise UserError(f"Failed to verify dump file: {e}")
     
+    def _preflight_database(self):
+        """Raise before the dump when the configured database is missing.
+
+        ``database_name`` is a plain stored field on the configuration: a
+        configuration created on one database and then carried over to another
+        (a restored copy, a staging clone, a test instance) keeps the original
+        name.  Every run then died in the middle of the dump with a bare
+        ``FATAL: database "x" does not exist`` — *after* the storage providers
+        had been probed and reported as ready, which reads as if the provider
+        were the problem.
+
+        ``pg_database`` is cluster-wide, so the current cursor answers the
+        question for any database name on this server: exactly the server the
+        dump connects to.
+        """
+        self.ensure_one()
+
+        self.env.cr.execute(
+            "SELECT 1 FROM pg_database WHERE datname = %s",
+            (self.database_name,))
+        if self.env.cr.fetchone():
+            self._log(
+                "Pre-flight check passed for database '%s'"
+                % self.database_name)
+            return True
+
+        hint = ''
+        served = self.env.cr.dbname
+        if self.database_name != served:
+            hint = (" This configuration was created on another database — "
+                    "this instance serves '%s'." % served)
+        raise UserError(
+            "Database '%s' does not exist on this server.%s Update the "
+            "'Database Name' field on the backup configuration."
+            % (self.database_name, hint))
+
     def _preflight_providers(self):
         """Raise before the dump if any configured provider is not usable.
 

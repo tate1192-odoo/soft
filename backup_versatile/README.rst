@@ -104,10 +104,11 @@ backup schedule is enabled on the configuration, not by the install.
 Tests
 =====
 
-``tests/`` holds 103 test methods in nine files: file filtering, encryption,
-path safety, provider preflight, the rclone command line, the restore guard,
-retention, the paramiko SFTP session and ZIP verification. They run without a
-network or a remote server: the SFTP session and rclone are stubbed.
+``tests/`` holds 114 test methods in eleven files: file filtering, encryption,
+path safety, provider preflight, database preflight, the rclone command line,
+the restore guard, retention, the paramiko SFTP session and ZIP verification.
+They run without a network or a remote server: the SFTP session and rclone are
+stubbed.
 
 License
 =======
