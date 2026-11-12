@@ -464,10 +464,11 @@ class SoftReportTemplate(models.Model):
         """
         self.ensure_one()
         action = self.server_action_id
-        if not action:
+        if not isinstance(action, models.BaseModel):
             return
+        action = action.sudo()
         if action.state == 'code' and (action.code or '').strip() == self._generated_action_code():
-            action.sudo().unlink()
+            action.unlink()
         self.server_action_id = False
 
     def action_deactivate(self):

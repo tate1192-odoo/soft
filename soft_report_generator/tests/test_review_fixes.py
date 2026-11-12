@@ -17,6 +17,7 @@ from unittest.mock import patch
 
 from odoo.exceptions import UserError
 from odoo.tests import tagged
+from odoo.tests.common import new_test_user
 
 from odoo.addons.soft_report_generator.tests.common import (
     SoftReportGeneratorCommon,
@@ -107,6 +108,30 @@ class TestReviewFixes(SoftReportGeneratorCommon):
                 self.env['soft.report.template.pdf.mixin']._convert_format(
                     b'docx bytes', 'docx', 'pdf',
                 )
+
+    def test_manager_can_deactivate_active_template(self):
+        """A non-system Manager must not need ir.actions.server ACL."""
+        manager = new_test_user(
+            self.env, login='srg_manager@example.com',
+            groups='soft_report_generator.group_soft_report_generator_manager',
+        )
+        template = self._build_template(
+            make_simple_docx('Hi {{name}}'),
+            state='ready',
+            field_ids=[(0, 0, {
+                'placeholder': 'name', 'field_path': 'name',
+            })],
+        )
+        template.action_activate()
+        self.assertEqual(template.state, 'active')
+        template.with_user(manager).action_deactivate()
+        self.assertEqual(template.state, 'ready')
+        self.assertFalse(template.server_action_id)
+
+    def test_merge_pdfs_unreadable_input_raises_user_error(self):
+        mixin = self.env['soft.report.template.pdf.mixin']
+        with self.assertRaises(UserError):
+            mixin._merge_pdfs([b'not a pdf'])
 
     def test_menus_are_restricted_to_the_generator_group(self):
         group = self.env.ref('soft_report_generator.group_soft_report_generator_user')
