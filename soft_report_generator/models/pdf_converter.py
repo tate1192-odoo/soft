@@ -39,8 +39,15 @@ class PdfConverterMixin(models.AbstractModel):
     #  PDF MERGE
     # ==================================================================
 
-    def _merge_pdfs(self, pdf_list):
-        """Merge a list of PDF byte-strings into a single PDF."""
+    def _merge_pdfs(self, pdf_list, skip_invalid=False):
+        """Merge a list of PDF byte-strings into a single PDF.
+
+        :param bool skip_invalid: log and skip an input that pypdf cannot read
+            instead of failing the whole merge. Used for product documents:
+            one encrypted/corrupt attachment must not turn the print into a
+            500 page. Generated reports and cover pages pass ``False`` so a
+            broken intermediate output is reported as a ``UserError``.
+        """
         # Try modern pypdf first, then PyPDF2 (new API), then PyPDF2 (old API)
         PdfReader = PdfWriter = None
         legacy = False
@@ -62,13 +69,23 @@ class PdfConverterMixin(models.AbstractModel):
 
         writer = PdfWriter()
         for pdf_bytes in pdf_list:
-            reader = PdfReader(BytesIO(pdf_bytes))
-            if legacy:
-                for i in range(reader.getNumPages()):
-                    writer.addPage(reader.getPage(i))
-            else:
-                for page in reader.pages:
-                    writer.add_page(page)
+            try:
+                reader = PdfReader(BytesIO(pdf_bytes))
+                if legacy:
+                    for i in range(reader.getNumPages()):
+                        writer.addPage(reader.getPage(i))
+                else:
+                    for page in reader.pages:
+                        writer.add_page(page)
+            except Exception as exc:
+                if skip_invalid:
+                    _logger.warning(
+                        'Skipping an unreadable PDF while merging: %s', exc)
+                    continue
+                raise UserError(self.env._(
+                    'A PDF could not be read while merging: %(error)s',
+                    error=exc,
+                )) from exc
 
         buf = BytesIO()
         writer.write(buf)
@@ -109,7 +126,7 @@ class PdfConverterMixin(models.AbstractModel):
             parts.append(data)
         if len(parts) == 1:
             return pdf_bytes
-        return self._merge_pdfs(parts)
+        return self._merge_pdfs(parts, skip_invalid=True)
 
     # ==================================================================
     #  PDF PREVIEW

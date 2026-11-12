@@ -290,15 +290,23 @@ class DocxEngineMixin(models.AbstractModel):
                 return field.type == 'html'
         return False
 
-    def _html_to_docx_runs(self, para, html_content, context, images, img_counter):
+    def _html_to_docx_runs(self, para, html_content, context, images, img_counter,
+                           clean=True):
         """Replace paragraph content with formatted DOCX runs from HTML.
 
         Handles: <b>/<strong>, <i>/<em>, <u>/<ins>, <br>, <p>, <ul>/<ol>/<li>,
         <img>, <a>, <span>, <div>, <h1>-<h6>.
+
+        :param bool clean: remove the runs already present in ``para`` first.
+            ``_html_docx_replace`` clears the paragraph once for the whole
+            placeholder list and then passes ``clean=False``: clearing here
+            again used to delete the text runs built for the parts *before*
+            the HTML field (``Sayın {{partner}}, {{note}}`` lost ``Sayın …``).
         """
         # Clean existing runs first so empty input leaves the para clean
-        for r in list(para.findall('{%s}r' % W_NS)):
-            para.remove(r)
+        if clean:
+            for r in list(para.findall('{%s}r' % W_NS)):
+                para.remove(r)
 
         if not html_content or not html_content.strip():
             return
@@ -1018,8 +1026,17 @@ class DocxEngineMixin(models.AbstractModel):
                     if open_pos >= 0 and (close_pos < 0 or open_pos > close_pos):
                         # p1 ends with an open placeholder — p2 should close it
                         if '}}' in text2:
-                            # Merge: move all child elements from p2 into p1
+                            # Merge: move all child elements from p2 into p1.
+                            # A paragraph has exactly one w:pPr (and possibly
+                            # one w:sectPr) and they must not end up in the
+                            # middle of the merged paragraph: the old code
+                            # produced ['pPr','r','pPr','r'], which makes Word
+                            # offer to repair the document.
                             for child in list(p2):
+                                if child.tag in (
+                                    '{%s}pPr' % W_NS, '{%s}sectPr' % W_NS,
+                                ):
+                                    continue
                                 p1.append(child)
                             container.remove(p2)
                             changed = True
@@ -1165,7 +1182,9 @@ class DocxEngineMixin(models.AbstractModel):
                 t_el.text = content
                 t_el.set('{%s}space' % XML_NS, 'preserve')
             elif ptype == 'html':
-                self._html_to_docx_runs(para, content, context, images, img_counter)
+                self._html_to_docx_runs(
+                    para, content, context, images, img_counter, clean=False,
+                )
 
     # ---- conditionals ----
 
@@ -1198,8 +1217,20 @@ class DocxEngineMixin(models.AbstractModel):
                     # the whole paragraph down, silently dropping the content.
                     inline = self._render_inline_conditionals(text, context)
                     if inline is not None:
-                        self._set_paragraph_text(child, inline)
-                        continue
+                        if tag != 'tr':
+                            self._set_paragraph_text(child, inline)
+                            continue
+                        if not self._row_has_block_conditional(child):
+                            # A complete inline block inside one cell
+                            # paragraph: let the paragraph render it. Writing
+                            # the result on the row produced a w:r child of
+                            # w:tr (invalid OOXML) and left both branches in
+                            # the cells. A conditional spanning separate
+                            # paragraphs is a block marker row and keeps the
+                            # row-level handling below.
+                            for tc in child.findall('{%s}tc' % W_NS):
+                                self._process_docx_conditionals(tc, context)
+                            continue
                     result = self._eval_condition(
                         if_match.group(1).strip(), context)
                     stack.append(result)
@@ -1244,6 +1275,20 @@ class DocxEngineMixin(models.AbstractModel):
                 parent.remove(elem)
             except ValueError:
                 pass
+
+    def _row_has_block_conditional(self, row):
+        """Return True when *row* contains a marker spread over paragraphs.
+
+        ``{{#if}}``/``{{/if}}`` in the same paragraph is an inline block; one
+        paragraph carrying only the opening (or only the closing) marker means
+        the condition spans cells/paragraphs and belongs to the row, where it
+        is handled by the block stack (the row is dropped when false).
+        """
+        for para in row.iter('{%s}p' % W_NS):
+            text = self._get_paragraph_text(para)
+            if ('{{#if' in text) != ('{{/if}}' in text):
+                return True
+        return False
 
     def _render_inline_conditionals(self, text, context):
         """Render ``{{#if}}`` blocks opened and closed in the same paragraph.
@@ -1534,6 +1579,11 @@ class DocxEngineMixin(models.AbstractModel):
                                     cp = t1.rfind('}}')
                                     if op >= 0 and (cp < 0 or op > cp) and '}}' in t2:
                                         for child in list(p2):
+                                            if child.tag in (
+                                                '{%s}pPr' % W_NS,
+                                                '{%s}sectPr' % W_NS,
+                                            ):
+                                                continue
                                             p1.append(child)
                                         tc.remove(p2)
                                         changed_cell = True

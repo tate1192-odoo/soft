@@ -149,6 +149,82 @@ class TestEngineFixes(SoftReportGeneratorCommon):
             self._html_text('<p>A<!-- internal note -->B</p>'), 'AB',
         )
 
+    def test_html_field_keeps_text_before_it(self):
+        """The HTML run builder must not clear the runs already emitted."""
+        para = etree.Element('{%s}p' % W_NS)
+        for text in ('Sayin AAA, ', '{{note}}', ' ve son'):
+            run = etree.SubElement(para, '{%s}r' % W_NS)
+            t_el = etree.SubElement(run, '{%s}t' % W_NS)
+            t_el.text = text
+        template = self._build_template(make_simple_docx('x'))
+        template._html_docx_replace(
+            para, 'Sayin AAA, {{note}} ve son',
+            {}, {}, [1000], {'note': '<b>NOTE</b>'},
+        )
+        text = ''.join(t.text or '' for t in para.iter('{%s}t' % W_NS))
+        self.assertIn('Sayin AAA, ', text)
+        self.assertIn('NOTE', text)
+        self.assertIn(' ve son', text)
+
+    def test_two_html_fields_are_both_rendered(self):
+        para = etree.Element('{%s}p' % W_NS)
+        template = self._build_template(make_simple_docx('x'))
+        template._html_docx_replace(
+            para, '{{h1}} ve {{h2}}', {}, {}, [1000],
+            {'h1': '<b>ONE</b>', 'h2': '<i>TWO</i>'},
+        )
+        text = ''.join(t.text or '' for t in para.iter('{%s}t' % W_NS))
+        self.assertIn('ONE', text)
+        self.assertIn('TWO', text)
+
+    def test_inline_conditional_inside_table_cell(self):
+        """A cell-level inline block must not write a run under w:tr."""
+        body = _make_table([
+            ['Indirim {{#if flag}}var{{/if}} son'],
+        ])
+        template = self._build_template(make_minimal_docx(body))
+        for flag, expected, unexpected in (
+            (True, 'Indirim var son', None),
+            (False, 'Indirim  son', 'var'),
+        ):
+            with self.subTest(flag=flag):
+                out = self._render(template, {
+                    '__record__': False,
+                    '__raw__': {'flag': flag},
+                    'flag': flag,
+                })
+                root = etree.fromstring(
+                    self._part(out, 'word/document.xml'))
+                row = root.find('.//{%s}tr' % W_NS)
+                self.assertEqual(
+                    row.findall('{%s}r' % W_NS), [],
+                    'w:r directly under w:tr is invalid OOXML',
+                )
+                text = self._text(out)
+                self.assertEqual(text.count(expected), 1)
+                if unexpected:
+                    self.assertNotIn(unexpected, text)
+
+    def test_split_placeholder_keeps_one_paragraph_property(self):
+        body = (
+            '<w:p><w:pPr><w:jc w:val="center"/></w:pPr>'
+            '<w:r><w:t>{{na</w:t></w:r></w:p>'
+            '<w:p><w:pPr><w:jc w:val="right"/></w:pPr>'
+            '<w:r><w:t>me}}</w:t></w:r></w:p>'
+        )
+        template = self._build_template(make_minimal_docx(body))
+        out = self._render(template, {
+            '__record__': False,
+            '__raw__': {'name': 'X'},
+            'name': 'X',
+        })
+        root = etree.fromstring(self._part(out, 'word/document.xml'))
+        para = root.find('{%s}body/{%s}p' % (W_NS, W_NS))
+        pprs = para.findall('{%s}pPr' % W_NS)
+        self.assertEqual(len(pprs), 1)
+        self.assertEqual(para[0].tag, '{%s}pPr' % W_NS)
+        self.assertEqual(self._text(out), 'X')
+
     # ------------------------------------------------------------------
     #  B2 — conditionals inside w:sdt
     # ------------------------------------------------------------------

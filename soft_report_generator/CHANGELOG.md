@@ -5,6 +5,33 @@ All notable changes to **soft_report_generator** are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- DOCX: an HTML field in a paragraph no longer deletes the text runs written
+  before it. `_html_to_docx_runs()` cleared the whole paragraph after
+  `_html_docx_replace()` had already emitted the preceding parts, so
+  `Sayın {{partner.name}}, {{note}}` lost `Sayın …` and only the last of two
+  HTML fields survived. The paragraph is now cleared once per placeholder list.
+- DOCX: an inline `{{#if}}` inside a table cell is rendered in the cell
+  paragraph. The old code wrote the resolved text as a `w:r` directly under
+  `w:tr` (invalid OOXML) and left both branches in the cells, so the condition
+  appeared to be ignored and Word offered to repair the document. Marker rows
+  whose `{{#if}}`/`{{/if}}` spans paragraphs keep the block handling.
+- DOCX: merging a placeholder split across two paragraphs no longer copies the
+  second paragraph's `w:pPr`/`w:sectPr` into the middle of the merged one. The
+  result now carries a single paragraph-property element in the valid position.
+- Reporting: a non-system *Manager* can deactivate an active template again.
+  `_remove_generated_action()` read `ir.actions.server.state`/`code` without
+  `sudo()`, and that model is only readable by `base.group_system`, so the
+  Manager group hit an `AccessError` on Deactivate, on replacing the template
+  file of an active template, and on unlink.
+- PDF merge: `_merge_pdfs()` turns an unreadable input into a `UserError`
+  instead of letting `pypdf`'s `PdfStreamError`/`FileNotDecryptedError` become
+  a 500 page. Product-document merging skips an encrypted/corrupt attachment
+  and appends the readable ones.
+
 ## [19.0.1.0.1] - 2026-11-10
 
 ### Fixed
