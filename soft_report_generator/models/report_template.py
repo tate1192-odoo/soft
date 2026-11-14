@@ -484,19 +484,90 @@ class SoftReportTemplate(models.Model):
         self.field_ids.unlink()
         self.state = 'draft'
 
-    def action_test_report(self):
-        """Generate a test report with the first record of the model."""
+    def _get_template_domain(self):
+        """Return the evaluated record domain of this template.
+
+        A template without ``use_domain`` (or with an empty domain) applies to
+        every record of its model.  An invalid domain is a configuration error:
+        silently ignoring it used to print records the template was not meant
+        for.
+        """
+        self.ensure_one()
+        if not self.use_domain:
+            return []
+        domain_text = (self.template_domain or '').strip()
+        if not domain_text or domain_text == '[]':
+            return []
+        try:
+            domain = safe_eval(domain_text)
+        except Exception as error:
+            raise UserError(_(
+                'The domain of template %(name)s is invalid: %(error)s',
+                name=self.name,
+                error=error,
+            )) from error
+        if not isinstance(domain, (list, tuple)):
+            raise UserError(_(
+                'The domain of template %(name)s must be an Odoo domain '
+                '(a list of conditions), got: %(domain)s',
+                name=self.name,
+                domain=domain_text,
+            ))
+        return list(domain)
+
+    def _check_records_match_domain(self, records):
+        """Raise when *records* contains a record outside the template domain."""
+        domain = self._get_template_domain()
+        if not domain:
+            return
+        try:
+            matched = records.filtered_domain(domain)
+        except Exception as error:
+            raise UserError(_(
+                'The domain of template %(name)s could not be applied: '
+                '%(error)s',
+                name=self.name,
+                error=error,
+            )) from error
+        if len(matched) == len(records):
+            return
+        unmatched = records.filtered(lambda record: record not in matched)
+        names = ', '.join(unmatched[:5].mapped('display_name'))
+        if len(unmatched) > 5:
+            names = '%s, ...' % names
+        raise UserError(_(
+            'This template only applies to records matching its domain. '
+            'Not matching: %(records)s',
+            records=names or ', '.join(str(rid) for rid in unmatched.ids),
+        ))
+
+    def _get_test_record(self):
+        """Return a record to test or preview this template with.
+
+        Prefer a record matching the template domain so a domain filtered
+        template is not tested (and rejected) with an unrelated record.
+        """
         self.ensure_one()
         if not self.model_name:
             raise UserError(_('Please select a model first.'))
-        Model = self.env[self.model_name]
-        record = Model.search([], limit=1)
+        domain = self._get_template_domain()
+        record = self.env[self.model_name].search(domain, limit=1)
         if not record:
+            if domain:
+                raise UserError(_(
+                    'No %(model)s record matches the template domain.',
+                    model=self.model_name,
+                ))
             raise UserError(_(
-                'No records found in %(model)s to test with.',
+                'No records found in %(model)s.',
                 model=self.model_name,
             ))
-        return self.generate_report(record)
+        return record
+
+    def action_test_report(self):
+        """Generate a test report with a record that matches the template."""
+        self.ensure_one()
+        return self.generate_report(self._get_test_record())
 
     # ------------------------------------------------------------------
     #  Report generation (called from server action)
@@ -524,6 +595,10 @@ class SoftReportTemplate(models.Model):
                 model=self.model_name,
                 other=records._name,
             ))
+
+        # A domain filtered template must not print records it was not
+        # designed for, even when generate_report() is called directly.
+        self._check_records_match_domain(records)
 
         if not self.template_file:
             # Same guard as action_parse_template: without it base64.b64decode

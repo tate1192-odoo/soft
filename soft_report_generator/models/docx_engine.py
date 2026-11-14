@@ -161,18 +161,31 @@ class DocxEngineMixin(models.AbstractModel):
                         item_ctx = {}
                         item_raw = {}
                         item_hf = {}
+                        child_model = getattr(item, '_name', None)
                         for child in children:
-                            val = self._resolve_field_path(item, child.field_path)
-                            # Cross-context fallback: if resolution against the
-                            # loop item fails (e.g. master_product_id is on the
-                            # parent sale.order, not on sale.order.line), try the
-                            # parent record.
-                            if val == '' and '.' in (child.field_path or ''):
-                                val = self._resolve_field_path(
-                                    record, child.field_path,
-                                )
+                            child_path = (child.field_path or '').strip()
+                            # A loop child points at the item model, but it may
+                            # also read the parent record (e.g. a field of
+                            # sale.order inside the {{#order_line}} loop).
+                            # Choose by the models that carry the path, not by
+                            # the resolved value: the old fallback only retried
+                            # the parent for an empty value containing a dot,
+                            # so parent-only paths such as ``ref`` were never
+                            # found.
+                            from_parent = bool(
+                                child_path
+                                and child_model
+                                and self._soft_report_unknown_paths(
+                                    child_model, [child_path])
+                                and not self._soft_report_unknown_paths(
+                                    record._name, [child_path])
+                            )
+                            source = record if from_parent else item
+                            source_model = record._name if from_parent else child_model
+                            val = self._resolve_field_path(source, child_path)
                             item_raw[child.placeholder] = val
-                            if child.field_path and self._detect_html_field(child.field_path):
+                            if child_path and self._detect_html_field(
+                                    child_path, source_model):
                                 item_ctx[child.placeholder] = ''  # will render raw
                                 item_hf[child.placeholder] = val
                             else:
@@ -269,11 +282,18 @@ class DocxEngineMixin(models.AbstractModel):
     #  HTML→DOCX rendering
     # ------------------------------------------------------------------
 
-    def _detect_html_field(self, field_path):
-        """Check if a field path resolves to an HTML type field."""
-        if not field_path or not self.model_name:
+    def _detect_html_field(self, field_path, model_name=None):
+        """Check if a field path resolves to an HTML type field.
+
+        :param str model_name: model to resolve the path on.  Loop children
+            belong to the loop item's model, not to ``self.model_name``, so
+            an HTML field on the child (e.g. ``mail.message.body``) used to be
+            printed as literal ``<p>`` tags.
+        """
+        model_name = model_name or self.model_name
+        if not field_path or not model_name or model_name not in self.env:
             return False
-        Model = self.env[self.model_name]
+        Model = self.env[model_name]
         parts = field_path.split('.')
         obj = Model
         for i, part in enumerate(parts):

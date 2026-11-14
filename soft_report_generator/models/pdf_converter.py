@@ -137,6 +137,7 @@ class PdfConverterMixin(models.AbstractModel):
         Shared by the ``Preview PDF`` button and the HTTP preview route: the
         two used to diverge (the route silently dropped the cover page).
         """
+        self._check_records_match_domain(record)
         if not self.template_file:
             raise UserError(_('Please upload a template file first.'))
         if self.template_type != 'docx':
@@ -158,16 +159,7 @@ class PdfConverterMixin(models.AbstractModel):
     def action_preview_report(self):
         """Generate a preview PDF and open it in a new browser tab."""
         self.ensure_one()
-        if not self.model_name:
-            raise UserError(_('Please select a model first.'))
-        Model = self.env[self.model_name]
-        record = Model.search([], limit=1)
-        if not record:
-            raise UserError(_(
-                'No records found in %(model)s to preview.',
-                model=self.model_name,
-            ))
-
+        record = self._get_test_record()
         pdf_bytes = self._render_preview_pdf(record)
 
         attachment = self.env['ir.attachment'].create({

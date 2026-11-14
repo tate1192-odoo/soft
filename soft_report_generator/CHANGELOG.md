@@ -31,6 +31,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   instead of letting `pypdf`'s `PdfStreamError`/`FileNotDecryptedError` become
   a 500 page. Product-document merging skips an encrypted/corrupt attachment
   and appends the readable ones.
+- DOCX: an HTML field of a loop child (e.g. `mail.message.body` inside a
+  `{{#messages}}` table) is rendered as formatted runs on the child's model
+  instead of printed as literal `<p>` tags. HTML detection used the template's
+  main model for every field path.
+- DOCX: a loop child that points at a parent-record field is resolved against
+  the model that actually carries the path. The old fallback only retried the
+  parent when the item value was empty and the path contained a dot, so a
+  parent-only path such as `ref` was never found.
+- Reporting: `generate_report()`, the preview path and the test button now
+  enforce `template_domain`. A domain filtered template used to print, preview
+  or test with any record of its model. The test and preview buttons pick a
+  matching record, and an invalid domain raises a `UserError` instead of being
+  silently ignored.
 
 ## [19.0.1.0.1] - 2026-11-10
 

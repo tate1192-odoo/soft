@@ -19,6 +19,7 @@ import zipfile
 from io import BytesIO
 
 from lxml import etree
+from markupsafe import Markup
 
 from odoo.exceptions import UserError
 from odoo.tests import tagged
@@ -454,6 +455,74 @@ class TestEngineFixes(SoftReportGeneratorCommon):
         out = self._render(template, {
             '__record__': self._make_partner('Acme'), '__raw__': {}})
         self.assertIn('has-name', self._text(out))
+
+    # ------------------------------------------------------------------
+    #  Loop children — HTML detection and parent fallback
+    # ------------------------------------------------------------------
+
+    def test_loop_child_html_field_is_detected(self):
+        """``mail.message.body`` is HTML on the loop item's model."""
+        partner = self._make_partner()
+        partner.message_post(body=Markup('<p>Merhaba <b>dünya</b></p>'))
+        body = _make_table([
+            ['{{#messages}}'],
+            ['{{body}}'],
+            ['{{/messages}}'],
+        ])
+        template = self._build_template(
+            make_minimal_docx(body), state='ready',
+            field_ids=[
+                (0, 0, {
+                    'placeholder': 'messages',
+                    'field_path': 'message_ids',
+                    'is_loop': True,
+                }),
+                (0, 0, {
+                    'placeholder': 'body',
+                    'field_path': 'body',
+                    'loop_parent': 'messages',
+                }),
+            ],
+        )
+
+        ctx = template._build_render_context(partner)
+        self.assertIn(
+            'body', ctx['__loops__']['messages'][0]['__html_fields__'],
+            'the HTML field of the loop item was printed as literal tags',
+        )
+        text = self._text(self._render(template, ctx))
+        self.assertIn('Merhaba dünya', ' '.join(text.split()))
+        self.assertNotIn('<p>', text)
+        self.assertNotIn('<b>', text)
+
+    def test_loop_child_parent_only_path_falls_back(self):
+        """A parent-only path is read from the parent even without a dot."""
+        partner = self._make_partner()
+        partner.ref = 'PARENT-REF'
+        partner.message_post(body='<p>note</p>')
+        body = _make_table([
+            ['{{#messages}}'],
+            ['{{ref}}'],
+            ['{{/messages}}'],
+        ])
+        template = self._build_template(
+            make_minimal_docx(body), state='ready',
+            field_ids=[
+                (0, 0, {
+                    'placeholder': 'messages',
+                    'field_path': 'message_ids',
+                    'is_loop': True,
+                }),
+                (0, 0, {
+                    'placeholder': 'ref',
+                    'field_path': 'ref',
+                    'loop_parent': 'messages',
+                }),
+            ],
+        )
+
+        ctx = template._build_render_context(partner)
+        self.assertIn('PARENT-REF', self._text(self._render(template, ctx)))
 
     # ------------------------------------------------------------------
     #  O6 — unmapped placeholders are reported

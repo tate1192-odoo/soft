@@ -66,6 +66,77 @@ class TestReviewFixes(SoftReportGeneratorCommon):
         with self.assertRaises(UserError):
             template.generate_report(company)
 
+    def test_generate_report_enforces_template_domain(self):
+        """A domain filtered template must reject non-matching records."""
+        matching = self._make_partner('Matching Co')
+        other = self._make_partner('Other Co')
+        template = self._build_template(
+            make_simple_docx('Hello {{name}}'), state='ready',
+            field_ids=[(0, 0, {
+                'placeholder': 'name', 'field_path': 'name',
+            })],
+        )
+        template.write({
+            'use_domain': True,
+            'template_domain': "[('name', '=', 'Matching Co')]",
+        })
+
+        with self.assertRaises(UserError):
+            template.generate_report(other)
+        action = template.generate_report(matching)
+        self.assertEqual(action['type'], 'ir.actions.act_url')
+
+    def test_action_test_report_uses_a_matching_record(self):
+        """The test button used to pick the first record, ignoring the domain."""
+        matching = self._make_partner('ZZZ Matching Co')
+        self._make_partner('AAA Other Co')
+        template = self._build_template(
+            make_simple_docx('Hello {{name}}'), state='ready',
+            field_ids=[(0, 0, {
+                'placeholder': 'name', 'field_path': 'name',
+            })],
+        )
+        template.write({
+            'use_domain': True,
+            'template_domain': "[('name', '=', 'ZZZ Matching Co')]",
+        })
+
+        action = template.action_test_report()
+        attachment_id = int(
+            action['url'].rsplit('/', 1)[-1].split('?')[0])
+        attachment = self.env['ir.attachment'].browse(attachment_id)
+        self.assertEqual(attachment.res_model, 'res.partner')
+        self.assertEqual(attachment.res_id, matching.id)
+
+    def test_preview_rejects_record_outside_template_domain(self):
+        matching = self._make_partner('Preview Match')
+        other = self._make_partner('Preview Other')
+        template = self._build_template(
+            make_simple_docx('Hello {{name}}'), state='ready',
+        )
+        template.write({
+            'use_domain': True,
+            'template_domain': "[('name', '=', 'Preview Match')]",
+        })
+
+        with self.assertRaises(UserError):
+            template._render_preview_pdf(other)
+        with patch.object(
+            type(template), '_render_preview_pdf',
+            return_value=b'%PDF-1.4 fake',
+        ) as render:
+            template.action_preview_report()
+        self.assertEqual(render.call_args.args[0], matching)
+
+    def test_invalid_template_domain_raises_user_error(self):
+        template = self._build_template(make_simple_docx('Hi'))
+        template.write({
+            'use_domain': True,
+            'template_domain': '[(',
+        })
+        with self.assertRaises(UserError):
+            template.generate_report(self._make_partner())
+
     def test_wizard_rejects_mismatched_res_model(self):
         template = self._build_template(make_simple_docx('{{name}}'))
         company = self.env['res.company'].search([], limit=1)
